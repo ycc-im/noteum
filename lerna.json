@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/lerna.json",
+  "npmClient": "pnpm",
+  "useWorkspaces": true,
+  "version": "independent",
+  "packages": ["packages/*"],
+  "command": {
+    "version": {
+      "conventionalCommits": true
+    },
+    "publish": {
+      "ignoreChanges": ["*.md"]
+    }
+  }
+}

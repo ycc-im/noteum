@@ -2,6 +2,9 @@
   "name": "@my/server",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "ts-node src/app.ts",
     "build": "tsc",

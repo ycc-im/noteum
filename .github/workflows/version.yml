@@ -15,6 +15,8 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+          lfs: true
+          submodules: recursive
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -41,7 +43,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
       - name: Git config
         run: |

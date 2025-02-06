@@ -20,9 +20,18 @@ importers:
       conventional-changelog-conventionalcommits:
         specifier: ^7.0.0
         version: 7.0.2
+      husky:
+        specifier: ^9.0.0
+        version: 9.1.7
       lerna:
         specifier: ^8.0.0
         version: 8.1.9(encoding@0.1.13)
+      typescript:
+        specifier: ^5.0.0
+        version: 5.7.3
+
+  packages/core:
+    devDependencies:
       typescript:
         specifier: ^5.0.0
         version: 5.7.3
@@ -35,21 +44,6 @@ importers:
       express:
         specifier: ^4.18.2
         version: 4.21.2
-
-  packages/shared:
-    devDependencies:
-      '@types/jest':
-        specifier: ^29.0.0
-        version: 29.5.14
-      jest:
-        specifier: ^29.0.0
-        version: 29.7.0(@types/node@22.13.1)
-      ts-jest:
-        specifier: ^29.0.0
-        version: 29.2.5(@babel/core@7.26.7)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.7))(jest@29.7.0(@types/node@22.13.1))(typescript@5.7.3)
-      typescript:
-        specifier: ^5.0.0
-        version: 5.7.3
 
   packages/ui:
     dependencies:
@@ -66,6 +60,25 @@ importers:
       '@storybook/react':
         specifier: ^7.0.0
         version: 7.6.20(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)
+      typescript:
+        specifier: ^5.0.0
+        version: 5.7.3
+
+  packages/utils:
+    dependencies:
+      dayjs:
+        specifier: ^1.11.10
+        version: 1.11.13
+    devDependencies:
+      '@types/jest':
+        specifier: ^29.0.0
+        version: 29.5.14
+      jest:
+        specifier: ^29.0.0
+        version: 29.7.0(@types/node@22.13.1)
+      ts-jest:
+        specifier: ^29.0.0
+        version: 29.2.5(@babel/core@7.26.7)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.7))(jest@29.7.0(@types/node@22.13.1))(typescript@5.7.3)
       typescript:
         specifier: ^5.0.0
         version: 5.7.3
@@ -2290,6 +2303,9 @@ packages:
   dateformat@3.0.3:
     resolution: {integrity: sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==}
 
+  dayjs@1.11.13:
+    resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
+
   debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
     peerDependencies:
@@ -2899,6 +2915,11 @@ packages:
   human-signals@2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
     engines: {node: '>=10.17.0'}
+
+  husky@9.1.7:
+    resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -7556,6 +7577,8 @@ snapshots:
 
   dateformat@3.0.3: {}
 
+  dayjs@1.11.13: {}
+
   debug@2.6.9:
     dependencies:
       ms: 2.0.0
@@ -8220,6 +8243,8 @@ snapshots:
       - supports-color
 
   human-signals@2.1.0: {}
+
+  husky@9.1.7: {}
 
   iconv-lite@0.4.24:
     dependencies:

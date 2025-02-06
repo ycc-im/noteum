@@ -1,13 +1,17 @@
 {
   "name": "my-monorepo",
   "private": true,
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowAny": ["*"]
+    }
+  },
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=8.0.0"
   },
   "scripts": {
     "prepare": "husky install",
-    "postinstall": "pnpm install",
     "build": "lerna run build",
     "test": "lerna run test",
     "commit": "git-cz",

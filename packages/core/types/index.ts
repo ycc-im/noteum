@@ -19,5 +19,8 @@ export interface PaginatedData<T> {
   pageSize: number;
 }
 
+// 导出路由相关类型
+export * from './router';
+
 // 导出服务器相关类型
 export * from './server';

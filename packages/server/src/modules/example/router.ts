@@ -1,9 +1,10 @@
 import { z } from 'zod';
-import { router, publicProcedure, protectedProcedure } from '../../trpc';
-import { ExampleResponse } from '@noteum/core/types';
+import { exampleInputSchema, type ExampleResponse } from '@noteum/core/types';
+import { router, procedure } from '@noteum/core/server';
 
+// 实现示例路由
 export const exampleRouter = router({
-  hello: publicProcedure
+  hello: procedure
     .input(
       z.object({
         name: z.string().min(1, '名字不能为空').max(50, '名字太长了')
@@ -16,8 +17,8 @@ export const exampleRouter = router({
       };
       return response;
     }),
-    
-  secretData: protectedProcedure
+
+  secretData: procedure
     .query(() => {
       const response: ExampleResponse = {
         message: '这是受保护的数据！',

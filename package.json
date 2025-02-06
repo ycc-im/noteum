@@ -6,13 +6,17 @@
     "pnpm": ">=8.0.0"
   },
   "scripts": {
-    "prepare": "pnpm install",
+    "prepare": "husky install",
+    "postinstall": "pnpm install",
     "build": "lerna run build",
     "test": "lerna run test",
     "commit": "git-cz",
     "version": "lerna version --conventionalCommits"
   },
   "devDependencies": {
+    "husky": "^9.0.0",
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
     "lerna": "^8.0.0",
     "typescript": "^5.0.0",
     "commitizen": "^4.3.1",

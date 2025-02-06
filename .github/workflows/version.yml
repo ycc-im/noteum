@@ -53,7 +53,7 @@ jobs:
 
       - name: Version and publish
         run: |
-          pnpm run version
+          pnpm run version --yes
           git push --follow-tags
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

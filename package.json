@@ -3,7 +3,9 @@
   "private": true,
   "pnpm": {
     "peerDependencyRules": {
-      "allowAny": ["*"]
+      "allowAny": [
+        "*"
+      ]
     }
   },
   "engines": {
@@ -15,7 +17,10 @@
     "build": "lerna run build",
     "test": "lerna run test",
     "commit": "git-cz",
-    "version": "lerna version --conventionalCommits"
+    "version": "lerna version --conventionalCommits",
+    "docker:build": "docker-compose build",
+    "docker:dev": "docker-compose up -d && docker-compose exec dev bash",
+    "docker:down": "docker-compose down"
   },
   "devDependencies": {
     "husky": "^9.0.0",
@@ -24,13 +29,12 @@
     "lerna": "^8.0.0",
     "typescript": "^5.0.0",
     "commitizen": "^4.3.1",
-    "@commitlint/cli": "^19.0.0",
-    "@commitlint/config-conventional": "^19.0.0",
     "conventional-changelog-conventionalcommits": "^7.0.0"
   },
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
-  }
+  },
+  "packageManager": "pnpm@8.15.9+sha512.499434c9d8fdd1a2794ebf4552b3b25c0a633abcee5bb15e7b5de90f32f47b513aca98cd5cfd001c31f0db454bc3804edccd578501e4ca293a6816166bbd9f81"
 }

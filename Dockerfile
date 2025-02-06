@@ -4,7 +4,7 @@ FROM node:20-slim
 RUN apt-get update && apt-get install -y git
 
 # 安装 pnpm
-RUN corepack enable && corepack prepare pnpm@8 --activate
+RUN corepack enable && corepack prepare pnpm@8.15.9 --activate
 
 WORKDIR /app
 

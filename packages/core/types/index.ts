@@ -18,3 +18,6 @@ export interface PaginatedData<T> {
   page: number;
   pageSize: number;
 }
+
+// 导出服务器相关类型
+export * from './server';

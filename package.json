@@ -15,7 +15,10 @@
     "build": "lerna run build",
     "test": "lerna run test",
     "commit": "git-cz",
-    "version": "lerna version --conventionalCommits"
+    "version": "lerna version --conventionalCommits",
+    "docker:build": "docker-compose build",
+    "docker:dev": "docker-compose up -d && docker-compose exec dev bash",
+    "docker:down": "docker-compose down"
   },
   "devDependencies": {
     "husky": "^9.0.0",

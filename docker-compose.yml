@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  dev:
+    build: .
+    volumes:
+      - .:/app
+      # 挂载 git 配置，这样可以在容器内使用本地的 git 凭证
+      - ~/.gitconfig:/root/.gitconfig
+      - ~/.ssh:/root/.ssh
+    working_dir: /app
+    command: /bin/bash
+    # 保持容器运行
+    tty: true

@@ -5,7 +5,9 @@
   "packages": ["packages/*"],
   "command": {
     "version": {
-      "conventionalCommits": true
+      "conventionalCommits": true,
+      "allowBranch": "main",
+      "noGitTagVersion": true
     },
     "publish": {
       "ignoreChanges": ["*.md"]

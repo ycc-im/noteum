@@ -19,6 +19,11 @@ export const Default: Story = {
     mode: "single",
     selected: new Date(),
     locale: zhCN,
+    weekStartsOn: 1,
+    ISOWeek: true,
+    fixedWeeks: true,
+    fromDate: new Date(2024, 0, 1),
+    toDate: new Date(2025, 11, 31),
   },
 }
 
@@ -30,6 +35,8 @@ export const Range: Story = {
       to: new Date(2025, 1, 10),
     },
     locale: zhCN,
+    weekStartsOn: 1,
+    ISOWeek: true,
   },
 }
 
@@ -42,6 +49,8 @@ export const Multiple: Story = {
       new Date(2025, 1, 10),
     ],
     locale: zhCN,
+    weekStartsOn: 1,
+    ISOWeek: true,
   },
 }
 
@@ -50,6 +59,8 @@ export const WithFooter: Story = {
     mode: "single",
     selected: new Date(),
     locale: zhCN,
+    weekStartsOn: 1,
+    ISOWeek: true,
     footer: <div className="p-2 text-center">自定义页脚内容</div>,
   },
 }
@@ -59,6 +70,8 @@ export const Disabled: Story = {
     mode: "single",
     selected: new Date(),
     locale: zhCN,
+    weekStartsOn: 1,
+    ISOWeek: true,
     disabled: true,
   },
 }
@@ -68,6 +81,8 @@ export const WithDisabledDates: Story = {
     mode: "single",
     selected: new Date(),
     locale: zhCN,
+    weekStartsOn: 1,
+    ISOWeek: true,
     disabled: [
       { from: new Date(2025, 1, 1), to: new Date(2025, 1, 5) },
       { from: new Date(2025, 1, 15), to: new Date(2025, 1, 20) },

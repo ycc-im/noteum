@@ -159,22 +159,36 @@ docker:
     dev: docker-compose up -d
 
 # Component File Structure Rules
-component_structure:
-  main_component:
-    pattern: '{ComponentName}.tsx'        # Main component file (e.g., Button.tsx)
-    case: 'PascalCase'                   # Use PascalCase
-  stories:
-    pattern: '{ComponentName}.stories.tsx' # Stories file (e.g., Button.stories.tsx)
-    case: 'PascalCase'                   # Use PascalCase
-  test:
-    pattern: '{ComponentName}.test.tsx'   # Test file (e.g., Button.test.tsx)
-    case: 'PascalCase'                   # Use PascalCase
-  types:
-    pattern: '{ComponentName}.types.ts'   # Type definitions file (e.g., Button.types.ts)
-    case: 'PascalCase'                   # Use PascalCase
-  utils:
-    pattern: '{componentName}.utils.ts'   # Utility functions file (e.g., button.utils.ts)
-    case: 'camelCase'                    # Use camelCase
-  index:
-    pattern: 'index.ts'                  # Export file
-    case: 'lowercase'                    # Use lowercase
+  # files naming
+  file_naming:
+    components: 'PascalCase'
+    utils: 'camelCase'
+    test: '*.test.ts'
+    story: '*.stories.tsx'
+    
+  # directory naming
+  directory_naming:
+    components: 'kebab-case'    
+    utils: 'kebab-case'         
+    hooks: 'kebab-case'         
+
+  # component structure
+  component_structure:
+    main_component:
+      pattern: '{ComponentName}.tsx'        # Main component file (e.g., Button.tsx)
+      case: 'PascalCase'                   # Use PascalCase
+    stories:
+      pattern: '{ComponentName}.stories.tsx' # Stories file (e.g., Button.stories.tsx)
+      case: 'PascalCase'                   # Use PascalCase
+    test:
+      pattern: '{ComponentName}.test.tsx'   # Test file (e.g., Button.test.tsx)
+      case: 'PascalCase'                   # Use PascalCase
+    types:
+      pattern: '{ComponentName}.types.ts'   # Type definitions file (e.g., Button.types.ts)
+      case: 'PascalCase'                   # Use PascalCase
+    utils:
+      pattern: '{componentName}.utils.ts'   # Utility functions file (e.g., button.utils.ts)
+      case: 'camelCase'                    # Use camelCase
+    index:
+      pattern: 'index.ts'                  # Export file
+      case: 'lowercase'                    # Use lowercase

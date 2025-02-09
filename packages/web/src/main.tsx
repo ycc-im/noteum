@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { useState } from 'react';
-import { trpc } from './utils/trpc';
+import { trpc } from './utils/TRPC/TRPC';
 import App from './App';
 
 console.log('初始化前端应用...');

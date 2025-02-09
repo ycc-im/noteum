@@ -1,4 +1,4 @@
-import { trpc } from '../utils/trpc';
+import { trpc } from '../../utils/TRPC/TRPC';
 
 export function TestTRPC() {
   const hello = trpc.example.hello.useQuery(

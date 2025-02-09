@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react"
-import { DocumentBlock } from "./document-block"
+import { DocumentBlock } from "./DocumentBlock"
 import { mockBlocks } from "../../../.storybook/mocks/blocks.mock"
 import { useState } from "react"
 

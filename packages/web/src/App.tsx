@@ -1,4 +1,4 @@
-import { TestTRPC } from './components/TestTRPC';
+import { TestTRPC } from './components/TestTRPC/TestTRPC';
 
 function App() {
   console.log('渲染 App 组件...');

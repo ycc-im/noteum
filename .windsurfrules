@@ -1,0 +1,180 @@
+# Noteum Workspace Rules
+version: 1.0
+
+# Project Basic Information
+project:
+  name: noteum
+  type: monorepo
+  packageManager: pnpm
+
+# Node.js Environment Requirements
+environment:
+  node: ">=22.0.0"
+  pnpm: ">=10.0.0"
+
+# Workspace Configuration
+workspace:
+  root: /
+  packages:
+    - packages/*
+
+# Build Rules
+build:
+  command: pnpm build
+  order:
+    - packages/utils
+    - packages/core
+    - packages/ui
+    - packages/server
+    - packages/web
+
+# Test Rules
+test:
+  command: pnpm test
+  coverage:
+    required: true
+    threshold: 80
+
+# Code Quality Rules
+quality:
+  typescript: strict
+  linting:
+    enabled: true
+    tools:
+      - eslint
+      - prettier
+  commitlint:
+    enabled: true
+    convention: conventional
+    rules:
+      type:
+        required: true
+        allowed:
+          - feat     # New features
+          - fix      # Bug fixes
+          - docs     # Documentation updates
+          - style    # Code formatting (changes that do not affect code execution)
+          - refactor # Refactoring (neither new features nor bug fixes)
+          - perf     # Performance improvements
+          - test     # Adding tests
+          - build    # Build system or external dependency changes
+          - ci       # CI configuration files and scripts changes
+          - chore    # Other changes
+      scope:
+        required: true
+        description: "monorepo package name or common area"
+        allowed:
+          - core
+          - ui
+          - server
+          - utils
+          - web
+          - deps
+          - release
+          - common
+      subject:
+        required: true
+        case: "lower"
+        max-length: 100
+        language: "en"
+      body:
+        required: false
+        language: "en"
+      footer:
+        required: false
+        language: "en"
+      message-format: "{type}({scope}): {subject}"
+      examples:
+        - "feat(ui): add new Button component"
+        - "fix(core): resolve memory leak in data processing"
+        - "docs(web): update API documentation"
+        - "refactor(utils): optimize string handling functions"
+
+  pull_requests:
+    template:
+      required: true
+      sections:
+        - title: "Description"
+          required: true
+          language: "en"
+        - title: "Changes"
+          required: true
+          language: "en"
+          format: "bullet points"
+        - title: "Testing"
+          required: true
+          language: "en"
+          description: "Describe the tests you've added/modified"
+        - title: "Screenshots"
+          required: false
+          description: "If applicable, add screenshots to help explain your changes"
+        - title: "Checklist"
+          required: true
+          items:
+            - "Unit tests added/updated"
+            - "Documentation updated"
+            - "Type definitions updated"
+            - "Stories added/updated (for UI components)"
+    naming:
+      pattern: "{type}/{scope}/{description}"
+      example: "feat/ui/add-button-component"
+      language: "en"
+    labels:
+      required: true
+      categories:
+        - type: ["feature", "bugfix", "documentation", "enhancement"]
+        - scope: ["core", "ui", "server", "utils", "web"]
+        - status: ["ready-for-review", "in-progress", "needs-discussion"]
+
+# Dependency Management
+dependencies:
+  peerDependencies:
+    allowAny: true
+  versioning:
+    strategy: fixed
+    tool: lerna
+
+# Documentation Requirements
+documentation:
+  required: true
+  locations:
+    - README.md
+    - docs/
+    - packages/*/README.md
+
+# CI/CD Configuration
+ci:
+  provider: github-actions
+  triggers:
+    - push
+    - pull_request
+
+# Docker Support
+docker:
+  enabled: true
+  services:
+    - dev
+  commands:
+    build: docker-compose build
+    dev: docker-compose up -d
+
+# Component File Structure Rules
+component_structure:
+  main_component:
+    pattern: '{ComponentName}.tsx'        # Main component file (e.g., Button.tsx)
+    case: 'PascalCase'                   # Use PascalCase
+  stories:
+    pattern: '{ComponentName}.stories.tsx' # Stories file (e.g., Button.stories.tsx)
+    case: 'PascalCase'                   # Use PascalCase
+  test:
+    pattern: '{ComponentName}.test.tsx'   # Test file (e.g., Button.test.tsx)
+    case: 'PascalCase'                   # Use PascalCase
+  types:
+    pattern: '{ComponentName}.types.ts'   # Type definitions file (e.g., Button.types.ts)
+    case: 'PascalCase'                   # Use PascalCase
+  utils:
+    pattern: '{componentName}.utils.ts'   # Utility functions file (e.g., button.utils.ts)
+    case: 'camelCase'                    # Use camelCase
+  index:
+    pattern: 'index.ts'                  # Export file
+    case: 'lowercase'                    # Use lowercase

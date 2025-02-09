@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/ycc-im/noteum/compare/@noteum/web@0.3.0...@noteum/web@0.4.0) (2025-02-09)
+
+
+### Features
+
+* **web:** add date navigation component ([77b0d75](https://github.com/ycc-im/noteum/commit/77b0d75797c2f3cdfdbe59593ee1f50fadeddd7e))
+
+
+
+
+
 # [0.3.0](https://github.com/ycc-im/noteum/compare/@noteum/web@0.2.0...@noteum/web@0.3.0) (2025-02-06)
 
 

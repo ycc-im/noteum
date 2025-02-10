@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1](https://github.com/ycc-im/noteum/compare/@noteum/utils@0.2.0...@noteum/utils@0.2.1) (2025-02-10)
+
+
+### Bug Fixes
+
+* **core:** resolve types import from server package ([8122250](https://github.com/ycc-im/noteum/commit/81222508a374b1e093b4d1a6e668bbc4b468adde))
+
+
+
+
+
 # [0.2.0](https://github.com/ycc-im/noteum/compare/@noteum/utils@0.1.1...@noteum/utils@0.2.0) (2025-02-10)
 
 

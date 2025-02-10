@@ -17,7 +17,7 @@ export const getCurrentTimestamp = (): number => {
 /**
  * 格式化日期（默认使用用户时区）
  * @param date 日期
- * @param format 格式
+ 
  * @param tz 时区（可选，默认使用用户本地时区）
  */
 export const formatDate = (date: Date | string | number, format = 'YYYY-MM-DD', tz?: string): string => {

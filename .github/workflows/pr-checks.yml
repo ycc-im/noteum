@@ -1,0 +1,55 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - master
+
+jobs:
+  pr-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '>=22.0.0'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: '>=10.0.0'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Type check
+        run: pnpm tsc --noEmit
+
+      - name: Lint check
+        run: pnpm lint
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Check version tag
+        run: |
+          # 获取当前包版本
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          
+          # 检查是否已存在相同版本的tag
+          if git rev-parse "v$CURRENT_VERSION" >/dev/null 2>&1; then
+            echo "错误: 版本 v$CURRENT_VERSION 的tag已经存在，请更新版本号"
+            exit 1
+          fi
+          
+          echo "版本检查通过: v$CURRENT_VERSION"
+
+      - name: Build check
+        run: pnpm build

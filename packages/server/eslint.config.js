@@ -8,6 +8,16 @@ export default [
       parserOptions: {
         project: './tsconfig.json',
       },
+      globals: {
+        console: true,
+        process: true,
+        require: true,
+        exports: true,
+        module: true,
+        __dirname: true,
+        __filename: true,
+      },
     },
+    ignores: ['**/dist/**'],
   },
 ];

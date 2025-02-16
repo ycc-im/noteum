@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/ycc-im/noteum/compare/@noteum/server@0.3.2...@noteum/server@0.4.0) (2025-02-16)
+
+
+### Bug Fixes
+
+* **common:** add type-check scripts to all packages ([1bcffc0](https://github.com/ycc-im/noteum/commit/1bcffc0c881a9a02bf07672c27535bc12d54af74))
+
+
+### Features
+
+* **common:** add git hooks for pre-push checks ([ffaf83c](https://github.com/ycc-im/noteum/commit/ffaf83c88585a2b5b4190fce337e4041f1142f3d))
+
+
+
+
+
 ## [0.3.2](https://github.com/ycc-im/noteum/compare/@noteum/server@0.3.1...@noteum/server@0.3.2) (2025-02-16)
 
 **Note:** Version bump only for package @noteum/server

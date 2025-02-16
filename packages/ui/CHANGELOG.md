@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.2](https://github.com/ycc-im/noteum/compare/@noteum/ui@0.5.1...@noteum/ui@0.5.2) (2025-02-16)
+
+
+### Bug Fixes
+
+* **common:** add type-check scripts to all packages ([1bcffc0](https://github.com/ycc-im/noteum/commit/1bcffc0c881a9a02bf07672c27535bc12d54af74))
+
+
+
+
+
 ## [0.5.1](https://github.com/ycc-im/noteum/compare/@noteum/ui@0.5.0...@noteum/ui@0.5.1) (2025-02-16)
 
 **Note:** Version bump only for package @noteum/ui

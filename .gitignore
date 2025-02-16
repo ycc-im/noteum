@@ -1,6 +1,12 @@
+# Dependencies
 node_modules
 .pnpm-store
-doctor-storybook.log
+
+# Build outputs
 dist
 **/dist
+*.tsbuildinfo
+
+# Logs
+doctor-storybook.log
 /lerna-debug.log

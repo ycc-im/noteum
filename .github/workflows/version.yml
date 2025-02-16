@@ -62,6 +62,11 @@ jobs:
           pnpm build:server
           pnpm build:web
 
+      - name: Clean build artifacts
+        run: |
+          git clean -f "*.tsbuildinfo"
+          git checkout -- "*.tsbuildinfo"
+
       - name: Version and publish
         run: |
           pnpm run version --yes

@@ -20,7 +20,7 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "type-check": "tsc --noEmit",
-    "lint": "eslint ."
+    "lint": "eslint . --ignore-pattern 'dist/**'"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.2",

@@ -1,6 +1,7 @@
 {
   "name": "noteum",
   "private": true,
+  "type": "module",
   "pnpm": {
     "peerDependencyRules": {
       "allowAny": [

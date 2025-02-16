@@ -29,11 +29,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Type check
-        run: pnpm tsc --noEmit
+      - name: Build packages
+        run: pnpm build
 
       - name: Lint check
         run: pnpm lint
+
+      - name: Type check
+        run: pnpm type-check
 
       - name: Run tests
         run: pnpm test

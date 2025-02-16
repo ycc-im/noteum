@@ -9,7 +9,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": true, // web 项目保持 noEmit: true，因为它使用 Vite 构建
     "jsx": "react-jsx",
     "strict": true,
     "noUnusedLocals": true,

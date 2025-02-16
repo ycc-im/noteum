@@ -1,9 +1,9 @@
 import fastify from 'fastify';
 import cors from '@fastify/cors';
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
-import { createContext } from './context';
-import { appRouter } from './modules/router';
-import { SERVER_CONFIG } from './config/server';
+import { createContext } from './context.js';
+import { appRouter } from './modules/router.js';
+import { SERVER_CONFIG } from './config/server.js';
 import { renderTrpcPanel } from 'trpc-panel';
 
 

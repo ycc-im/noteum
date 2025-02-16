@@ -1,4 +1,4 @@
 // 导出所有类型
-export * from './types/router';
-export * from './types/context';
-export type { AppRouter } from './modules/router';
+export * from './types/router.js';
+export * from './types/context.js';
+export type { AppRouter } from './modules/router.js';

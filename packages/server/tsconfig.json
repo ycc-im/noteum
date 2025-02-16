@@ -17,6 +17,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "outDir": "dist",
+    "noEmit": false,
     "baseUrl": ".",
     "composite": true,
     "paths": {

@@ -14,7 +14,12 @@
     "pnpm": ">=10.0.0"
   },
   "scripts": {
-    "build": "lerna run build",
+    "build": "pnpm build:utils && pnpm build:core && pnpm build:ui && pnpm build:server && pnpm build:web",
+    "build:utils": "lerna run build --scope @noteum/utils",
+    "build:core": "lerna run build --scope @noteum/core",
+    "build:ui": "lerna run build --scope @noteum/ui",
+    "build:server": "lerna run build --scope @noteum/server",
+    "build:web": "lerna run build --scope @noteum/web",
     "test": "lerna run test",
     "commit": "git-cz",
     "version": "lerna version --conventionalCommits $*",

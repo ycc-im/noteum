@@ -30,7 +30,12 @@ jobs:
         run: pnpm install
 
       - name: Build packages
-        run: pnpm build
+        run: |
+          pnpm build:utils
+          pnpm build:core
+          pnpm build:ui
+          pnpm build:server
+          pnpm build:web
 
       - name: Lint check
         run: pnpm lint

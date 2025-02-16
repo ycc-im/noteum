@@ -6,6 +6,11 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
   "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
     "./types": {
       "types": "./dist/types/index.d.ts",
       "import": "./dist/esm/types/index.js",
@@ -21,16 +26,13 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "build": "pnpm build:cjs && pnpm build:esm",
-    "build:cjs": "tsc --outDir ./dist/cjs",
-    "build:esm": "tsc -p tsconfig.esm.json",
-    "dev": "pnpm build:cjs --watch"
+    "build": "rm -rf dist && tsc -p tsconfig.json && tsc -p tsconfig.cjs.json"
   },
   "dependencies": {
     "@trpc/server": "^10.45.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "@types/node": "^22.13.1"
   }
 }

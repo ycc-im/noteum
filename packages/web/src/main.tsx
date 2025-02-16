@@ -9,8 +9,6 @@ import App from './App';
 console.log('初始化前端应用...');
 
 console.log('创建 QueryClient...');
-const queryClient = new QueryClient();
-
 function TRPCProvider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>

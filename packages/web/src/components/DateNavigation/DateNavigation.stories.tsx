@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react"
-import { DateNavigation } from "./DateNavigation"
+import { DateNavigation } from "../date-navigation/DateNavigation"
 
 const meta = {
   title: "Components/DateNavigation",

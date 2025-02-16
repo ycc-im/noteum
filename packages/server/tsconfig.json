@@ -1,13 +1,14 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "ES2020",
-    "module": "commonjs",
+    "module": "NodeNext",
     "lib": ["ES2020"],
-    "strict": true,
+    "moduleResolution": "NodeNext",
     "esModuleInterop": true,
+    "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noUnusedLocals": true,
@@ -17,10 +18,16 @@
     "noUncheckedIndexedAccess": true,
     "outDir": "dist",
     "baseUrl": ".",
+    "composite": true,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"],
+      "@noteum/*": ["../*/src"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "types/**/*"],
+  "references": [
+    { "path": "../core" },
+    { "path": "../utils" }
+  ],
   "exclude": ["node_modules", "dist"]
 }

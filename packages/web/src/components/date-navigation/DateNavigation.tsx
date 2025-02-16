@@ -1,17 +1,15 @@
-import * as React from "react"
 import { addDays, format, subDays } from "date-fns"
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
 import { zhCN } from 'date-fns/locale'
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button/Button"
-import { Calendar } from "@/components/ui/calendar/Calendar"
 import {
+  Button,
+  Calendar,
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover/Popover"
-import { buttonVariants } from "@/components/ui/button/Button"
+  cn,
+} from "@noteum/ui"
 
 interface DateNavigationProps {
   selectedDate: Date
@@ -89,7 +87,7 @@ export function DateNavigation({
           <Calendar
             mode="single"
             selected={selectedDate}
-            onSelect={(date) => date && onDateChange(date)}
+            onSelect={(date: Date | undefined) => date && onDateChange(date)}
             initialFocus
             locale={zhCN}
           />

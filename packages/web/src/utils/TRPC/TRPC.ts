@@ -2,8 +2,8 @@ import { createTRPCReact } from '@trpc/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { createTRPCProxyClient } from '@trpc/client';
 
-// 只从 core 包导入类型
-import type { AppRouter } from '@noteum/core/types';
+// 从 server 包导入类型
+import type { AppRouter } from '@noteum/server';
 
 export const trpc = createTRPCReact<AppRouter>();
 

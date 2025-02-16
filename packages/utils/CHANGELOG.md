@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.2](https://github.com/ycc-im/noteum/compare/@noteum/utils@0.2.1...@noteum/utils@0.2.2) (2025-02-16)
+
+**Note:** Version bump only for package @noteum/utils
+
+
+
+
+
 ## [0.2.1](https://github.com/ycc-im/noteum/compare/@noteum/utils@0.2.0...@noteum/utils@0.2.1) (2025-02-10)
 
 

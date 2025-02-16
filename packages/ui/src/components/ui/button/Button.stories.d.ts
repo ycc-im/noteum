@@ -1,22 +1,22 @@
 import type { StoryObj } from "@storybook/react";
 declare const meta: {
     title: string;
-    component: import("react").ForwardRefExoticComponent<import("./Button").ButtonProps & import("react").RefAttributes<HTMLButtonElement>>;
+    component: any;
     parameters: {
         layout: string;
     };
     tags: string[];
     argTypes: {
         variant: {
-            control: "select";
+            control: string;
             options: string[];
         };
         size: {
-            control: "select";
+            control: string;
             options: string[];
         };
         asChild: {
-            control: "boolean";
+            control: string;
         };
     };
 };

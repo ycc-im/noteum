@@ -1,11 +1,11 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { addDays, format, subDays } from "date-fns";
-import { Icons } from "@/components/ui/icons/Icons";
+import { Icons } from "../../components/ui/icons/Icons";
 import { zhCN } from 'date-fns/locale';
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button/Button";
-import { Calendar } from "@/components/ui/calendar/Calendar";
-import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover/Popover";
+import { cn } from "../../lib/utils";
+import { Button } from "../../components/ui/button/Button";
+import { Calendar } from "../../components/ui/calendar/Calendar";
+import { Popover, PopoverContent, PopoverTrigger, } from "../../components/ui/popover/Popover";
 export function DateNavigation({ selectedDate, onDateChange, className, }) {
     const handlePrevDay = () => {
         onDateChange(subDays(selectedDate, 1));

@@ -1,8 +1,7 @@
 import type { StoryObj } from "@storybook/react";
-import { DateNavigation } from "./DateNavigation";
 declare const meta: {
     title: string;
-    component: typeof DateNavigation;
+    component: any;
     parameters: {
         layout: string;
     };

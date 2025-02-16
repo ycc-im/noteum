@@ -1,0 +1,1 @@
+{"version":3,"file":"block.d.ts","sourceRoot":"","sources":["block.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,EAAE,MAAM,YAAY,CAAC;AAEnC,YAAY,EAAE,KAAK,EAAE,CAAC;AAEtB,MAAM,WAAW,iBAAkB,SAAQ,KAAK;IAC9C,QAAQ,CAAC,EAAE,iBAAiB,EAAE,CAAC;CAChC"}

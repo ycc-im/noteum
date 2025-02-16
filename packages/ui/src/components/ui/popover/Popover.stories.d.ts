@@ -1,7 +1,7 @@
 import type { StoryObj } from "@storybook/react";
 declare const meta: {
     title: string;
-    component: import("react").FC<import("@radix-ui/react-popover").PopoverProps>;
+    component: any;
     parameters: {
         layout: string;
     };

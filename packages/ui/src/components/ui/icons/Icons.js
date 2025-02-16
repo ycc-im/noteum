@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Calendar, } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 export const Icons = {
     ChevronLeft,
     ChevronRight,

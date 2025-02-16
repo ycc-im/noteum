@@ -1,8 +1,7 @@
 import type { StoryObj } from "@storybook/react";
-import { Calendar } from "./Calendar";
 declare const meta: {
     title: string;
-    component: typeof Calendar;
+    component: any;
     parameters: {
         layout: string;
     };

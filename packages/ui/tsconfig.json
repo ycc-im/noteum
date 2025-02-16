@@ -19,9 +19,13 @@
     "composite": true,
     "declaration": true,
     "outDir": "./dist",
-    "preserveSymlinks": true
+    "preserveSymlinks": true,
+    "noEmit": false,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src/**/*", "types/**/*", ".storybook/**/*"],
+  "include": ["src/**/*", "types/**/*", ".storybook/**/*", "**/*.stories.tsx", "**/*.mock.ts"],
   "references": [
     { "path": "../utils" },
     { "path": "../core" }

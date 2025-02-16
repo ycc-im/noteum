@@ -30,7 +30,7 @@ jobs:
         run: pnpm install
 
       - name: Type check
-        run: pnpm tsc --noEmit
+        run: pnpm type-check
 
       - name: Lint check
         run: pnpm lint

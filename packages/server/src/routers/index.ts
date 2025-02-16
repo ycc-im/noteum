@@ -1,4 +1,12 @@
-import { router } from '../trpc';
+import { initTRPC } from '@trpc/server';
+import { Context } from '../context';
+
+// 初始化 tRPC
+const t = initTRPC.context<Context>().create();
+
+// 导出基础构建块
+export const router = t.router;
+export const publicProcedure = t.procedure;
 
 // 创建根路由器
 export const appRouter = router({

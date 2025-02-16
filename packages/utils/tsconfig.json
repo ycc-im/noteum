@@ -11,7 +11,8 @@
     "outDir": "dist",
     "rootDir": "./src",
     "composite": true,
-    "noEmit": false
+    "noEmit": false,
+    "declaration": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

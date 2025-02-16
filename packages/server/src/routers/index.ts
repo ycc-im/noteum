@@ -1,5 +1,5 @@
 import { initTRPC } from '@trpc/server';
-import { Context } from '../context';
+import { Context } from '../context.js';
 
 // 初始化 tRPC
 const t = initTRPC.context<Context>().create();

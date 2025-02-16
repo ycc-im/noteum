@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import type { ExampleResponse } from '../../types/router';
-import { router, publicProcedure as procedure } from '../../trpc';
+import type { ExampleResponse } from '../../types/router.js';
+import { router, publicProcedure as procedure } from '../../trpc.js';
 
 // 实现示例路由
 export const exampleRouter = router({
@@ -16,7 +16,7 @@ export const exampleRouter = router({
         timestamp: z.string()
       })
     )
-    .query(({ input }) => {
+    .query(({ input }: { input: { name?: string } }) => {
       return {
         message: `你好，${input.name || '访客'}！`,
         timestamp: new Date().toISOString()

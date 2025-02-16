@@ -54,6 +54,14 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
+      - name: Build packages
+        run: |
+          pnpm build:utils
+          pnpm build:core
+          pnpm build:ui
+          pnpm build:server
+          pnpm build:web
+
       - name: Version and publish
         run: |
           pnpm run version --yes

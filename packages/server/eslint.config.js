@@ -4,8 +4,10 @@ export default [
   ...baseConfig,
   {
     files: ['**/*.ts', '**/*.tsx'],
-    parserOptions: {
-      project: './tsconfig.json',
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.json',
+      },
     },
   },
 ];

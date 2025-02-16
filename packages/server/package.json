@@ -1,5 +1,6 @@
 {
   "name": "@noteum/server",
+  "type": "module",
   "version": "0.3.2",
   "private": true,
   "main": "./dist/index.js",

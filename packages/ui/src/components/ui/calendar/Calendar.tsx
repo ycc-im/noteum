@@ -60,10 +60,11 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        PrevIcon: ({ ...props }) => (
+        // @ts-ignore - the type definitions are incorrect
+        IconLeft: ({ ...props }) => (
           <ChevronLeft className="h-4 w-4" {...props} />
         ),
-        NextIcon: ({ ...props }) => (
+        IconRight: ({ ...props }) => (
           <ChevronRight className="h-4 w-4" {...props} />
         ),
       }}

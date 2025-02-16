@@ -4,8 +4,8 @@ import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import { createContext } from './context';
 import { appRouter } from './modules/router';
 import { SERVER_CONFIG } from './config/server';
-import { renderTRPCPanel } from 'trpc-panel';
-import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
+import { renderTrpcPanel } from 'trpc-panel';
+
 
 async function main() {
   const server = fastify({
@@ -29,7 +29,7 @@ async function main() {
 
   // 添加 tRPC 面板用于调试
   server.get('/', async () => {
-    return renderTRPCPanel(appRouter, { url: 'http://localhost:3000/trpc' });
+    return renderTrpcPanel(appRouter, { url: 'http://localhost:3000/trpc' });
   });
 
   // 添加示例路由

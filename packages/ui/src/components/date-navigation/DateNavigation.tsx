@@ -1,17 +1,15 @@
-import * as React from "react"
 import { addDays, format, subDays } from "date-fns"
-import { Icons } from "@/components/ui/icons/Icons"
+import { Icons } from "../../components/ui/icons/Icons"
 import { zhCN } from 'date-fns/locale'
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button/Button"
-import { Calendar } from "@/components/ui/calendar/Calendar"
+import { cn } from "../../lib/utils"
+import { Button } from "../../components/ui/button/Button"
+import { Calendar } from "../../components/ui/calendar/Calendar"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover/Popover"
-import { buttonVariants } from "@/components/ui/button/Button"
+} from "../../components/ui/popover/Popover"
 
 interface DateNavigationProps {
   selectedDate: Date

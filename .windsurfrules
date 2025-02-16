@@ -37,6 +37,15 @@ test:
 
 # Code Quality Rules
 quality:
+  pull_requests:
+    language:
+      required: true
+      value: "en"
+      applies_to:
+        - title
+        - description
+        - comments
+        - review_comments
   typescript: strict
   linting:
     enabled: true

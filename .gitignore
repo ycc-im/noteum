@@ -3,3 +3,4 @@ node_modules
 doctor-storybook.log
 dist
 **/dist
+/lerna-debug.log

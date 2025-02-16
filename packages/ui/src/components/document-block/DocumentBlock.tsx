@@ -1,6 +1,5 @@
-import * as React from "react"
 import { cn } from "@/lib/utils"
-import { Block } from "../../../.storybook/mocks/blocks.mock"
+import { Block } from "@noteum/core"
 import { ChevronRightIcon, ChevronDownIcon } from "@radix-ui/react-icons"
 
 interface DocumentBlockProps {

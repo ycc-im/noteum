@@ -1,21 +1,26 @@
 import { z } from 'zod';
-import { exampleInputSchema, type ExampleResponse } from '@noteum/core/types';
-import { router, procedure } from '@noteum/core/server';
+import type { ExampleResponse } from '../../types/router';
+import { router, publicProcedure as procedure } from '../../trpc';
 
 // 实现示例路由
 export const exampleRouter = router({
   hello: procedure
     .input(
       z.object({
-        name: z.string().min(1, '名字不能为空').max(50, '名字太长了')
-      }).optional().default({ name: '世界' })
+        name: z.string().optional()
+      })
+    )
+    .output(
+      z.object({
+        message: z.string(),
+        timestamp: z.string()
+      })
     )
     .query(({ input }) => {
-      const response: ExampleResponse = {
-        message: `你好，${input.name}！`,
-        timestamp: new Date().toISOString(),
+      return {
+        message: `你好，${input.name || '访客'}！`,
+        timestamp: new Date().toISOString()
       };
-      return response;
     }),
 
   secretData: procedure

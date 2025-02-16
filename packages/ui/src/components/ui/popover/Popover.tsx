@@ -5,7 +5,19 @@ import { cn } from "@/lib/utils"
 
 const Popover = PopoverPrimitive.Root
 
-const PopoverTrigger = PopoverPrimitive.Trigger
+interface PopoverTriggerProps extends React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Trigger> {
+  asChild?: boolean;
+  children: React.ReactNode;
+}
+
+const PopoverTrigger = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Trigger>,
+  PopoverTriggerProps
+>((props, ref) => (
+  <PopoverPrimitive.Trigger ref={ref} {...props} />
+))
+
+PopoverTrigger.displayName = PopoverPrimitive.Trigger.displayName
 
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,

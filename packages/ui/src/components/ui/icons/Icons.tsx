@@ -2,10 +2,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Calendar,
-  type Icon as LucideIcon,
+  type LucideProps
 } from "lucide-react"
 
-export type Icon = LucideIcon
+export type Icon = React.ForwardRefExoticComponent<LucideProps>
 
 export const Icons = {
   ChevronLeft,

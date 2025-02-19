@@ -9,4 +9,5 @@ dist
 
 # Logs
 doctor-storybook.log
+/lerna-debug.log.env
 /lerna-debug.log

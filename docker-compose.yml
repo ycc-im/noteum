@@ -1,14 +1,75 @@
-version: '3.8'
+name: noteum
+
+x-common-config: &common-config
+  build: 
+    context: .
+    dockerfile: Dockerfile
+  volumes:
+    - .:/app
+    - ~/.gitconfig:/home/developer/.gitconfig:ro
+    - ~/.ssh:/home/developer/.ssh:ro
+    - noteum_node_modules:/app/node_modules
+    - noteum_pnpm_store:/home/developer/.local/share/pnpm/store
+  working_dir: /app
+  environment:
+    - NODE_ENV=${NODE_ENV}
+    - PNPM_HOME=${PNPM_HOME}
 
 services:
-  dev:
-    build: .
+  # Server 服务
+  server:
+    <<: *common-config
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"  # API 服务
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PNPM_HOME=${PNPM_HOME}
+      - SERVICE=server
+      - PORT=${SERVER_PORT}
+      - APP_PORT=${SERVER_PORT}
+    command: sh -c "pnpm install && cd packages/server && HOST=0.0.0.0 pnpm dev"
+    depends_on:
+      - redis
+      - postgres
+
+  # Web 服务
+  web:
+    <<: *common-config
+    ports:
+      - "${WEB_PORT}:${WEB_PORT}"  # Vite 开发服务器
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PNPM_HOME=${PNPM_HOME}
+      - SERVICE=web
+      - PORT=${WEB_PORT}
+      - VITE_PORT=${WEB_PORT}
+    command: sh -c "pnpm install && cd packages/web && pnpm dev --port ${WEB_PORT} --host 0.0.0.0"
+    depends_on:
+      - server
+
+  # Redis 服务
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
     volumes:
-      - .:/app
-      # 挂载 git 配置，这样可以在容器内使用本地的 git 凭证
-      - ~/.gitconfig:/root/.gitconfig
-      - ~/.ssh:/root/.ssh
-    working_dir: /app
-    command: /bin/bash
-    # 保持容器运行
-    tty: true
+      - redis_data:/data
+
+  # PostgreSQL 服务
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+# 定义持久化卷
+volumes:
+  noteum_node_modules:
+  noteum_pnpm_store:
+  redis_data:
+  postgres_data:

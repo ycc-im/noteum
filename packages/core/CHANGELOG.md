@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.5](https://github.com/ycc-im/noteum/compare/@noteum/core@0.3.4...@noteum/core@0.3.5) (2025-02-19)
+
+
+### Bug Fixes
+
+* **ui:** resolve TypeScript module import issues by using relative paths ([67af357](https://github.com/ycc-im/noteum/commit/67af357a583fdf4a184325c4e0d8b6098bcd0d17))
+
+
+
+
+
 ## [0.3.4](https://github.com/ycc-im/noteum/compare/@noteum/core@0.3.3...@noteum/core@0.3.4) (2025-02-19)
 
 **Note:** Version bump only for package @noteum/core

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.1](https://github.com/ycc-im/noteum/compare/@noteum/server@0.4.0...@noteum/server@0.4.1) (2025-02-19)
+
+
+### Bug Fixes
+
+* **server:** remove unused request parameters ([b23edb6](https://github.com/ycc-im/noteum/commit/b23edb6e76ee33ac50c96e1b6b893d5ef9f32dbb))
+
+
+
+
+
 # [0.4.0](https://github.com/ycc-im/noteum/compare/@noteum/server@0.3.2...@noteum/server@0.4.0) (2025-02-16)
 
 

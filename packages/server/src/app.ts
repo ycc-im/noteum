@@ -29,14 +29,14 @@ async function main() {
 
   // 添加 tRPC 面板用于调试（仅在开发环境中可用）
   if (process.env.NODE_ENV === 'development') {
-    server.get('/', async (request, reply) => {
+    server.get('/', async (_, reply) => {
       const baseUrl = `http://${SERVER_CONFIG.host === '0.0.0.0' ? 'localhost' : SERVER_CONFIG.host}:${SERVER_CONFIG.port}`;
       const html = renderTrpcPanel(appRouter, { url: `${baseUrl}/trpc` });
       reply.type('text/html').send(html);
     });
   } else {
     // 在生产环境中返回 API 状态信息
-    server.get('/', async (request, reply) => {
+    server.get('/', async (_, reply) => {
       reply.send({
         status: 'ok',
         version: process.env.npm_package_version || '0.0.0',

@@ -64,8 +64,8 @@ jobs:
 
       - name: Clean build artifacts
         run: |
-          git clean -f "*.tsbuildinfo"
-          git checkout -- "*.tsbuildinfo"
+          find . -name "*.tsbuildinfo" -delete
+          git checkout -- "*.tsbuildinfo" || true
 
       - name: Version and publish
         run: |

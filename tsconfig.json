@@ -22,6 +22,10 @@
       "@noteum/*": ["packages/*/src"]
     }
   },
-  "include": ["packages/*/src/**/*", "packages/*/types/**/*"],
+  "include": [
+    "packages/*/src/**/*",
+    "packages/*/types/**/*",
+    "packages/*/.storybook/**/*"
+  ],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

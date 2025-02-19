@@ -25,7 +25,7 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "types/**/*", ".storybook/**/*", "**/*.stories.tsx", "**/*.mock.ts"],
+  "include": ["src/**/*", "types/**/*", ".storybook/**/*", "**/*.stories.tsx", "**/*.mock.ts", "src/index.d.ts", "src/global.d.ts"],
   "references": [
     { "path": "../utils" },
     { "path": "../core" }

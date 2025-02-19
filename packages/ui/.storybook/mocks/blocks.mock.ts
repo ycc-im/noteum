@@ -1,4 +1,4 @@
-import { Block } from '@noteum/core';
+import { Block } from '@noteum/core/types';
 
 export const mockBlocks: Block[] = [
     {

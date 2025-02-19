@@ -19,3 +19,4 @@ export interface PaginatedData<T> {
   pageSize: number;
 }
 
+export type { Block } from './block';

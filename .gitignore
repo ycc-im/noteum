@@ -2,12 +2,44 @@
 node_modules
 .pnpm-store
 
-# Build outputs
-dist
-**/dist
+# TypeScript
 *.tsbuildinfo
+**/tsconfig.tsbuildinfo
+dist
+build
+
+# Testing
+coverage
+
+# Production
+build
+
+# Misc
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 doctor-storybook.log
 /lerna-debug.log.env
 /lerna-debug.log
+
+# Editor
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Cache
+.cache
+.temp

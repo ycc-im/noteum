@@ -26,6 +26,7 @@
     "docker:build": "docker-compose build",
     "docker:dev": "docker-compose up -d && docker-compose exec dev bash",
     "docker:down": "docker-compose down",
+    "start:prod": "NODE_ENV=production node packages/server/dist/src/app.js",
     "prepare": "husky",
     "pre-push": "pnpm lint && pnpm type-check && pnpm test",
     "lint": "lerna run lint",

@@ -18,6 +18,6 @@ export default [
         __filename: true,
       },
     },
-    ignores: ['**/dist/**'],
+    ignores: ['**/dist/**', '**/*.d.ts'],
   },
 ];

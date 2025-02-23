@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.5](https://github.com/ycc-im/noteum/compare/@noteum/server@0.4.4...@noteum/server@0.4.5) (2025-02-23)
+
+**Note:** Version bump only for package @noteum/server
+
+
+
+
+
 ## [0.4.4](https://github.com/ycc-im/noteum/compare/@noteum/server@0.4.3...@noteum/server@0.4.4) (2025-02-22)
 
 **Note:** Version bump only for package @noteum/server

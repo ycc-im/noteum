@@ -1,5 +1,5 @@
 import { initTRPC } from '@trpc/server';
-import { Context } from './types/context.js';
+import { Context } from './types/context';
 import { ZodError } from 'zod';
 
 // 创建一个新的 tRPC 实例

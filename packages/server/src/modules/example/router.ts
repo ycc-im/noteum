@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import type { ExampleResponse } from '../../types/router.js';
-import { router, publicProcedure as procedure } from '../../trpc.js';
+import type { ExampleResponse } from '../../types/router';
+import { router, publicProcedure as procedure } from '../../trpc';
 
 // 实现示例路由
 export const exampleRouter = router({

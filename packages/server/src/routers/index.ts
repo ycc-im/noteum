@@ -1,5 +1,5 @@
 import { initTRPC } from '@trpc/server';
-import { Context } from '../context.js';
+import { Context } from '../context';
 import { z } from 'zod';
 
 // 初始化 tRPC

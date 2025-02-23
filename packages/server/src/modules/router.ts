@@ -1,5 +1,5 @@
-import { router } from '../trpc.js';
-import { exampleRouter } from './example/router.js';
+import { router } from '../trpc';
+import { exampleRouter } from './example/router';
 
 // 实现路由
 export const appRouter = router({

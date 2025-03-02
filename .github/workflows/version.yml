@@ -48,16 +48,26 @@ jobs:
       # 基于提交信息自动更新版本
       - name: Auto-detect changes and update versions
         run: |
+          # 增强调试信息
+          echo "===== 版本更新调试信息 ====="
+          
           # 获取上次发布后的提交
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "上次发布标签: $LAST_TAG"
           
           if [ -z "$LAST_TAG" ]; then
             # 如果没有标签，获取所有提交
-            COMMITS=$(git log --pretty=format:"%s")
+            COMMITS=$(git log --no-merges --pretty=format:"%s")
           else
             # 获取自上次标签以来的提交
-            COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s")
+            COMMITS=$(git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"%s")
           fi
+          
+          # 输出找到的提交信息
+          echo "找到的提交信息:"
+          echo "$COMMITS" | while read -r commit; do
+            echo "  - $commit"
+          done
           
           # 创建临时目录
           mkdir -p .changeset
@@ -77,23 +87,27 @@ jobs:
           done
           
           # 分析提交信息
+          echo "分析提交信息中..."
           echo "$COMMITS" | while read -r commit; do
-            # 提取包名和更新类型
-            if [[ $commit =~ ^(feat|fix|chore|refactor|docs|test|style|perf|build|ci|revert)(\([a-zA-Z0-9_-]+\))?!?:.*$ ]]; then
+            echo "处理提交: $commit"
+            # 提取包名和更新类型 - 改进的正则表达式
+            if [[ $commit =~ ^(feat|fix|chore|refactor|docs|test|style|perf|build|ci|revert)\(([a-zA-Z0-9_-]+)\)(!?):.*$ ]]; then
               TYPE=${BASH_REMATCH[1]}
               PKG=${BASH_REMATCH[2]}
+              BREAKING=${BASH_REMATCH[3]}
               
-              # 移除括号
-              PKG=${PKG//[()]/}
+              echo "  检测到类型: $TYPE, 包: $PKG, 破坏性更改: $BREAKING"
               
               # 检查是否有破坏性更改标记
-              if [[ $commit == *"!"* ]]; then
+              if [[ -n "$BREAKING" ]]; then
                 CHANGE_TYPE="major"
               elif [[ $TYPE == "feat" ]]; then
                 CHANGE_TYPE="minor"
               else
                 CHANGE_TYPE="patch"
               fi
+              
+              echo "  变更类型: $CHANGE_TYPE"
               
               # 如果指定了包
               if [ ! -z "$PKG" ]; then
@@ -104,18 +118,22 @@ jobs:
                     PKG_DIR=$(basename $pkg_dir)
                     # 从包名中提取短名称（不含@noteum/前缀）
                     PKG_SHORT_NAME=${PKG_NAME#@noteum/}
+                    echo "  比较: commit中的包='$PKG', 实际包名='$PKG_NAME', 短包名='$PKG_SHORT_NAME', 目录名='$PKG_DIR'"
                     if [[ $PKG_SHORT_NAME == "$PKG" ]] || [[ $PKG_DIR == "$PKG" ]]; then
+                      echo "  匹配成功: $PKG_NAME"
                       # 更新包的变更类型（使用最高级别）
                       CURRENT=${PKG_CHANGES[$PKG_NAME]}
                       if [ -z "$CURRENT" ] || 
                          [ "$CURRENT" == "patch" -a "$CHANGE_TYPE" != "patch" ] || 
                          [ "$CURRENT" == "minor" -a "$CHANGE_TYPE" == "major" ]; then
                         PKG_CHANGES[$PKG_NAME]=$CHANGE_TYPE
+                        echo "  更新变更类型为: $CHANGE_TYPE"
                       fi
                     fi
                   fi
                 done
               else
+                echo "  未指定包，变更将应用到所有包"
                 # 如果没有指定包，应用到所有包
                 for pkg_dir in packages/*; do
                   if [ -f "$pkg_dir/package.json" ]; then
@@ -125,21 +143,30 @@ jobs:
                        [ "$CURRENT" == "patch" -a "$CHANGE_TYPE" != "patch" ] || 
                        [ "$CURRENT" == "minor" -a "$CHANGE_TYPE" == "major" ]; then
                       PKG_CHANGES[$PKG_NAME]=$CHANGE_TYPE
+                      echo "  应用到包: $PKG_NAME, 变更类型: $CHANGE_TYPE"
                     fi
                   fi
                 done
               fi
+            else
+              echo "  不匹配提交格式，跳过: $commit"
             fi
           done
           
-          # 输出调试信息
+          # 输出包变更信息
           echo "\n\n===== 检测到的包变更 ====="
+          CHANGES_FOUND=false
           for pkg_name in "${!PKG_CHANGES[@]}"; do
             CHANGE_TYPE=${PKG_CHANGES[$pkg_name]}
             if [ ! -z "$CHANGE_TYPE" ]; then
               echo "$pkg_name: $CHANGE_TYPE"
+              CHANGES_FOUND=true
             fi
           done
+          
+          if [ "$CHANGES_FOUND" = false ]; then
+            echo "没有检测到任何包变更"
+          fi
           echo "===========================\n\n"
           
           # 检查是否有变更

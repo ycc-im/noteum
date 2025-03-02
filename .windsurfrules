@@ -7,9 +7,8 @@ project:
   type: monorepo
   packageManager: bun
 
-# Node.js Environment Requirements
+# bun.js Environment Requirements
 environment:
-  node: ">=22.0.0"
   bun: ">=1.0.0"
 
 # Workspace Configuration
@@ -106,8 +105,14 @@ quality:
         - "docs(web): update API documentation"
         - "refactor(utils): optimize string handling functions"
 
-  pull_requests:
 pull_requests:
+  tools:
+    recommended: gh
+    description: "GitHub CLI (gh) is the preferred tool for creating and managing pull requests"
+  body:
+    format: markdown
+    required: true
+    description: "Pull request descriptions must use Markdown formatting for clear and structured communication"
   template:
     required: true
     sections:

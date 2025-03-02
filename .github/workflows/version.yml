@@ -96,7 +96,10 @@ jobs:
                 for pkg_dir in packages/*; do
                   if [ -f "$pkg_dir/package.json" ]; then
                     PKG_NAME=$(jq -r ".name" $pkg_dir/package.json)
-                    if [[ $PKG_NAME == *"$PKG"* ]]; then
+                    PKG_DIR=$(basename $pkg_dir)
+                    # 从包名中提取短名称（不含@noteum/前缀）
+                    PKG_SHORT_NAME=${PKG_NAME#@noteum/}
+                    if [[ $PKG_SHORT_NAME == "$PKG" ]] || [[ $PKG_DIR == "$PKG" ]]; then
                       # 更新包的变更类型（使用最高级别）
                       CURRENT=${PKG_CHANGES[$PKG_NAME]}
                       if [ -z "$CURRENT" ] || 
@@ -124,20 +127,58 @@ jobs:
             fi
           done
           
-          # 创建 changeset 文件
-          CHANGESET_ID=$(date +%s)
-          
-          echo '{
-            "changes": [' > .changeset/${CHANGESET_ID}.json
-            
-          # 添加每个包的变更
+          # 输出调试信息
+          echo "\n\n===== 检测到的包变更 ====="
           for pkg_name in "${!PKG_CHANGES[@]}"; do
             CHANGE_TYPE=${PKG_CHANGES[$pkg_name]}
             if [ ! -z "$CHANGE_TYPE" ]; then
-              echo '{
+              echo "$pkg_name: $CHANGE_TYPE"
+            fi
+          done
+          echo "===========================\n\n"
+          
+          # 检查是否有变更
+          CHANGES_DETECTED=false
+          for pkg_name in "${!PKG_CHANGES[@]}"; do
+            CHANGE_TYPE=${PKG_CHANGES[$pkg_name]}
+            if [ ! -z "$CHANGE_TYPE" ]; then
+              CHANGES_DETECTED=true
+              break
+            fi
+          done
+          
+          if [ "$CHANGES_DETECTED" = true ]; then
+            # 创建 changeset 文件
+            CHANGESET_ID=$(date +%s)
+            
+            echo '{
+            "changes": [' > .changeset/${CHANGESET_ID}.json
+            
+          # 添加每个包的变更
+          CHANGES_COUNT=0
+          TOTAL_CHANGES=$(for pkg_name in "${!PKG_CHANGES[@]}"; do
+            CHANGE_TYPE=${PKG_CHANGES[$pkg_name]}
+            if [ ! -z "$CHANGE_TYPE" ]; then
+              echo $pkg_name
+            fi
+          done | wc -l)
+          
+          for pkg_name in "${!PKG_CHANGES[@]}"; do
+            CHANGE_TYPE=${PKG_CHANGES[$pkg_name]}
+            if [ ! -z "$CHANGE_TYPE" ]; then
+              CHANGES_COUNT=$((CHANGES_COUNT+1))
+              # 检查是否是最后一个元素
+              if [ $CHANGES_COUNT -eq $TOTAL_CHANGES ]; then
+                echo '{
+                "name": "'$pkg_name'",
+                "type": "'$CHANGE_TYPE'"
+              }' >> .changeset/${CHANGESET_ID}.json
+              else
+                echo '{
                 "name": "'$pkg_name'",
                 "type": "'$CHANGE_TYPE'"
               },' >> .changeset/${CHANGESET_ID}.json
+              fi
             fi
           done
           
@@ -146,15 +187,18 @@ jobs:
             "summary": "Auto-generated update based on commit messages"
           }' >> .changeset/${CHANGESET_ID}.json
           
-          # 应用版本更新
-          bun changeset version
-          
-          # 提交变更
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
-          git add .
-          git commit -m "chore: auto-update versions [skip ci]"
-          git push
+            # 应用版本更新
+            bun changeset version
+            
+            # 提交变更
+            git config --global user.name "GitHub Action"
+            git config --global user.email "action@github.com"
+            git add .
+            git commit -m "chore: auto-update versions [skip ci]"
+            git push
+          else
+            echo "\n\n===== 没有检测到包变更，跳过版本更新 ====="
+          fi
         
       # 如果有版本更新，创建 GitHub Release
       - name: Create GitHub Release

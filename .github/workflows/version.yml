@@ -119,7 +119,7 @@ jobs:
                     # 从包名中提取短名称（不含@noteum/前缀）
                     PKG_SHORT_NAME=${PKG_NAME#@noteum/}
                     echo "  比较: commit中的包='$PKG', 实际包名='$PKG_NAME', 短包名='$PKG_SHORT_NAME', 目录名='$PKG_DIR'"
-                    if [[ $PKG_SHORT_NAME == "$PKG" ]] || [[ $PKG_DIR == "$PKG" ]]; then
+                    if [[ "$PKG" == "$PKG_NAME" ]] || [[ "$PKG" == "$PKG_SHORT_NAME" ]] || [[ "$PKG" == "$PKG_DIR" ]]; then
                       echo "  匹配成功: $PKG_NAME"
                       # 更新包的变更类型（使用最高级别）
                       CURRENT=${PKG_CHANGES[$PKG_NAME]}

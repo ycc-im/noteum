@@ -10,6 +10,9 @@
     "start": "NODE_ENV=production bun src/index.tsx",
     "build": "bun run build.ts"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "dependencies": {
     "@trpc/client": "^10.45.2",
     "bun-plugin-tailwind": "^0.0.14",

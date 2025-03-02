@@ -8,6 +8,9 @@
     "test": "bun test",
     "build": "bun build ./index.ts --outdir ./dist"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },

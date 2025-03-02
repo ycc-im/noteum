@@ -230,35 +230,33 @@ jobs:
             echo "\n\n===== 没有检测到包变更，跳过版本更新 ====="
           fi
         
-      # 如果有版本更新，创建 GitHub Release
-      - name: Create GitHub Release
+      # 创建并推送标签
+      - name: Create and push tags
         run: |
-          # 检查是否有版本更新
-          if git diff --name-only HEAD^ HEAD | grep -q "package.json"; then
-            # 获取最新标签
-            git fetch --tags
-            
-            # 为每个包创建标签和发布
-            for pkg_dir in packages/*; do
-              if [ -f "$pkg_dir/package.json" ]; then
-                PKG_NAME=$(jq -r ".name" $pkg_dir/package.json)
-                PKG_VERSION=$(jq -r ".version" $pkg_dir/package.json)
-                
-                TAG_NAME="${PKG_NAME}@${PKG_VERSION}"
-                
-                # 创建标签
-                git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
-                
-                # 创建 GitHub Release
-                gh release create "$TAG_NAME" \
-                  --title "Release $TAG_NAME" \
-                  --notes "Automated release of $PKG_NAME version $PKG_VERSION"
-              fi
-            done
-            
-            # 推送所有标签
-            git push --follow-tags
-          fi
+          # 配置 Git 用户信息
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          
+          # 遍历所有包并创建标签
+          for pkg_dir in packages/*; do
+            if [ -f "$pkg_dir/package.json" ]; then
+              PKG_NAME=$(jq -r ".name" $pkg_dir/package.json)
+              PKG_VERSION=$(jq -r ".version" $pkg_dir/package.json)
+              
+              TAG_NAME="${PKG_NAME}@${PKG_VERSION}"
+              
+              # 创建标签
+              git tag "$TAG_NAME"
+              
+              # 推送标签
+              git push origin "$TAG_NAME" || {
+                echo "Failed to push tag $TAG_NAME"
+                exit 1
+              }
+              
+              echo "Created and pushed tag: $TAG_NAME"
+            fi
+          done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

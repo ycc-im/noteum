@@ -63,5 +63,4 @@ jobs:
           
           echo "版本检查通过: v$CURRENT_VERSION"
 
-      - name: Build check
-        run: bun run build
+      # 构建检查已在前面的 "Build packages" 步骤中执行

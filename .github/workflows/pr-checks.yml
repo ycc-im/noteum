@@ -21,30 +21,30 @@ jobs:
         with:
           node-version: '>=22.0.0'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          version: '>=10.0.0'
+          bun-version: '>=1.0.0'
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Build packages
         run: |
-          pnpm build:utils
-          pnpm build:core
-          pnpm build:ui
-          pnpm build:server
-          pnpm build:web
+          bun run build:utils
+          bun run build:core
+          bun run build:ui
+          bun run build:server
+          bun run build:web
 
       - name: Lint check
-        run: pnpm lint
+        run: bun run lint
 
       - name: Type check
-        run: pnpm type-check
+        run: bun run type-check
 
       - name: Run tests
-        run: pnpm test
+        run: bun test
 
       - name: Check version tag
         run: |
@@ -60,4 +60,4 @@ jobs:
           echo "版本检查通过: v$CURRENT_VERSION"
 
       - name: Build check
-        run: pnpm build
+        run: bun run build

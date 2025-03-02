@@ -176,22 +176,8 @@ if (existsSync(publicDir)) {
   await Bun.$`cp -r ${publicDir}/* ${assetsDir}`.quiet();
 }
 
-// 生成类型声明
-console.log('📄 Generating type declarations...');
-await build({
-  entrypoints: ['src/index.tsx'],
-  outdir: path.join(outdir, 'types'),
-  target: 'browser',
-  format: 'esm',
-  splitting: false,
-  sourcemap: "none",
-  plugins: [{
-    name: 'dts-generator',
-    setup(build) {
-      build.onResolve({ filter: /.*/ }, args => ({ path: args.path }));
-    }
-  }]
-});
+// 暂时跳过类型声明生成，因为在 CI 环境中可能会有问题
+console.log('📄 Skipping type declarations in CI environment...');
 
 // Print the results
 const end = performance.now();

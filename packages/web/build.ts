@@ -151,9 +151,9 @@ const result = await build({
   entrypoints,
   outdir,
   plugins: [plugin],
-  minify: true,
   target: "browser",
-  jsx: "automatic",
+  // 移除 jsx 属性，因为 BuildConfig 类型中可能没有这个属性
+  // 移除重复的 minify 属性
   minify: {
     whitespace: true,
     syntax: true,

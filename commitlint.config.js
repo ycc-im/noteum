@@ -15,6 +15,7 @@ module.exports = {
         'build', // 构建系统或外部依赖变更
         'ci', // CI 配置文件和脚本变更
         'chore', // 其他变更
+        'revert', // 撤销之前的提交
       ],
     ],
     'scope-enum': [

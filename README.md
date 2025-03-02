@@ -35,6 +35,7 @@ We use Conventional Commits to manage commit messages and version control. The c
 - `chore`: Build process or auxiliary tool changes
 - `perf`: Performance improvements
 - `ci`: Continuous integration configuration changes
+- `revert`: Revert previous commits
 
 #### Scope
 

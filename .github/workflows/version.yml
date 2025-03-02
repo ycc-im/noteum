@@ -211,40 +211,32 @@ jobs:
             # 不需要创建临时配置文件，直接创建changeset
             echo "直接创建changeset文件..."
             
-            # 使用changeset CLI创建changeset文件
-            echo "使用changeset CLI创建changeset文件..."
+            # 自动创建changeset文件（非交互式）
+            echo "自动创建changeset文件..."
             
-            # 创建一个临时的changeset描述文件
-            echo "Auto-generated update based on commit messages" > /tmp/changeset-message.txt
+            # 创建changeset文件
+            CHANGESET_ID=$(date +%s)
+            mkdir -p .changeset
             
-            # 使用changeset add命令创建changeset
-            echo "运行 bun changeset add 命令..."
+            # 创建正确格式的changeset文件
+            echo "---" > .changeset/${CHANGESET_ID}.md
             
-            # 构建changeset add命令的参数
-            ADD_ARGS=""
+            # 添加包的变更信息
             IFS=',' read -ra PKGS <<< "$PACKAGES_TO_CHANGE"
             IFS=',' read -ra TYPES <<< "$CHANGE_TYPES"
             
             for i in "${!PKGS[@]}"; do
-              PKG="${PKGS[$i]}"
-              TYPE="${TYPES[$i]}"
-              ADD_ARGS="$ADD_ARGS --${TYPE} ${PKG}"
+              echo "\"${PKGS[$i]}\": ${TYPES[$i]}" >> .changeset/${CHANGESET_ID}.md
             done
             
-            # 执行changeset add命令
-            echo "执行: bun changeset add $ADD_ARGS"
-            bun changeset add $ADD_ARGS < /tmp/changeset-message.txt
+            # 添加分隔符和描述
+            echo "---" >> .changeset/${CHANGESET_ID}.md
+            echo "" >> .changeset/${CHANGESET_ID}.md
+            echo "Auto-generated update based on commit messages" >> .changeset/${CHANGESET_ID}.md
             
             # 显示创建的changeset文件
             echo "创建的changeset文件:"
-            ls -la .changeset/*.md | grep -v "README.md" | grep -v "config.json"
-            
-            # 显示最新创建的changeset文件内容
-            LATEST_CHANGESET=$(ls -t .changeset/*.md | grep -v "README.md" | head -1)
-            if [ -n "$LATEST_CHANGESET" ]; then
-              echo "最新changeset文件内容:"
-              cat "$LATEST_CHANGESET"
-            fi
+            cat .changeset/${CHANGESET_ID}.md
             
             # 应用版本更新
             echo "应用版本更新..."

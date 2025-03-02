@@ -4,7 +4,6 @@
 Noteum web application is a modern, responsive web interface built with cutting-edge web technologies.
 
 ## Prerequisites
-- Node.js >= 22.0.0
 - Bun >= 1.0.0
 
 ## Installation
@@ -13,10 +12,21 @@ bun install
 ```
 
 ## Development
-Start the development server:
+To start the development server:
+
+the bese way is using `bun docker:dev` command from root directory.
+
+another way is using `bun run dev` command from package directory.
+
 ```bash
-bun run dev
+bun docker:dev // root directory
+
+or
+
+bun run dev // package web directory
 ```
+
+you can visit http://localhost:{WEB_PORT} to see the result. by default, it is http://localhost:9527.
 
 ## Building
 To build the project:
@@ -40,7 +50,6 @@ bun test
 - React
 - TypeScript
 - Bun
-- TBD (add specific technologies used)
 
 ## Contributing
 Please read the project's contributing guidelines before submitting pull requests.

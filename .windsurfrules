@@ -59,16 +59,23 @@ quality:
       type:
         required: true
         allowed:
-          - feat     # New features
-          - fix      # Bug fixes
-          - docs     # Documentation updates
-          - style    # Code formatting (changes that do not affect code execution)
-          - refactor # Refactoring (neither new features nor bug fixes)
-          - perf     # Performance improvements
-          - test     # Adding tests
-          - build    # Build system or external dependency changes
-          - ci       # CI configuration files and scripts changes
-          - chore    # Other changes
+          major_version:
+            description: "Disruptive changes, incompatible modifications"
+            triggers:
+              - breaking change marker (!)
+              - explicit breaking changes in commit message
+          minor_version:
+            description: "Compatible changes, new features"
+            triggers:
+              - commit type is 'feat'
+          patch_version:
+            description: "Compatible changes, bug fixes, and documentation updates"
+            triggers:
+              - commit type is 'fix'
+              - commit type is 'docs'
+              - commit type is 'perf'
+              - commit type is 'refactor'
+              - other non-feature commits
       scope:
         required: true
         description: "monorepo package name or common area"

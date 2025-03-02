@@ -27,27 +27,21 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          version: 10.2.0
-          run_install: false
+          bun-version: 'latest'
 
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_ENV
-
-      - name: Setup pnpm cache
+      - name: Setup Bun cache
         uses: actions/cache@v3
         with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+            ${{ runner.os }}-bun-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen
 
       - name: Git config
         run: |
@@ -56,11 +50,15 @@ jobs:
 
       - name: Build packages
         run: |
-          pnpm build:utils
-          pnpm build:core
-          pnpm build:ui
-          pnpm build:server
-          pnpm build:web
+          # 创建每个包的构建目录
+          mkdir -p packages/utils/dist
+          mkdir -p packages/core/dist
+          mkdir -p packages/ui/dist
+          mkdir -p packages/server/dist
+          mkdir -p packages/web/dist
+          
+          # 运行构建脚本
+          bun run build
 
       - name: Clean build artifacts
         run: |
@@ -69,7 +67,7 @@ jobs:
 
       - name: Version and publish
         run: |
-          pnpm run version --yes
+          bun run version --yes
           git push --follow-tags
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

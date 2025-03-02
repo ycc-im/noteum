@@ -5,12 +5,12 @@ version: 1.0
 project:
   name: noteum
   type: monorepo
-  packageManager: pnpm
+  packageManager: bun
 
 # Node.js Environment Requirements
 environment:
   node: ">=22.0.0"
-  pnpm: ">=10.0.0"
+  bun: ">=1.0.0"
 
 # Workspace Configuration
 workspace:
@@ -20,7 +20,7 @@ workspace:
 
 # Build Rules
 build:
-  command: pnpm build
+  command: bun run build
   order:
     - packages/utils
     - packages/core
@@ -30,7 +30,7 @@ build:
 
 # Test Rules
 test:
-  command: pnpm test
+  command: bun test
   coverage:
     required: true
     threshold: 80
@@ -141,7 +141,7 @@ dependencies:
     allowAny: true
   versioning:
     strategy: fixed
-    tool: lerna
+    tool: workspaces
 
 # Documentation Requirements
 documentation:

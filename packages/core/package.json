@@ -1,39 +1,11 @@
 {
-  "name": "@noteum/core",
-  "version": "0.3.5",
-  "private": true,
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
-    },
-    "./types": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/types/index.js",
-      "require": "./dist/cjs/types/index.js"
-    },
-    "./server": {
-      "types": "./dist/server/trpc.d.ts",
-      "import": "./dist/esm/server/trpc.js",
-      "require": "./dist/cjs/server/trpc.js"
-    }
-  },
-  "engines": {
-    "node": ">=22.0.0"
-  },
-  "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.json && tsc -p tsconfig.cjs.json",
-    "type-check": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.cjs.json"
-  },
-  "dependencies": {
-    "@trpc/server": "^10.45.2",
-    "zod": "^3.24.1"
-  },
+  "name": "core",
+  "module": "index.ts",
+  "type": "module",
   "devDependencies": {
-    "@types/node": "^22.13.1"
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }

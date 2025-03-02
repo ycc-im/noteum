@@ -1,1 +1,5 @@
-pnpm pre-push
+# 使用完整检查（包括类型检查）
+bun run pre-push
+
+# 不带类型检查的版本（如果需要）
+# bun run pre-push:no-type-check

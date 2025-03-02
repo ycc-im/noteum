@@ -1,75 +1,63 @@
-name: noteum
-
+name: noteum-dev
 x-common-config: &common-config
-  build: 
+  build:
     context: .
-    dockerfile: Dockerfile
+    dockerfile: Dockerfile.dev
   volumes:
     - .:/app
-    - ~/.gitconfig:/home/developer/.gitconfig:ro
-    - ~/.ssh:/home/developer/.ssh:ro
-    - noteum_node_modules:/app/node_modules
-    - noteum_pnpm_store:/home/developer/.local/share/pnpm/store
   working_dir: /app
-  environment:
-    - NODE_ENV=${NODE_ENV}
-    - PNPM_HOME=${PNPM_HOME}
+  env_file:
+    - .env.development
 
 services:
-  # Server 服务
   server:
     <<: *common-config
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        SUB_PKG: server
     ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"  # API 服务
+      - "${SERVER_PORT:-9157}:${SERVER_PORT:-9157}" # API 服务
     environment:
-      - NODE_ENV=${NODE_ENV}
-      - PNPM_HOME=${PNPM_HOME}
-      - SERVICE=server
-      - PORT=${SERVER_PORT}
-      - APP_PORT=${SERVER_PORT}
-    command: sh -c "pnpm install && cd packages/server && HOST=0.0.0.0 pnpm dev"
+      - ENV=development
+      - SERVICE=${SERVER_PORT:-9157}
+      - PORT=${SERVER_PORT:-9157}
+      - APP_PORT=${SERVER_PORT:-9157}
+    working_dir: /app/packages/server
+    command: [ "bun", "run", "dev" ]
     depends_on:
-      - redis
       - postgres
-
-  # Web 服务
   web:
     <<: *common-config
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        SUB_PKG: web
     ports:
-      - "${WEB_PORT}:${WEB_PORT}"  # Vite 开发服务器
+      - "${WEB_PORT:-9527}:${WEB_PORT:-9527}"
     environment:
-      - NODE_ENV=${NODE_ENV}
-      - PNPM_HOME=${PNPM_HOME}
-      - SERVICE=web
-      - PORT=${WEB_PORT}
-      - VITE_PORT=${WEB_PORT}
-    command: sh -c "pnpm install && cd packages/web && pnpm dev --port ${WEB_PORT} --host 0.0.0.0"
+      - NODE_ENV=development
+      - SERVICE=${WEB_PORT:-9527}
+      - PORT=${WEB_PORT:-9527}
+      - APP_PORT=${WEB_PORT:-9527}
+    working_dir: /app/packages/web
+    command: [ "bun", "run", "dev" ]
     depends_on:
       - server
-
-  # Redis 服务
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "${REDIS_PORT}:${REDIS_PORT}"
-    volumes:
-      - redis_data:/data
-
-  # PostgreSQL 服务
   postgres:
-    image: postgres:16-alpine
+    image: pgvector/pgvector:0.8.0-pg16
     ports:
-      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+      - "${POSTGRES_PORT:-5432}:5432"
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-postgres}
+    env_file:
+      - .env.development
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
 
-# 定义持久化卷
 volumes:
-  noteum_node_modules:
-  noteum_pnpm_store:
-  redis_data:
-  postgres_data:
+  pgdata:

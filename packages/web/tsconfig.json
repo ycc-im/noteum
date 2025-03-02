@@ -1,32 +1,16 @@
 {
-  "extends": ["../../tsconfig.json", "./tsconfig.paths.json"],
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "target": "ESNext",
     "module": "ESNext",
-    "skipLibCheck": true,
     "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true, // web 项目保持 noEmit: true，因为它使用 Vite 构建
     "jsx": "react-jsx",
+    "allowJs": true,
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@noteum/*": ["../*/src"]
+      "@/*": ["./src/*"]
     }
-  },
-  "include": ["src/**/*"],
-  "references": [
-    { "path": "../core" },
-    { "path": "../ui" },
-    { "path": "../utils" },
-    { "path": "../server" }
-  ],
-  "exclude": ["node_modules", "dist"]
+  }
 }

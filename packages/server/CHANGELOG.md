@@ -1,6 +1,6 @@
-# core
+# @noteum/server
 
-## 0.3.7
+## 0.4.6
 
 ### Patch Changes
 

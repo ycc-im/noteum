@@ -1,3 +1,4 @@
+import * as React from "react"
 import { addDays, format, subDays } from "date-fns"
 import { Icons } from "../../components/ui/icons/Icons"
 import { zhCN } from 'date-fns/locale'
@@ -35,7 +36,7 @@ export function DateNavigation({
   }
 
   return (
-    <div className={cn("flex items-center space-x-1", className)}>
+    <div className={cn("grid gap-2", className)}>
       <Button
         variant="outline"
         size="icon"
@@ -65,34 +66,42 @@ export function DateNavigation({
         <span className="sr-only">后一天</span>
       </Button>
 
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className={cn(
-              "h-8 w-[140px] justify-start text-left font-normal",
-              !selectedDate && "text-muted-foreground"
-            )}
-          >
-            <Icons.Calendar className="mr-2 h-4 w-4" />
-            {selectedDate ? (
-              format(selectedDate, "PPP", { locale: zhCN })
-            ) : (
-              <span>选择日期</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start" sideOffset={4}>
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={(date) => date && onDateChange(date)}
-            initialFocus
-            locale={zhCN}
-          />
-        </PopoverContent>
-      </Popover>
+      {React.createElement(
+        Popover,
+        {},
+        [
+          React.createElement(
+            PopoverTrigger,
+            { asChild: true, key: "trigger" },
+            <Button
+              variant="outline"
+              size="sm"
+              className={cn(
+                "h-8 w-[140px] justify-start text-left font-normal",
+                !selectedDate && "text-muted-foreground"
+              )}
+            >
+              <Icons.Calendar className="mr-2 h-4 w-4" />
+              {selectedDate ? (
+                format(selectedDate, "PPP", { locale: zhCN })
+              ) : (
+                <span>选择日期</span>
+              )}
+            </Button>
+          ),
+          React.createElement(
+            PopoverContent,
+            { className: "w-auto p-0", align: "start", sideOffset: 4, key: "content" },
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={(date) => date && onDateChange(date)}
+              initialFocus
+              locale={zhCN}
+            />
+          )
+        ]
+      )}
     </div>
   )
 }

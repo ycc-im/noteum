@@ -12,7 +12,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const IconDisplay = ({ icon: Icon }: { icon: any }) => (
+const IconDisplay = ({ icon: Icon }: { icon: React.ComponentType<React.SVGProps<SVGSVGElement>> }) => (
   <div className="flex flex-col items-center gap-2 p-4">
     <Icon className="h-6 w-6" />
     <span className="text-sm">{Icon.name}</span>

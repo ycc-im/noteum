@@ -60,7 +60,7 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        // @ts-ignore - the type definitions are incorrect
+        // @ts-expect-error - the type definitions are incorrect
         IconLeft: ({ ...props }) => (
           <ChevronLeft className="h-4 w-4" {...props} />
         ),

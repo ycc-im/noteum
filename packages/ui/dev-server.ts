@@ -1,5 +1,5 @@
 import { serve } from "bun";
-import { join, resolve } from "path";
+import { join } from "path";
 import { readFileSync, existsSync } from "fs";
 
 const port = 3000;
@@ -27,7 +27,7 @@ serve({
   port,
   fetch(req) {
     const url = new URL(req.url);
-    let path = url.pathname;
+    const path = url.pathname;
     
     // Default path is index.html
     if (path === "/") {

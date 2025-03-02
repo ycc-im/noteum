@@ -1,31 +1,38 @@
 {
   "name": "@noteum/web",
-  "version": "0.5.0",
+  "version": "0.4.10",
   "private": true,
   "type": "module",
-  "main": "src/index.tsx",
-  "module": "src/index.tsx",
   "scripts": {
-    "dev": "bun --env-file=../../.env.development --port ${WEB_PORT:-9527} --hot src/index.tsx",
-    "start": "NODE_ENV=production bun src/index.tsx",
-    "build": "bun run build.ts"
+    "dev": "vinxi dev",
+    "build": "vinxi build",
+    "start": "vinxi start"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
-    "@trpc/client": "^10.45.2",
-    "bun-plugin-tailwind": "^0.0.14",
-    "i18next": "^24.2.2",
-    "react": "^19",
-    "react-dom": "^19",
-    "react-i18next": "^15.4.1",
-    "tailwindcss": "^4.0.6"
+    "@tanstack/react-query": "^5.66.0",
+    "@tanstack/react-query-devtools": "^5.66.0",
+    "@tanstack/react-router": "^1.112.17",
+    "@tanstack/router-devtools": "^1.112.17",
+    "@tanstack/router-plugin": "^1.112.17",
+    "@tanstack/react-start": "^1.112.17",
+    "@trpc/client": "11.0.0-rc.772",
+    "@trpc/server": "11.0.0-rc.772",
+    "@trpc/tanstack-react-query": "11.0.0-rc.772",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "redaxios": "^0.5.1",
+    "postcss": "^8.5.1",
+    "autoprefixer": "^10.4.20",
+    "tailwindcss": "^3.4.17",
+    "vinxi": "0.5.3",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@types/bun": "latest",
-    "typescript": "^5"
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4"
   }
 }

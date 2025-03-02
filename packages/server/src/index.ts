@@ -1,13 +1,11 @@
-import { compile as c, trpc } from "@elysiajs/trpc";
+import { trpc } from "@elysiajs/trpc";
 import { initTRPC } from "@trpc/server";
-import { Elysia, t as T } from "elysia";
+import { Elysia } from "elysia";
 import { swagger } from '@elysiajs/swagger';
 import cors from '@elysiajs/cors';
 import { pingRouter } from "./routers/ping";
 
 const t = initTRPC.create();
-const p = t.procedure;
-
 
 const router = t.router({
   ...pingRouter._def.procedures,

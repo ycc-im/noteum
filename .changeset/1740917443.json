@@ -1,0 +1,13 @@
+{
+  "changes": [
+{
+      "name": "@noteum/server",
+      "type": "patch"
+    },
+{
+      "name": "@noteum/core",
+      "type": "patch"
+    }
+],
+  "summary": "Auto-generated update based on commit messages"
+}

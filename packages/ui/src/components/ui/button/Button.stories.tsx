@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react"
-import { Button } from "./Button"
+import { Button, type ButtonProps } from "./Button"
 import { Icons } from "../icons/Icons"
 
 const meta = {
@@ -25,10 +25,11 @@ const meta = {
       description: "是否作为子元素"
     },
   },
-} as Meta<any>
+} as Meta<typeof Button>
 
 export default meta
-type Story = StoryObj<any>
+// 使用正确的类型，确保 args 中可以使用 children
+type Story = StoryObj<ButtonProps>
 
 export const Default: Story = {
   args: {

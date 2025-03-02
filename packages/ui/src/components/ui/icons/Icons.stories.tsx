@@ -8,10 +8,10 @@ const meta = {
     layout: "centered",
   },
   tags: ["autodocs"],
-} as Meta<any>
+} as Meta<{ icons: typeof Icons }>
 
 export default meta
-type Story = StoryObj<any>
+type Story = StoryObj<{ icons: typeof Icons }>
 
 // 定义图标组件类型
 type IconProps = React.SVGProps<SVGSVGElement> & { size?: number }

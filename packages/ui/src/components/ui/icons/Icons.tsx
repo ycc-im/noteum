@@ -4,8 +4,7 @@ import {
   ChevronRight,
   ChevronDown,
   Calendar,
-  type LucideIcon,
-  type LucideProps
+  type LucideIcon
 } from "lucide-react"
 
 // 定义图标组件类型

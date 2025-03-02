@@ -41,7 +41,7 @@ const toCamelCase = (str: string): string => {
 };
 
 // Helper function to parse a value into appropriate type
-const parseValue = (value: string): any => {
+const parseValue = (value: string): string | number | boolean | string[] | Record<string, unknown> => {
   // Handle true/false strings
   if (value === "true") return true;
   if (value === "false") return false;
@@ -59,7 +59,7 @@ const parseValue = (value: string): any => {
 
 // Magical argument parser that converts CLI args to BuildConfig
 function parseArgs(): Partial<BuildConfig> {
-  const config: Record<string, any> = {};
+  const config: Record<string, string | number | boolean | string[] | Record<string, unknown>> = {};
   const args = process.argv.slice(2);
 
   for (let i = 0; i < args.length; i++) {
@@ -97,8 +97,12 @@ function parseArgs(): Partial<BuildConfig> {
     // Handle nested properties (e.g. --minify.whitespace)
     if (key.includes(".")) {
       const [parentKey, childKey] = key.split(".");
-      config[parentKey] = config[parentKey] || {};
-      config[parentKey][childKey] = parseValue(value);
+      // 确保父键是一个对象
+      if (!config[parentKey] || typeof config[parentKey] !== 'object' || Array.isArray(config[parentKey])) {
+        config[parentKey] = {} as Record<string, unknown>;
+      }
+      // 使用类型断言来确保类型安全
+      (config[parentKey] as Record<string, unknown>)[childKey] = parseValue(value);
     } else {
       config[key] = parseValue(value);
     }

@@ -11,7 +11,13 @@
     "test": "bun test",
     "pre-push": "bun run lint && bun run type-check && bun run test",
     "pre-push:no-type-check": "bun run lint && bun run test",
-    "prepare": "husky"
+    "prepare": "husky",
+    "build": "bun run build:utils && bun run build:core && bun run build:ui && bun run build:server && bun run build:web",
+    "build:utils": "cd packages/utils && bun run build",
+    "build:core": "echo 'No build script for core yet'",
+    "build:ui": "echo 'No build script for ui yet'",
+    "build:server": "cd packages/server && bun run build",
+    "build:web": "cd packages/web && bun run build"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.21.0",

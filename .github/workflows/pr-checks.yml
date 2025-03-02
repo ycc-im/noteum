@@ -31,11 +31,15 @@ jobs:
 
       - name: Build packages
         run: |
-          bun run build:utils
-          bun run build:core
-          bun run build:ui
-          bun run build:server
-          bun run build:web
+          # 创建每个包的构建目录
+          mkdir -p packages/utils/dist
+          mkdir -p packages/core/dist
+          mkdir -p packages/ui/dist
+          mkdir -p packages/server/dist
+          mkdir -p packages/web/dist
+          
+          # 运行构建脚本
+          bun run build
 
       - name: Lint check
         run: bun run lint

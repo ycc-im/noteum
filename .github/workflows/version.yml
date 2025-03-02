@@ -184,47 +184,75 @@ jobs:
           done
           
           if [ "$CHANGES_DETECTED" = true ]; then
-            # 创建 changeset 文件
-            CHANGESET_ID=$(date +%s)
+            # 创建临时文件，用于生成changeset
+            PACKAGES_TO_CHANGE=""
+            CHANGE_TYPES=""
             
-            echo '{
-            "changes": [' > .changeset/${CHANGESET_ID}.json
-            
-          # 添加每个包的变更
-          CHANGES_COUNT=0
-          TOTAL_CHANGES=$(for pkg_name in "${!PKG_CHANGES[@]}"; do
-            CHANGE_TYPE=${PKG_CHANGES[$pkg_name]}
-            if [ ! -z "$CHANGE_TYPE" ]; then
-              echo $pkg_name
-            fi
-          done | wc -l)
-          
-          for pkg_name in "${!PKG_CHANGES[@]}"; do
-            CHANGE_TYPE=${PKG_CHANGES[$pkg_name]}
-            if [ ! -z "$CHANGE_TYPE" ]; then
-              CHANGES_COUNT=$((CHANGES_COUNT+1))
-              # 检查是否是最后一个元素
-              if [ $CHANGES_COUNT -eq $TOTAL_CHANGES ]; then
-                echo '{
-                "name": "'$pkg_name'",
-                "type": "'$CHANGE_TYPE'"
-              }' >> .changeset/${CHANGESET_ID}.json
-              else
-                echo '{
-                "name": "'$pkg_name'",
-                "type": "'$CHANGE_TYPE'"
-              },' >> .changeset/${CHANGESET_ID}.json
+            # 收集需要更新的包和变更类型
+            for pkg_name in "${!PKG_CHANGES[@]}"; do
+              CHANGE_TYPE=${PKG_CHANGES[$pkg_name]}
+              if [ ! -z "$CHANGE_TYPE" ]; then
+                if [ -z "$PACKAGES_TO_CHANGE" ]; then
+                  PACKAGES_TO_CHANGE="$pkg_name"
+                  CHANGE_TYPES="$CHANGE_TYPE"
+                else
+                  PACKAGES_TO_CHANGE="$PACKAGES_TO_CHANGE,$pkg_name"
+                  CHANGE_TYPES="$CHANGE_TYPES,$CHANGE_TYPE"
+                fi
               fi
+            done
+            
+            echo "需要更新的包: $PACKAGES_TO_CHANGE"
+            echo "变更类型: $CHANGE_TYPES"
+            
+            # 使用changeset CLI创建changeset
+            echo "创建changeset..."
+            
+            # 不需要创建临时配置文件，直接创建changeset
+            echo "直接创建changeset文件..."
+            
+            # 使用changeset CLI创建changeset文件
+            echo "使用changeset CLI创建changeset文件..."
+            
+            # 创建一个临时的changeset描述文件
+            echo "Auto-generated update based on commit messages" > /tmp/changeset-message.txt
+            
+            # 使用changeset add命令创建changeset
+            echo "运行 bun changeset add 命令..."
+            
+            # 构建changeset add命令的参数
+            ADD_ARGS=""
+            IFS=',' read -ra PKGS <<< "$PACKAGES_TO_CHANGE"
+            IFS=',' read -ra TYPES <<< "$CHANGE_TYPES"
+            
+            for i in "${!PKGS[@]}"; do
+              PKG="${PKGS[$i]}"
+              TYPE="${TYPES[$i]}"
+              ADD_ARGS="$ADD_ARGS --${TYPE} ${PKG}"
+            done
+            
+            # 执行changeset add命令
+            echo "执行: bun changeset add $ADD_ARGS"
+            bun changeset add $ADD_ARGS < /tmp/changeset-message.txt
+            
+            # 显示创建的changeset文件
+            echo "创建的changeset文件:"
+            ls -la .changeset/*.md | grep -v "README.md" | grep -v "config.json"
+            
+            # 显示最新创建的changeset文件内容
+            LATEST_CHANGESET=$(ls -t .changeset/*.md | grep -v "README.md" | head -1)
+            if [ -n "$LATEST_CHANGESET" ]; then
+              echo "最新changeset文件内容:"
+              cat "$LATEST_CHANGESET"
             fi
-          done
-          
-          # 完成 changeset 文件
-          echo '],
-            "summary": "Auto-generated update based on commit messages"
-          }' >> .changeset/${CHANGESET_ID}.json
-          
+            
             # 应用版本更新
+            echo "应用版本更新..."
             bun changeset version
+            
+            # 清理changeset文件（保留config.json和README.md）
+            echo "清理changeset文件..."
+            find .changeset -type f -not -name "config.json" -not -name "README.md" -delete
             
             # 提交变更
             git add .

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react"
 import { DocumentBlock } from "./DocumentBlock"
 import { mockBlocks } from "../../../.storybook/mocks/blocks.mock"
+import type { MockBlock } from "../../../.storybook/mocks/blocks.mock"
 import { useState } from "react"
 
 const meta: Meta<typeof DocumentBlock> = {
@@ -24,14 +25,14 @@ export const AllBlocks = () => {
     const [blocks, setBlocks] = useState(mockBlocks)
 
     const handleIndentChange = (id: string, newIndent: number) => {
-        setBlocks(blocks.map(block => 
-            block.id === id ? { ...block, indent: newIndent } : block
+        setBlocks(blocks.map((block: MockBlock) => 
+            block.id === id ? { ...block, indent: newIndent as number } : block
         ))
     }
 
     return (
         <div className="space-y-1">
-            {blocks.map(block => (
+            {blocks.map((block: MockBlock) => (
                 <DocumentBlock
                     key={block.id}
                     block={block}

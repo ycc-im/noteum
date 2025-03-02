@@ -1,6 +1,7 @@
 import { cn } from "../../lib/utils"
-import { Block } from "@noteum/core"
-import { ChevronRightIcon, ChevronDownIcon } from "@radix-ui/react-icons"
+import type { MockBlock as Block } from "../../../.storybook/mocks/blocks.mock"
+import * as React from "react"
+import { Icons } from "../ui/icons/Icons"
 
 interface DocumentBlockProps {
     block: Block
@@ -68,13 +69,13 @@ export function DocumentBlock({
                     className="p-1 hover:bg-muted rounded disabled:opacity-50"
                     disabled={block.indent === 0}
                 >
-                    <ChevronRightIcon />
+                    <Icons.ChevronRight className="h-4 w-4" />
                 </button>
                 <button
                     onClick={handleIndentIncrease}
                     className="p-1 hover:bg-muted rounded"
                 >
-                    <ChevronDownIcon />
+                    <Icons.ChevronDown className="h-4 w-4" />
                 </button>
             </div>
 

@@ -13,19 +13,22 @@ const meta = {
     variant: {
       control: "select",
       options: ["default", "destructive", "outline", "secondary", "ghost", "link"],
+      description: "按钮样式变体"
     },
     size: {
       control: "select",
       options: ["default", "sm", "lg", "icon"],
+      description: "按钮尺寸"
     },
     asChild: {
       control: "boolean",
+      description: "是否作为子元素"
     },
   },
-} satisfies Meta<typeof Button>
+} as Meta<any>
 
 export default meta
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<any>
 
 export const Default: Story = {
   args: {

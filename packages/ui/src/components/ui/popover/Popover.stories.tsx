@@ -9,7 +9,7 @@ const meta = {
     layout: "centered",
   },
   tags: ["autodocs"],
-} satisfies Meta<typeof Popover>
+} as Meta<any>
 
 export default meta
 type Story = StoryObj<typeof meta>

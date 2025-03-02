@@ -1,21 +1,46 @@
-# bun-react-tailwind-template
+# Noteum Web Package
 
-To install dependencies:
+## Overview
+Noteum web application is a modern, responsive web interface built with cutting-edge web technologies.
 
+## Prerequisites
+- Node.js >= 22.0.0
+- Bun >= 1.0.0
+
+## Installation
 ```bash
 bun install
 ```
 
-To start a development server:
-
+## Development
+Start the development server:
 ```bash
-bun dev
+bun run dev
 ```
 
-To run for production:
-
+## Building
+To build the project:
 ```bash
-bun start
+bun run build
 ```
 
-This project was created using `bun init` in bun v1.2.3. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+## Testing
+Run tests with coverage:
+```bash
+bun test
+```
+
+## Project Structure
+- `src/`: Source code
+- `components/`: Reusable UI components
+- `hooks/`: Custom React hooks
+- `utils/`: Utility functions
+
+## Technologies
+- React
+- TypeScript
+- Bun
+- TBD (add specific technologies used)
+
+## Contributing
+Please read the project's contributing guidelines before submitting pull requests.

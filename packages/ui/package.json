@@ -4,10 +4,9 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun run dev:ui",
+    "dev": "bun run storybook",
     "build": "bun run build:ui",
     "build:ui": "bun build ./src/index.ts --outdir ./dist --target browser --format esm",
-    "dev:ui": "bun --watch run dev-server.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

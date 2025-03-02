@@ -1,32 +1,41 @@
-import { TestTRPC } from './components/TestTRPC/TestTRPC';
+import React, { useEffect } from "react";
+import { APITester } from "./APITester";
 
-function App() {
-  console.log('渲染 App 组件...');
+import logo from "./logo.svg";
+import reactLogo from "./react.svg";
+
+
+import "./index.css";
+
+
+
+
+export function App() {
 
   return (
-    <div style={{
-      maxWidth: '800px',
-      margin: '0 auto',
-      padding: '20px',
-      fontFamily: 'system-ui, -apple-system, sans-serif',
-      backgroundColor: '#f5f5f5',
-      minHeight: '100vh',
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        padding: '20px',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-      }}>
-        <h1 style={{ 
-          color: '#333',
-          marginTop: 0,
-          marginBottom: '20px',
-        }}>
-          Noteum tRPC 测试
-        </h1>
-        <TestTRPC />
+    <div className="max-w-7xl mx-auto p-8 text-center relative z-10">
+      <div className="flex justify-center items-center gap-8 mb-8">
+        <img
+          src={logo}
+          alt="Bun Logo"
+          className="h-24 p-6 transition-all duration-300 hover:drop-shadow-[0_0_2em_#646cffaa] scale-120"
+        />
+        <img
+          src={reactLogo}
+          alt="React Logo"
+          className="h-24 p-6 transition-all duration-300 hover:drop-shadow-[0_0_2em_#61dafbaa] animate-[spin_20s_linear_infinite]"
+        />
       </div>
+
+      <h1 className="text-5xl font-bold my-4 leading-tight">Bun + React</h1>
+      <p>
+        Edit{" "}
+        <code className="bg-[#1a1a1a] px-2 py-1 rounded font-mono">
+          src/App.tsx
+        </code>{" "}
+        and save to test HMR
+      </p>
+      <APITester />
     </div>
   );
 }

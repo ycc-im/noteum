@@ -1,24 +1,12 @@
 {
-  "name": "@noteum/utils",
-  "version": "0.2.4",
+  "name": "utils",
+  "module": "index.ts",
+  "type": "module",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "engines": {
-    "node": ">=22.0.0"
-  },
-  "scripts": {
-    "build": "tsc",
-    "test": "jest --passWithNoTests",
-    "type-check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "dayjs": "^1.11.10"
-  },
   "devDependencies": {
-    "@types/jest": "^29.0.0",
-    "jest": "^29.0.0",
-    "ts-jest": "^29.0.0",
-    "typescript": "^5.0.0"
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }

@@ -1,0 +1,18 @@
+# Dockerfile for Development
+FROM oven/bun:latest
+
+ARG SUB_PKG
+WORKDIR /app
+
+# 复制根目录配置
+COPY package.json .
+COPY package*.json ./
+
+# 复制子包配置
+COPY packages/$SUB_PKG/package.json ./packages/$SUB_PKG/
+RUN bun install --frozen-lockfile
+
+# 复制源码
+COPY . .
+
+CMD ["bun", "run", "dev"]

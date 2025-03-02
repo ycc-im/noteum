@@ -1,32 +1,27 @@
 {
-  "name": "@noteum/web",
-  "version": "0.4.9",
+  "name": "bun-react-template",
+  "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": ">=22.0.0"
-  },
+  "type": "module",
+  "main": "src/index.tsx",
+  "module": "src/index.tsx",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "dev": "bun --port 9000 --hot src/index.tsx",
+    "start": "NODE_ENV=production bun src/index.tsx",
+    "build": "bun run build.ts"
   },
   "dependencies": {
-    "@noteum/core": "workspace:*",
-    "@noteum/server": "workspace:*",
-    "@tanstack/react-query": "^4.0.0",
     "@trpc/client": "^10.45.2",
-    "@trpc/react-query": "^10.45.2",
-    "@trpc/server": "^10.45.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "trpc-client-devtools-link": "^0.1.1"
+    "bun-plugin-tailwind": "^0.0.14",
+    "i18next": "^24.2.2",
+    "react": "^19",
+    "react-dom": "^19",
+    "react-i18next": "^15.4.1",
+    "tailwindcss": "^4.0.6"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "@vitejs/plugin-react": "^4.0.0",
-    "typescript": "^5.0.0",
-    "vite": "^5.0.0"
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/bun": "latest"
   }
 }

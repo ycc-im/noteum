@@ -88,7 +88,9 @@ jobs:
           
           # 分析提交信息
           echo "分析提交信息中..."
-          echo "$COMMITS" | while read -r commit; do
+          # 将提交信息保存到临时文件，避免使用管道导致变量修改丢失
+          echo "$COMMITS" > /tmp/commits.txt
+          while read -r commit; do
             echo "处理提交: $commit"
             # 提取包名和更新类型 - 改进的正则表达式
             if [[ $commit =~ ^(feat|fix|chore|refactor|docs|test|style|perf|build|ci|revert)\(([a-zA-Z0-9_-]+)\)(!?):.*$ ]]; then
@@ -98,8 +100,8 @@ jobs:
               
               echo "  检测到类型: $TYPE, 包: $PKG, 破坏性更改: $BREAKING"
               
-              # 检查是否有破坏性更改标记
-              if [[ -n "$BREAKING" ]]; then
+              # 检查是否有破坏性更改标记（必须是"!"）
+              if [[ "$BREAKING" == "!" ]]; then
                 CHANGE_TYPE="major"
               elif [[ $TYPE == "feat" ]]; then
                 CHANGE_TYPE="minor"
@@ -151,7 +153,9 @@ jobs:
             else
               echo "  不匹配提交格式，跳过: $commit"
             fi
-          done
+          done < /tmp/commits.txt
+          # 清理临时文件
+          rm -f /tmp/commits.txt
           
           # 输出包变更信息
           echo "\n\n===== 检测到的包变更 ====="
@@ -237,6 +241,9 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           
+          # 获取所有远程标签
+          git fetch --tags
+          
           # 遍历所有包并创建标签
           for pkg_dir in packages/*; do
             if [ -f "$pkg_dir/package.json" ]; then
@@ -244,6 +251,12 @@ jobs:
               PKG_VERSION=$(jq -r ".version" $pkg_dir/package.json)
               
               TAG_NAME="${PKG_NAME}@${PKG_VERSION}"
+              
+              # 检查标签是否已存在
+              if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+                echo "标签 $TAG_NAME 已存在，跳过"
+                continue
+              fi
               
               # 创建标签
               git tag "$TAG_NAME"

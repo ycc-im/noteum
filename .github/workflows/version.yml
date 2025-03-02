@@ -23,6 +23,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           lfs: true
           submodules: recursive
+          
+      - name: Setup Git
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -191,8 +196,6 @@ jobs:
             bun changeset version
             
             # 提交变更
-            git config --global user.name "GitHub Action"
-            git config --global user.email "action@github.com"
             git add .
             git commit -m "chore: auto-update versions [skip ci]"
             git push

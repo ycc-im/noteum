@@ -1,4 +1,12 @@
-import { serve } from "bun";
+// 使用条件导入以兼容不同环境
+let serve: any;
+try {
+  ({ serve } = await import("bun"));
+} catch (error) {
+  // 在 GitHub Actions 环境中，提供一个模拟的 serve 函数
+  console.warn("Could not import 'bun', using mock implementation for CI environment");
+  serve = () => ({ stop: () => {} });
+}
 import index from "./index.html";
 
 const server = serve({

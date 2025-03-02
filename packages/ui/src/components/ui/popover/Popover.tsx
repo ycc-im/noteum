@@ -3,13 +3,16 @@ import * as PopoverPrimitive from "@radix-ui/react-popover"
 
 import { cn } from "../../../lib/utils"
 
-const Popover = PopoverPrimitive.Root
+// 定义组件类型
+const Popover: React.FC<PopoverPrimitive.PopoverProps> = PopoverPrimitive.Root
 
+// 定义 PopoverTrigger 组件的属性接口
 interface PopoverTriggerProps extends React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Trigger> {
   asChild?: boolean;
   children: React.ReactNode;
 }
 
+// 创建 PopoverTrigger 组件
 const PopoverTrigger = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Trigger>,
   PopoverTriggerProps
@@ -19,9 +22,17 @@ const PopoverTrigger = React.forwardRef<
 
 PopoverTrigger.displayName = PopoverPrimitive.Trigger.displayName
 
+// 定义 PopoverContent 组件的属性接口
+interface PopoverContentProps extends React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> {
+  className?: string;
+  align?: "start" | "center" | "end";
+  sideOffset?: number;
+}
+
+// 创建 PopoverContent 组件
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
+  PopoverContentProps
 >(({ className, align = "center", sideOffset = 4, ...props }, ref) => (
   <PopoverPrimitive.Portal>
     <PopoverPrimitive.Content
@@ -36,6 +47,7 @@ const PopoverContent = React.forwardRef<
     />
   </PopoverPrimitive.Portal>
 ))
+
 PopoverContent.displayName = PopoverPrimitive.Content.displayName
 
 export { Popover, PopoverTrigger, PopoverContent }

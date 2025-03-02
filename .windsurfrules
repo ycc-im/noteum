@@ -107,30 +107,48 @@ quality:
         - "refactor(utils): optimize string handling functions"
 
   pull_requests:
-    template:
-      required: true
-      sections:
-        - title: "Description"
-          required: true
-          language: "en"
-        - title: "Changes"
-          required: true
-          language: "en"
-          format: "bullet points"
-        - title: "Testing"
-          required: true
-          language: "en"
-          description: "Describe the tests you've added/modified"
-        - title: "Screenshots"
-          required: false
-          description: "If applicable, add screenshots to help explain your changes"
-        - title: "Checklist"
-          required: true
-          items:
-            - "Unit tests added/updated"
-            - "Documentation updated"
-            - "Type definitions updated"
-            - "Stories added/updated (for UI components)"
+pull_requests:
+  template:
+    required: true
+    sections:
+      - title: "Description"
+        required: true
+        language: "en"
+        guidance: |
+          Provide a clear, concise overview of the PR's purpose.
+          Explain the problem being solved or the improvement being made.
+
+      - title: "Changes"
+        required: true
+        language: "en"
+        format: "bullet points"
+        guidance: |
+          Use action verbs (Added, Refactored, Updated)
+          Focus on high-level impact, not technical details
+          Explain what changed and why
+
+      - title: "Testing"
+        required: true
+        language: "en"
+        description: "Describe test coverage and verification methods"
+        guidance: |
+          List types of tests performed
+          Include test results and coverage
+          Provide steps to reproduce tests
+
+      - title: "Screenshots"
+        required: false
+        description: "Visual evidence of changes"
+
+      - title: "Checklist"
+        required: true
+        items:
+          - "Code follows project conventions"
+          - "Unit tests added/updated"
+          - "Documentation updated"
+          - "Type definitions verified"
+          - "Performance and compatibility checked"
+          - "No new linting/type errors introduced"
     naming:
       pattern: "{type}/{scope}/{description}"
       example: "feat/ui/add-button-component"

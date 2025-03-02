@@ -184,7 +184,7 @@ await build({
   target: 'browser',
   format: 'esm',
   splitting: false,
-  sourcemap: false,
+  sourcemap: "none",
   plugins: [{
     name: 'dts-generator',
     setup(build) {

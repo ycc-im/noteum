@@ -1,15 +1,50 @@
-# Elysia with Bun runtime
+# Noteum Server
+
+## Overview
+This is the server package for Noteum, a monorepo project using Bun runtime and Elysia framework.
+
+## Prerequisites
+- Node.js >= 22.0.0
+- Bun >= 1.0.0
 
 ## Getting Started
-To get started with this template, simply paste this command into your terminal:
+
+### Installation
 ```bash
-bun create elysia ./elysia-example
+bun install
 ```
 
-## Development
-To start the development server run:
+### Development
+To start the development server:
 ```bash
 bun run dev
 ```
 
-Open http://localhost:3000/ with your browser to see the result.
+### Production Build
+```bash
+bun run build
+```
+
+### Running Tests
+```bash
+bun test
+```
+
+## Configuration
+- Runtime: Bun
+- Framework: Elysia
+- Port: 3000
+
+## Features
+- High-performance server using Bun runtime
+- Elysia framework for efficient routing
+- TypeScript support
+
+## Environment Variables
+Configure your environment variables in `.env` file.
+
+## Contributing
+Please read the project's contributing guidelines before making changes.
+
+## License
+[Add license information here]

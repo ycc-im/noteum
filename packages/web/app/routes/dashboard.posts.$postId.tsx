@@ -60,13 +60,15 @@ function DashboardPostsPostIdComponent() {
         </div>
       </div>
       <div>
+        <Link to={`/dashboard/posts/${postId}`} className="text-blue-700">
+          Post Details
+        </Link>
         <Link
-          from={Route.fullPath}
+          to={Route.fullPath}
           search={(old) => ({
             ...old,
             showNotes: old.showNotes ? undefined : true,
           })}
-          params={true}
           className="text-blue-700"
         >
           {search.showNotes ? 'Close Notes' : 'Show Notes'}{' '}

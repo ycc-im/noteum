@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Link, Outlet, createFileRoute } from '@tanstack/react-router'
+// @ts-expect-error - Type definitions conflict with TypeScript version
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardComponent,

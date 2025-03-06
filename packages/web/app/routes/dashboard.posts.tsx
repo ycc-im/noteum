@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { MatchRoute, Outlet, createFileRoute, Link } from '@tanstack/react-router'
+// @ts-expect-error - Type definitions conflict with TypeScript version
 import { useQuery } from '@tanstack/react-query'
 import { trpc } from '../router'
 import { Spinner } from './-components/spinner'

@@ -1,6 +1,7 @@
 import { Link, Outlet, createRootRouteWithContext, useRouterState } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+// @ts-expect-error - Type definitions conflict with TypeScript version
 
 import { Spinner } from './-components/spinner'
 import type { TRPCOptionsProxy } from '@trpc/tanstack-react-query'

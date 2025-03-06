@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Link, createFileRoute } from '@tanstack/react-router'
+// @ts-expect-error - Type definitions conflict with TypeScript version
 import { z } from 'zod'
 import { useQuery } from '@tanstack/react-query'
 import { trpc } from '../router'

@@ -28,14 +28,7 @@ function DashboardComponent() {
           ] as const
         ).map(([to, label]) => {
           return (
-            <Link
-              from={Route.fullPath}
-              key={to}
-              to={to}
-              activeOptions={{ exact: to === '.' }}
-              activeProps={{ className: `font-bold` }}
-              className="p-2"
-            >
+            <Link to={to} key={to} className={`p-2 ${to === '.' ? 'font-bold' : ''}`}>
               {label}
             </Link>
           )

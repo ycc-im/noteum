@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link, MatchRoute, Outlet, createFileRoute } from '@tanstack/react-router'
+import { MatchRoute, Outlet, createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { trpc } from '../router'
 import { Spinner } from './-components/spinner'
@@ -30,9 +30,7 @@ function DashboardPostsComponent() {
                 params={{
                   postId: post.id,
                 }}
-                preload="intent"
                 className="block py-2 px-3 text-blue-700"
-                activeProps={{ className: `font-bold` }}
               >
                 <pre className="text-sm">
                   #{post.id} - {post.title}{' '}

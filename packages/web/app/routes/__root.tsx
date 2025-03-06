@@ -43,20 +43,7 @@ function RootComponent() {
             ).map(([to, label]) => {
               return (
                 <div key={to}>
-                  <Link
-                    to={to}
-                    activeOptions={
-                      {
-                        // If the route points to the root of it's parent,
-                        // make sure it's only active if it's exact
-                        // exact: to === '.',
-                      }
-                    }
-                    preload="intent"
-                    className={`block py-2 px-3 text-blue-700`}
-                    // Make "active" links bold
-                    activeProps={{ className: `font-bold` }}
-                  >
+                  <Link to={to} className="nav-link">
                     {label}
                   </Link>
                 </div>

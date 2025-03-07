@@ -16,14 +16,6 @@ export default createApp({
       dir: './public',
     },
     {
-      type: 'http',
-      name: 'trpc',
-      base: '/trpc',
-      handler: './trpc-server.handler.ts',
-      target: 'server',
-      plugins: () => [],
-    },
-    {
       type: 'spa',
       name: 'client',
       handler: './index.html',
@@ -34,6 +26,8 @@ export default createApp({
           autoCodeSplitting: true,
           routesDirectory: './app/routes',
           generatedRouteTree: './app/routeTree.gen.ts',
+          fileExtensions: ['.tsx', '.ts'],
+          disableExtensions: ['.js', '.jsx'],
         }),
         reactRefresh(),
       ],

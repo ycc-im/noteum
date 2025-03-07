@@ -7,17 +7,15 @@ import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query'
 import { routeTree } from './routeTree.gen'
 
 import { Spinner } from './routes/-components/spinner'
-import type { AppRouter } from '../trpc-server.handler'
+import type { Router as AppRouter } from '../../server/src/index'
 
 export const queryClient = new QueryClient()
 
+// 创建连接到外部服务器的tRPC客户端
 export const trpc = createTRPCOptionsProxy<AppRouter>({
   client: createTRPCClient({
     links: [
       httpBatchLink({
-        // since we are using Vinxi, the server is running on the same port,
-        // this means in dev the url is `http://localhost:3000/trpc`
-        // and since its from the same origin, we don't need to explicitly set the full URL
         url: 'http://localhost:9157/trpc',
       }),
     ],

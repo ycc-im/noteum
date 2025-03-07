@@ -1,7 +1,7 @@
-import { Link, Outlet, createRootRouteWithContext, useRouterState } from '@tanstack/react-router'
+import * as React from 'react'
+import { Outlet, createRootRouteWithContext, useRouterState } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-// @ts-expect-error - Type definitions conflict with TypeScript version
 
 import { Spinner } from './-components/spinner'
 import type { TRPCOptionsProxy } from '@trpc/tanstack-react-query'
@@ -44,21 +44,26 @@ function RootComponent() {
             ).map(([to, label]) => {
               return (
                 <div key={to}>
-                  <Link to={to} className="nav-link">
+                  <a href={to} className="nav-link">
                     {label}
-                  </Link>
+                  </a>
                 </div>
               )
             })}
           </div>
           <div className={`flex-1 border-l border-gray-200`}>
             {/* Render our first route match */}
-            <Outlet />
+            {React.createElement(Outlet as React.ComponentType<any>)}
           </div>
         </div>
       </div>
-      <TanStackRouterDevtools position="bottom-left" />
-      <ReactQueryDevtools position="bottom" buttonPosition="bottom-right" />
+      {React.createElement(TanStackRouterDevtools as React.ComponentType<any>, {
+        position: 'bottom-left',
+      })}
+      {React.createElement(ReactQueryDevtools as React.ComponentType<any>, {
+        position: 'bottom',
+        buttonPosition: 'bottom-right',
+      })}
     </>
   )
 }

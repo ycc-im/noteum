@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { createFileRoute, Link } from '@tanstack/react-router'
-// @ts-expect-error - Type definitions conflict with TypeScript version
+import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
   component: IndexComponent,
@@ -11,15 +10,12 @@ function IndexComponent() {
     <div className={`p-2`}>
       <div className={`text-lg`}>Welcome Home!</div>
       <hr className={`my-2`} />
-      <Link
-        to="/dashboard/posts/$postId"
-        params={{
-          postId: '3',
-        }}
-        className={`py-1 px-2 text-xs bg-blue-500 text-white rounded-full`}
+      <a
+        href="/dashboard/posts/3"
+        className="py-1 px-2 text-xs bg-blue-500 text-white rounded-full"
       >
         1 New Invoice
-      </Link>
+      </a>
       <hr className={`my-2`} />
       <div className={`max-w-xl`}>
         As you navigate around take note of the UX. It should feel suspense-like, where routes are

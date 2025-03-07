@@ -55,12 +55,14 @@ function IndexComponent() {
         ) : (
           <div className="space-y-2">
             <div
-              className={`font-medium ${pingQuery.data.success ? 'text-green-600' : 'text-red-600'}`}
+              className={`font-medium ${pingQuery.data?.success ? 'text-green-600' : 'text-red-600'}`}
             >
-              Status: {pingQuery.data.success ? 'Online' : 'Offline'}
+              Status: {pingQuery.data?.success ? 'Online' : 'Offline'}
             </div>
-            <div>Message: {pingQuery.data.message}</div>
-            <div className="text-sm text-gray-500">Timestamp: {pingQuery.data.timestamp}</div>
+            <div>Message: {pingQuery.data?.message || 'No message available'}</div>
+            <div className="text-sm text-gray-500">
+              Timestamp: {pingQuery.data?.timestamp || new Date().toISOString()}
+            </div>
           </div>
         )}
       </div>

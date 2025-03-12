@@ -1,4 +1,4 @@
-import type { TRPCClient, TRPCClientError } from '@trpc/client'
+import type { TRPCClient } from '@trpc/client'
 import type { QueryClient } from '@tanstack/react-query'
 import type { Router as AppRouter } from '../../../server/src'
 

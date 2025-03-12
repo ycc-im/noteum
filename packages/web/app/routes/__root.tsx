@@ -4,14 +4,11 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import { Spinner } from './-components/spinner'
-import type { TRPCOptionsProxy } from '@trpc/tanstack-react-query'
-// 由于前后端tRPC版本可能不兼容，使用any类型绕过类型检查
-// import type { Router as AppRouter } from '../../../server/src/index'
-type AppRouter = any
+import type { TRPCProxy } from '../types/trpc'
 import type { QueryClient } from '@tanstack/react-query'
 
 export interface RouterAppContext {
-  trpc: TRPCOptionsProxy<AppRouter>
+  trpc: TRPCProxy
   queryClient: QueryClient
 }
 

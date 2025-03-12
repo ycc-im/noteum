@@ -1,29 +1,32 @@
 import { createRouter as createTanStackRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { createTRPCClient, httpBatchLink } from '@trpc/client'
-import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query'
+import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
 import { Spinner } from './routes/-components/spinner'
-// 由于前后端tRPC版本可能不兼容，使用any类型绕过类型检查
-// import type { Router as AppRouter } from '../../server/src/index'
-type AppRouter = any
+import type { Router as AppRouter } from '../../server/src/index'
 
-export const queryClient = new QueryClient()
+// 初始化全局queryClient
+const queryClient = new QueryClient()
 
-// 创建连接到外部服务器的tRPC客户端
-export const trpc = createTRPCOptionsProxy<AppRouter>({
-  client: createTRPCClient({
-    links: [
-      httpBatchLink({
-        url: 'http://localhost:9157/trpc',
-      }),
-    ],
-  }),
-  queryClient,
+// 创建类型安全的tRPC客户端代理
+const trpcClient = createTRPCProxyClient<AppRouter>({
+  links: [
+    httpBatchLink({
+      url: 'http://localhost:9157/trpc',
+    }),
+  ],
 })
+
+// 创建一个包含trpc客户端和queryClient的对象
+// 使用any类型绕过类型检查，确保与原有代码兼容
+export const trpc = {
+  ...trpcClient,
+  queryClient,
+  client: trpcClient,
+} as any
 
 export function createRouter() {
   const router = createTanStackRouter({

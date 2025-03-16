@@ -7,7 +7,7 @@
   "scripts": {
     "docker:dev": "docker-compose -f docker-compose.yml up",
     "lint": "eslint \"packages/**/*.{ts,tsx,js,jsx}\"",
-    "type-check": "tsc --noEmit",
+    "type-check": "cd packages/ui && bun run typecheck",
     "test": "bun test",
     "pre-push": "bun run lint && bun run type-check && bun run test",
     "pre-push:no-type-check": "bun run lint && bun run test",

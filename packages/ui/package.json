@@ -8,7 +8,7 @@
     "build": "vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit --project ./tsconfig.json"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"

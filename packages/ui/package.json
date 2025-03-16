@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "bun run storybook",
-    "build": "bun run build:ui",
-    "build:ui": "bun build ./src/index.ts --outdir ./dist --target browser --format esm",
+    "build": "vite build",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "typecheck": "tsc --noEmit"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
@@ -34,6 +34,9 @@
     "@storybook/react-vite": "^8.6.3",
     "@storybook/test": "^8.6.3",
     "@types/bun": "latest",
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.1.4",
+    "vite-plugin-dts": "^3.7.3",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "autoprefixer": "^10.4.17",

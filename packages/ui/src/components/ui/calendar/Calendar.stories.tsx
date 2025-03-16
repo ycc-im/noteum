@@ -1,14 +1,14 @@
-import type { Meta, StoryObj } from "@storybook/react"
-import { Calendar } from "./Calendar"
-import { zhCN } from "date-fns/locale"
+import type { Meta, StoryObj } from '@storybook/react'
+import { Calendar } from './Calendar'
+import { zhCN } from 'date-fns/locale'
 
 const meta = {
-  title: "UI/Calendar",
+  title: 'UI/Calendar',
   component: Calendar,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
-  tags: ["autodocs"],
+  tags: ['autodocs'],
 } satisfies Meta<typeof Calendar>
 
 export default meta
@@ -16,7 +16,7 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    mode: "single",
+    mode: 'default',
     selected: new Date(),
     locale: zhCN,
     weekStartsOn: 1,
@@ -29,7 +29,7 @@ export const Default: Story = {
 
 export const Range: Story = {
   args: {
-    mode: "range",
+    mode: 'range',
     selected: {
       from: new Date(2025, 1, 1),
       to: new Date(2025, 1, 10),
@@ -42,12 +42,8 @@ export const Range: Story = {
 
 export const Multiple: Story = {
   args: {
-    mode: "multiple",
-    selected: [
-      new Date(2025, 1, 1),
-      new Date(2025, 1, 5),
-      new Date(2025, 1, 10),
-    ],
+    mode: 'multiple',
+    selected: [new Date(2025, 1, 1), new Date(2025, 1, 5), new Date(2025, 1, 10)],
     locale: zhCN,
     weekStartsOn: 1,
     ISOWeek: true,
@@ -56,7 +52,7 @@ export const Multiple: Story = {
 
 export const WithFooter: Story = {
   args: {
-    mode: "single",
+    mode: 'single',
     selected: new Date(),
     locale: zhCN,
     weekStartsOn: 1,
@@ -67,7 +63,7 @@ export const WithFooter: Story = {
 
 export const Disabled: Story = {
   args: {
-    mode: "single",
+    mode: 'single',
     selected: new Date(),
     locale: zhCN,
     weekStartsOn: 1,
@@ -78,7 +74,7 @@ export const Disabled: Story = {
 
 export const WithDisabledDates: Story = {
   args: {
-    mode: "single",
+    mode: 'single',
     selected: new Date(),
     locale: zhCN,
     weekStartsOn: 1,

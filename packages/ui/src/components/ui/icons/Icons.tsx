@@ -1,11 +1,13 @@
-import * as React from "react"
+import * as React from 'react'
 import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
   Calendar,
-  type LucideIcon
-} from "lucide-react"
+  Share2,
+  MoreHorizontal,
+  type LucideIcon,
+} from 'lucide-react'
 
 // 定义图标组件类型
 type IconProps = React.SVGProps<SVGSVGElement> & { size?: number }
@@ -26,4 +28,6 @@ export const Icons = {
   ChevronRight: createIconComponent(ChevronRight),
   ChevronDown: createIconComponent(ChevronDown),
   Calendar: createIconComponent(Calendar),
+  Share2: createIconComponent(Share2),
+  MoreHorizontal: createIconComponent(MoreHorizontal),
 }

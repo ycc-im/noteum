@@ -1,80 +1,137 @@
 import * as React from 'react'
-
-import { cn } from '@/lib/utils'
-import { Icons } from '@/components/icons'
-
 import {
   DayPicker,
   type DayPickerSingleProps,
   type DayPickerRangeProps,
-  type DayPickerMultipleProps,
+  type DayProps as RdpDayProps,
+  type DateRange,
 } from 'react-day-picker'
+import { zhCN } from 'date-fns/locale'
+import { cn } from '../../../lib/utils'
+import { CalendarHeader } from './components/CalendarHeader'
+import { CalendarNavigation } from './components/CalendarNavigation'
+import { CalendarDay } from './components/CalendarDay'
+import { CalendarProvider, useCalendar, useCalendarNavigation } from './hooks/useCalendar'
+import type { CalendarProps } from './Calendar.types'
 
-type CalendarProps = {
-  className?: string
-  classNames?: Record<string, string>
-  showOutsideDays?: boolean
-  highlightToday?: boolean
-  customDayRenderer?: (date: Date) => React.ReactElement | null
-} & (
-  | ({ mode: 'single' } & Omit<DayPickerSingleProps, 'mode'>)
-  | ({ mode: 'range' } & Omit<DayPickerRangeProps, 'mode'>)
-  | ({ mode: 'multiple' } & Omit<DayPickerMultipleProps, 'mode'>)
-  | ({ mode?: 'default' } & Omit<DayPickerSingleProps, 'mode'>)
-)
+interface ExtendedDayProps extends RdpDayProps {
+  'aria-selected'?: string
+  'aria-disabled'?: string
+  'aria-current'?: string
+}
 
-function Calendar({
+function CalendarComponent({
   className,
-  classNames,
+  initialDate,
+  initialView = 'month',
+  onDateChange,
+  onViewChange,
+  fetchDateData,
   showOutsideDays = true,
   highlightToday = true,
-  customDayRenderer,
+  locale = zhCN,
+  showWeekends = true,
+  mode = 'single',
+  className: containerClassName,
   ...props
 }: CalendarProps) {
+  const { selectedDate, selectedRange, view, dateData, onDateSelect, onRangeSelect, setView } =
+    useCalendar()
+
+  const { goToPrevious, goToNext, goToToday } = useCalendarNavigation()
+
+  const handleSelect = React.useCallback(
+    (value: Date | DateRange | undefined) => {
+      if (!value) return
+      if (mode === 'range' && value && typeof value === 'object' && 'from' in value) {
+        onRangeSelect(value)
+      } else if (value instanceof Date) {
+        onDateSelect(value)
+      }
+    },
+    [mode, onDateSelect, onRangeSelect],
+  )
+
+  // 基于mode构建DayPicker props
+  const commonProps = {
+    showOutsideDays,
+    locale,
+    className: cn('p-3', className),
+    classNames: {
+      root: 'flex flex-col space-y-4',
+      caption: 'flex justify-between items-center',
+      nav: 'flex space-x-1',
+      table: 'w-full border-collapse space-y-1',
+      head_row: 'flex',
+      head_cell: 'text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]',
+      row: 'flex w-full mt-2',
+      cell: cn(
+        'text-center text-sm p-0 relative',
+        '[&:has([aria-selected])]:bg-accent',
+        'first:[&:has([aria-selected])]:rounded-l-md',
+        'last:[&:has([aria-selected])]:rounded-r-md',
+        'focus-within:relative focus-within:z-20',
+      ),
+      day: cn('h-9 w-9 p-0 font-normal aria-selected:opacity-100', highlightToday && 'relative'),
+    },
+    components: {
+      Day: (dayProps: ExtendedDayProps) => {
+        const isSelected = dayProps['aria-selected'] === 'true'
+        const isDisabled = dayProps['aria-disabled'] === 'true'
+        const isToday = dayProps['aria-current'] === 'date'
+
+        return (
+          <CalendarDay
+            {...dayProps}
+            date={dayProps.date}
+            isSelected={isSelected}
+            isDisabled={isDisabled}
+            isToday={isToday}
+            data={dateData[dayProps.date.toISOString().split('T')[0]]}
+            onClick={() => onDateSelect(dayProps.date)}
+          />
+        )
+      },
+    },
+  }
+
+  const dayPickerProps =
+    mode === 'range'
+      ? ({
+          ...commonProps,
+          mode: 'range' as const,
+          selected: selectedRange,
+          onSelect: handleSelect as (range: DateRange | undefined) => void,
+        } as DayPickerRangeProps)
+      : ({
+          ...commonProps,
+          mode: 'single' as const,
+          selected: selectedDate,
+          onSelect: handleSelect as (date: Date | undefined) => void,
+        } as DayPickerSingleProps)
+
   return (
-    <DayPicker
-      showOutsideDays={showOutsideDays}
-      className={cn('p-3', className)}
-      classNames={{
-        ...classNames,
-        root: 'flex flex-col space-y-4',
-        caption: 'flex justify-between items-center',
-        nav: 'flex space-x-1',
-        table: 'w-full border-collapse space-y-1',
-        head_row: 'flex',
-        head_cell: 'text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]',
-        row: 'flex w-full mt-2',
-        cell: 'text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20',
-        day: cn('h-9 w-9 p-0 font-normal aria-selected:opacity-100', highlightToday && 'relative'),
-        day_range_start: 'day-range-start',
-        day_range_end: 'day-range-end',
-        day_selected:
-          'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground',
-        day_today: 'bg-accent text-accent-foreground',
-        day_outside:
-          'day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground',
-        day_disabled: 'text-muted-foreground opacity-50',
-        day_range_middle: 'aria-selected:bg-accent aria-selected:text-accent-foreground',
-        day_hidden: 'invisible',
-        ...classNames,
-      }}
-      components={{
-        IconLeft: () => <Icons.ChevronLeft className="h-4 w-4" />,
-        IconRight: () => <Icons.ChevronRight className="h-4 w-4" />,
-        DayContent: (props) => {
-          const { date } = props
-          if (customDayRenderer) {
-            const rendered = customDayRenderer(date)
-            return React.isValidElement(rendered) ? rendered : null
-          }
-          return <span>{date.getDate()}</span>
-        },
-      }}
-      {...props}
-    />
+    <div className={cn('calendar-container', containerClassName)}>
+      <CalendarHeader date={selectedDate || new Date()} view={view} onViewChange={setView} />
+      <CalendarNavigation onPrevious={goToPrevious} onNext={goToNext} onToday={goToToday} />
+      <DayPicker {...dayPickerProps} />
+    </div>
+  )
+}
+
+// 包装组件以提供Context
+export function Calendar(props: CalendarProps) {
+  return (
+    <CalendarProvider
+      defaultDate={props.initialDate}
+      defaultView={props.initialView}
+      onDateChange={props.onDateChange}
+      onViewChange={props.onViewChange}
+      fetchDateData={props.fetchDateData}
+    >
+      <CalendarComponent {...props} />
+    </CalendarProvider>
   )
 }
 
 Calendar.displayName = 'Calendar'
-
-export { Calendar }

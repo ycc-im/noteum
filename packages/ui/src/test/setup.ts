@@ -1,7 +1,7 @@
 import { expect, afterEach, vi } from 'vitest'
 import { cleanup } from '@testing-library/react'
 import { JSDOM } from 'jsdom'
-import * as matchers from '@testing-library/jest-dom/matchers'
+import matchers from '@testing-library/jest-dom/matchers'
 
 // 初始化JSDOM
 const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
@@ -44,6 +44,9 @@ Object.defineProperty(window, 'matchMedia', {
 expect.extend(matchers)
 
 // 每次测试后清理
+afterEach(() => {
+  cleanup()
+})
 
 // 创建基础的DOM环境
 class StorageShim {

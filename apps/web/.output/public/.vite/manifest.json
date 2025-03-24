@@ -1,0 +1,33 @@
+{
+  "../../node_modules/@tanstack/router-devtools-core/dist/esm/FloatingTanStackRouterDevtools.js": {
+    "file": "assets/FloatingTanStackRouterDevtools-Cjlvtpdg.js",
+    "name": "FloatingTanStackRouterDevtools",
+    "src": "../../node_modules/@tanstack/router-devtools-core/dist/esm/FloatingTanStackRouterDevtools.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "app/routes/index.tsx?tsr-split=component": {
+    "file": "assets/index-B0E86zfj.js",
+    "name": "index",
+    "src": "app/routes/index.tsx?tsr-split=component",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "index.html": {
+    "file": "assets/index-Cec-sxZn.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "dynamicImports": [
+      "../../node_modules/@tanstack/router-devtools-core/dist/esm/FloatingTanStackRouterDevtools.js",
+      "app/routes/index.tsx?tsr-split=component"
+    ],
+    "css": [
+      "assets/index-CAIAQYpC.css"
+    ]
+  }
+}

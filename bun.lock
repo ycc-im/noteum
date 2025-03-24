@@ -18,17 +18,7 @@
         "lint-staged": "^15.4.3",
       },
     },
-    "packages/core": {
-      "name": "@noteum/core",
-      "version": "0.3.7",
-      "devDependencies": {
-        "@types/bun": "latest",
-      },
-      "peerDependencies": {
-        "typescript": "^5",
-      },
-    },
-    "packages/server": {
+    "apps/server": {
       "name": "@noteum/server",
       "version": "0.4.6",
       "dependencies": {
@@ -40,6 +30,48 @@
       },
       "devDependencies": {
         "bun-types": "latest",
+      },
+    },
+    "apps/web": {
+      "name": "@noteum/web",
+      "version": "0.5.0",
+      "dependencies": {
+        "@tanstack/react-query": "^5.66.0",
+        "@tanstack/react-query-devtools": "^5.66.0",
+        "@tanstack/react-router": "^1.112.17",
+        "@tanstack/react-start": "^1.112.17",
+        "@tanstack/router-devtools": "^1.112.17",
+        "@tanstack/router-plugin": "^1.112.17",
+        "@trpc/client": "^10.45.2",
+        "@trpc/server": "^10.45.2",
+        "autoprefixer": "^10.4.20",
+        "clsx": "^2.1.1",
+        "lucide-react": "^0.482.0",
+        "postcss": "^8.5.1",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "react-i18next": "^15.4.1",
+        "react-router-dom": "^7.3.0",
+        "redaxios": "^0.5.1",
+        "tailwind-merge": "^3.0.2",
+        "tailwindcss": "^3.4.17",
+        "vinxi": "0.5.3",
+        "zod": "^3.24.1",
+      },
+      "devDependencies": {
+        "@types/react": "^19.0.8",
+        "@types/react-dom": "^19.0.3",
+        "@vitejs/plugin-react": "^4.3.4",
+      },
+    },
+    "packages/core": {
+      "name": "@noteum/core",
+      "version": "0.3.7",
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+      "peerDependencies": {
+        "typescript": "^5",
       },
     },
     "packages/ui": {
@@ -101,38 +133,6 @@
       },
       "peerDependencies": {
         "typescript": "^5",
-      },
-    },
-    "packages/web": {
-      "name": "@noteum/web",
-      "version": "0.5.0",
-      "dependencies": {
-        "@tanstack/react-query": "^5.66.0",
-        "@tanstack/react-query-devtools": "^5.66.0",
-        "@tanstack/react-router": "^1.112.17",
-        "@tanstack/react-start": "^1.112.17",
-        "@tanstack/router-devtools": "^1.112.17",
-        "@tanstack/router-plugin": "^1.112.17",
-        "@trpc/client": "^10.45.2",
-        "@trpc/server": "^10.45.2",
-        "autoprefixer": "^10.4.20",
-        "clsx": "^2.1.1",
-        "lucide-react": "^0.482.0",
-        "postcss": "^8.5.1",
-        "react": "^19.0.0",
-        "react-dom": "^19.0.0",
-        "react-i18next": "^15.4.1",
-        "react-router-dom": "^7.3.0",
-        "redaxios": "^0.5.1",
-        "tailwind-merge": "^3.0.2",
-        "tailwindcss": "^3.4.17",
-        "vinxi": "0.5.3",
-        "zod": "^3.24.1",
-      },
-      "devDependencies": {
-        "@types/react": "^19.0.8",
-        "@types/react-dom": "^19.0.3",
-        "@vitejs/plugin-react": "^4.3.4",
       },
     },
   },
@@ -401,13 +401,13 @@
 
     "@noteum/core": ["@noteum/core@workspace:packages/core"],
 
-    "@noteum/server": ["@noteum/server@workspace:packages/server"],
+    "@noteum/server": ["@noteum/server@workspace:apps/server"],
 
     "@noteum/ui": ["@noteum/ui@workspace:packages/ui"],
 
     "@noteum/utils": ["@noteum/utils@workspace:packages/utils"],
 
-    "@noteum/web": ["@noteum/web@workspace:packages/web"],
+    "@noteum/web": ["@noteum/web@workspace:apps/web"],
 
     "@parcel/watcher": ["@parcel/watcher@2.5.1", "", { "dependencies": { "detect-libc": "^1.0.3", "is-glob": "^4.0.3", "micromatch": "^4.0.5", "node-addon-api": "^7.0.0" }, "optionalDependencies": { "@parcel/watcher-android-arm64": "2.5.1", "@parcel/watcher-darwin-arm64": "2.5.1", "@parcel/watcher-darwin-x64": "2.5.1", "@parcel/watcher-freebsd-x64": "2.5.1", "@parcel/watcher-linux-arm-glibc": "2.5.1", "@parcel/watcher-linux-arm-musl": "2.5.1", "@parcel/watcher-linux-arm64-glibc": "2.5.1", "@parcel/watcher-linux-arm64-musl": "2.5.1", "@parcel/watcher-linux-x64-glibc": "2.5.1", "@parcel/watcher-linux-x64-musl": "2.5.1", "@parcel/watcher-win32-arm64": "2.5.1", "@parcel/watcher-win32-ia32": "2.5.1", "@parcel/watcher-win32-x64": "2.5.1" } }, "sha512-dfUnCxiN9H4ap84DvD2ubjw+3vUNpstxa0TneY/Paat8a3R4uQZDLSvWjmznAY/DoahqTHl9V46HF/Zs3F29pg=="],
 

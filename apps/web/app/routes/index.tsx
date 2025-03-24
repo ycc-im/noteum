@@ -55,7 +55,9 @@ function IndexComponent() {
         ) : (
           <div className="space-y-2">
             <div
-              className={`font-medium ${pingQuery.data?.success ? 'text-green-600' : 'text-red-600'}`}
+              className={`font-medium ${
+                pingQuery.data?.success ? 'text-green-600' : 'text-red-600'
+              }`}
             >
               Status: {pingQuery.data?.success ? 'Online' : 'Offline'}
             </div>

@@ -26,7 +26,7 @@
   "private": true,
   "scripts": {
     "docker:dev": "docker-compose -f docker-compose.yml up",
-    "lint": "eslint \"packages/**/*.{ts,tsx,js,jsx}\"",
+    "lint": "eslint \"{packages,apps}/**/*.{ts,tsx,js,jsx}\"",
     "type-check": "cd packages/ui && bun run typecheck",
     "test": "bun test",
     "pre-push": "bun run lint && bun run type-check && bun run test",
@@ -36,12 +36,13 @@
     "build:utils": "cd packages/utils && bun run build",
     "build:core": "echo 'No build script for core yet'",
     "build:ui": "cd packages/ui && bun run build",
-    "build:server": "cd packages/server && bun run build",
-    "build:web": "cd packages/web && bun run build",
+    "build:server": "cd apps/server && bun run build",
+    "build:web": "cd apps/web && bun run build",
     "changeset": "changeset",
     "version-packages": "changeset version"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ]
 }

@@ -35,8 +35,8 @@ jobs:
           mkdir -p packages/utils/dist
           mkdir -p packages/core/dist
           mkdir -p packages/ui/dist
-          mkdir -p packages/server/dist
-          mkdir -p packages/web/dist
+          mkdir -p apps/server/dist
+          mkdir -p apps/web/dist
           
           # 运行构建脚本
           bun run build

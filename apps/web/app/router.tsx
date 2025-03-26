@@ -40,8 +40,10 @@ export function createRouter() {
       queryClient,
     },
     defaultPendingComponent: () => (
-      <div className={`p-2 text-2xl`}>
-        <Spinner />
+      <div
+        className={`fixed inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50`}
+      >
+        <Spinner size="large" color="primary" />
       </div>
     ),
     Wrap: function WrapComponent({ children }) {

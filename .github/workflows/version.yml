@@ -236,7 +236,36 @@ jobs:
             # 添加分隔符和描述
             echo "---" >> .changeset/${CHANGESET_ID}.md
             echo "" >> .changeset/${CHANGESET_ID}.md
-            echo "Auto-generated update based on commit messages" >> .changeset/${CHANGESET_ID}.md
+            
+            # 获取仓库信息以构建提交链接
+            REPO_URL=$(git config --get remote.origin.url | sed 's/\.git$//' | sed 's|git@github.com:|https://github.com/|')
+            
+            # 获取相关提交信息并添加到 changelog
+            if [ -z "$LAST_TAG" ]; then
+              # 如果没有标签，获取所有提交
+              git log --no-merges --pretty=format:"%H||%s" | grep -E "\|\|(feat|fix|docs|perf|refactor)\\(" > /tmp/changelog_commits.txt
+            else
+              # 获取自上次标签以来的提交
+              git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"%H||%s" | grep -E "\|\|(feat|fix|docs|perf|refactor)\\(" > /tmp/changelog_commits.txt
+            fi
+            
+            # 如果有相关提交，添加到 changelog
+            if [ -s "/tmp/changelog_commits.txt" ]; then
+              echo "Changes:" >> .changeset/${CHANGESET_ID}.md
+              cat /tmp/changelog_commits.txt | while read -r commit_line; do
+                # 分离提交哈希和提交信息
+                COMMIT_HASH=$(echo "$commit_line" | cut -d'|' -f1)
+                COMMIT_MSG=$(echo "$commit_line" | cut -d'|' -f3-)
+                # 构建链接并添加到 changelog
+                echo "- [$COMMIT_MSG]($REPO_URL/commit/$COMMIT_HASH)" >> .changeset/${CHANGESET_ID}.md
+              done
+            else
+              # 如果没有找到相关提交，使用默认消息
+              echo "Auto-generated update based on commit messages" >> .changeset/${CHANGESET_ID}.md
+            fi
+            
+            # 清理临时文件
+            rm -f /tmp/changelog_commits.txt
             
             # 显示创建的changeset文件
             echo "创建的changeset文件:"

@@ -10,6 +10,8 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
+    "@noteum/core": "^0.3.7",
+    "@noteum/utils": "^0.2.5",
     "@elysiajs/cors": "^1.2.0",
     "@elysiajs/trpc": "^1.1.0",
     "@elysiajs/websocket": "^0.2.8",

@@ -11,10 +11,17 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as PingImport } from './routes/ping'
 import { Route as FlowImport } from './routes/flow'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const PingRoute = PingImport.update({
+  id: '/ping',
+  path: '/ping',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const FlowRoute = FlowImport.update({
   id: '/flow',
@@ -46,6 +53,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FlowImport
       parentRoute: typeof rootRoute
     }
+    '/ping': {
+      id: '/ping'
+      path: '/ping'
+      fullPath: '/ping'
+      preLoaderRoute: typeof PingImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -54,36 +68,41 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/flow': typeof FlowRoute
+  '/ping': typeof PingRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/flow': typeof FlowRoute
+  '/ping': typeof PingRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/flow': typeof FlowRoute
+  '/ping': typeof PingRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/flow'
+  fullPaths: '/' | '/flow' | '/ping'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/flow'
-  id: '__root__' | '/' | '/flow'
+  to: '/' | '/flow' | '/ping'
+  id: '__root__' | '/' | '/flow' | '/ping'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FlowRoute: typeof FlowRoute
+  PingRoute: typeof PingRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FlowRoute: FlowRoute,
+  PingRoute: PingRoute,
 }
 
 export const routeTree = rootRoute
@@ -97,7 +116,8 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/flow"
+        "/flow",
+        "/ping"
       ]
     },
     "/": {
@@ -105,6 +125,9 @@ export const routeTree = rootRoute
     },
     "/flow": {
       "filePath": "flow.tsx"
+    },
+    "/ping": {
+      "filePath": "ping.tsx"
     }
   }
 }

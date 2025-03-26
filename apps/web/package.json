@@ -6,14 +6,14 @@
   "scripts": {
     "dev": "vinxi dev",
     "build": "vinxi build",
-    "start": "vinxi start"
+    "start": "bun run .output/server/index.mjs"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
-    "@noteum/ui": "^0.7.0",
     "@noteum/core": "^0.3.7",
+    "@noteum/ui": "^0.7.0",
     "@noteum/utils": "^0.2.5",
     "@tanstack/react-query": "^5.66.0",
     "@tanstack/react-query-devtools": "^5.66.0",

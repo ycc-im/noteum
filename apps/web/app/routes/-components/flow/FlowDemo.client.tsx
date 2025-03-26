@@ -31,7 +31,7 @@ const initialEdges: Edge[] = [
 ]
 
 export function FlowDemoClient(): ReactNode {
-  const [nodes, _, onNodesChange] = useNodesState(initialNodes)
+  const [nodes, , onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
   // 处理新连接线的创建

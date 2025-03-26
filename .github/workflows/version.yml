@@ -79,9 +79,10 @@ jobs:
           declare -A PKG_CHANGES
           
           # 初始化所有包为空更新类型
-          for pkg_dir in packages/*; do
-            if [ -f "$pkg_dir/package.json" ]; then
-              PKG_NAME=$(jq -r ".name" $pkg_dir/package.json)
+          # 使用find命令查找所有package.json文件
+          find packages apps -maxdepth 1 -mindepth 1 -type d | while read -r dir; do
+            if [ -f "$dir/package.json" ]; then
+              PKG_NAME=$(jq -r ".name" "$dir/package.json")
               PKG_CHANGES[$PKG_NAME]=""
             fi
           done
@@ -114,7 +115,7 @@ jobs:
               # 如果指定了包
               if [ ! -z "$PKG" ]; then
                 # 查找匹配的包
-                for pkg_dir in packages/*; do
+                find packages apps -maxdepth 1 -mindepth 1 -type d | while read -r pkg_dir; do
                   if [ -f "$pkg_dir/package.json" ]; then
                     PKG_NAME=$(jq -r ".name" $pkg_dir/package.json)
                     PKG_DIR=$(basename $pkg_dir)
@@ -137,7 +138,7 @@ jobs:
               else
                 echo "  未指定包，变更将应用到所有包"
                 # 如果没有指定包，应用到所有包
-                for pkg_dir in packages/*; do
+                find packages apps -maxdepth 1 -mindepth 1 -type d | while read -r pkg_dir; do
                   if [ -f "$pkg_dir/package.json" ]; then
                     PKG_NAME=$(jq -r ".name" $pkg_dir/package.json)
                     CURRENT=${PKG_CHANGES[$PKG_NAME]}
@@ -265,7 +266,7 @@ jobs:
           git fetch --tags
           
           # 遍历所有包并创建标签
-          for pkg_dir in packages/*; do
+          find packages apps -maxdepth 1 -mindepth 1 -type d | while read -r pkg_dir; do
             if [ -f "$pkg_dir/package.json" ]; then
               PKG_NAME=$(jq -r ".name" $pkg_dir/package.json)
               PKG_VERSION=$(jq -r ".version" $pkg_dir/package.json)
@@ -299,8 +300,8 @@ jobs:
           mkdir -p packages/utils/dist
           mkdir -p packages/core/dist
           mkdir -p packages/ui/dist
-          mkdir -p packages/server/dist
-          mkdir -p packages/web/dist
+          mkdir -p apps/server/dist
+          mkdir -p apps/web/dist
           
           # 运行构建脚本
           bun run build

@@ -4,9 +4,30 @@
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "target": "ESNext",
-    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "noEmit": true
-  }
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
+    "noEmit": true,
+    "allowJs": true,
+    "types": [
+      "react/experimental"
+    ],
+    "paths": {
+      "~/*": [
+        "./app/*"
+      ]
+    }
+  },
+  "include": [
+    "app"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

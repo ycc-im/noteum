@@ -3,11 +3,13 @@ import { initTRPC } from '@trpc/server'
 import { Elysia } from 'elysia'
 import cors from '@elysiajs/cors'
 import { pingRouter } from './routers/ping'
+import { nodesRouter } from './routers/nodes'
 
 const t = initTRPC.create()
 
 const router = t.router({
   ...pingRouter._def.procedures,
+  ...nodesRouter._def.procedures,
 })
 
 export type Router = typeof router

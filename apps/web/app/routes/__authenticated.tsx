@@ -431,9 +431,9 @@ function AuthenticatedLayout() {
       <div
         className={`${
           sidebarExpanded ? 'ml-64' : 'ml-20'
-        } flex-1 transition-all duration-300 ease-in-out`}
+        } flex-1 transition-all duration-300 ease-in-out h-screen overflow-hidden p-0 m-0`}
       >
-        <main className="p-6">
+        <main className="p-0 m-0 h-full w-full overflow-hidden">
           <Outlet />
         </main>
       </div>

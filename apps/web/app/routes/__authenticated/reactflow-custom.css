@@ -1,0 +1,65 @@
+/* 自定义ReactFlow样式 */
+
+/* 将ReactFlow logo移动到右下角 */
+.react-flow__attribution {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  top: auto !important;
+  color: #999;
+  font-size: 11px;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 2px 6px;
+  border-radius: 4px;
+  z-index: 5;
+}
+
+/* 为logo添加悬停效果 */
+.react-flow__attribution:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* 移除ReactFlow容器的边距 */
+.react-flow {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* 确保ReactFlow占满整个容器空间 */
+.react-flow__container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* 移除节点的边框 */
+.react-flow__node {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* 确保ReactFlow的父容器占满整个可用空间 */
+.react-flow__renderer,
+.react-flow__pane,
+.react-flow__viewport {
+  width: 100% !important;
+  height: 100% !important;
+  left: 0 !important;
+  top: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 确保main标签和其直接子元素占满整个空间 */
+main {
+  width: 100% !important;
+  height: 100vh !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+main > div {
+  width: 100% !important;
+  height: 100% !important;
+}

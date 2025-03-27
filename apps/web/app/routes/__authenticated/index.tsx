@@ -19,6 +19,12 @@ import ReactFlow, {
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 
+// 自定义样式，将ReactFlow logo移动到右下角
+import './reactflow-custom.css'
+
+// 导入自定义组件
+import VerticalToolbar from './-components/VerticalToolbar'
+
 export const Route = createFileRoute('/__authenticated/')({
   component: AuthenticatedIndexComponent,
 })
@@ -199,7 +205,7 @@ function AuthenticatedIndexComponent() {
   )
 
   return (
-    <div className="w-full h-full" style={{ height: 'calc(100vh - 64px)' }}>
+    <div className="w-full h-full p-0 m-0 overflow-hidden" style={{ height: 'calc(100vh - 64px)' }}>
       {isEditing && editData ? (
         <div className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-2xl">
@@ -301,6 +307,11 @@ function AuthenticatedIndexComponent() {
         <Controls />
         <MiniMap />
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
+
+        {/* 垂直功能菜单条 */}
+        <Panel position="top-left" className="ml-4 mt-4">
+          <VerticalToolbar />
+        </Panel>
 
         <Panel position="top-right">
           <div className="flex flex-col space-y-2">

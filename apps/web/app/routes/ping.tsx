@@ -1,36 +1,12 @@
-import * as React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
-import { pingService } from '../services/dataService'
+import * as React from 'react'
 
 export const Route = createFileRoute('/ping')({
   component: PingComponent,
 })
 
 function PingComponent() {
-  // 使用 React Query 调用 ping 服务
-  const pingQuery = useQuery({
-    queryKey: ['serverPing'],
-    queryFn: async () => {
-      try {
-        const result = await pingService.ping()
-        return {
-          success: true,
-          message: result || 'pong',
-          timestamp: new Date().toISOString(),
-        }
-      } catch (error) {
-        console.error('Ping error:', error)
-        return {
-          success: false,
-          message: '无法连接到服务器',
-          timestamp: new Date().toISOString(),
-        }
-      }
-    },
-    refetchOnWindowFocus: false,
-  })
-
+  const { data, isLoading, isError } = trpc.hello.useQuery({ name: 'John' })
   return (
     <div className={`p-2`}>
       <div className={`text-lg`}>Welcome Home!</div>
@@ -42,7 +18,7 @@ function PingComponent() {
         1 New Invoice
       </a>
 
-      <div className="my-4 p-4 border rounded bg-gray-50">
+      {/* <div className="my-4 p-4 border rounded bg-gray-50">
         <h2 className="text-lg font-semibold mb-2">Ping Server Status:</h2>
         {pingQuery.isLoading ? (
           <div className="text-gray-500">Loading server status...</div>
@@ -63,7 +39,7 @@ function PingComponent() {
             </div>
           </div>
         )}
-      </div>
+      </div> */}
 
       <hr className={`my-2`} />
       <div className={`max-w-xl`}>

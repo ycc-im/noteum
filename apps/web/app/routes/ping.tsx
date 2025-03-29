@@ -1,33 +1,29 @@
 import * as React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { pingService } from '../services/dataService'
 
 export const Route = createFileRoute('/ping')({
   component: PingComponent,
 })
 
 function PingComponent() {
-  // 使用直接的fetch调用服务器的ping接口
+  // 使用 React Query 调用 ping 服务
   const pingQuery = useQuery({
     queryKey: ['serverPing'],
     queryFn: async () => {
       try {
-        // 调用外部服务器的ping接口
-        const response = await fetch('http://localhost:9157/trpc/ping')
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`)
-        }
-        const data = await response.json()
+        const result = await pingService.ping()
         return {
           success: true,
-          message: data.result?.data || 'pong',
+          message: result || 'pong',
           timestamp: new Date().toISOString(),
         }
       } catch (error) {
-        console.error('Fetch error:', error)
+        console.error('Ping error:', error)
         return {
           success: false,
-          message: 'Could not connect to server',
+          message: '无法连接到服务器',
           timestamp: new Date().toISOString(),
         }
       }

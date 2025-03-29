@@ -11,10 +11,27 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as PingImport } from './routes/ping'
+import { Route as LoginImport } from './routes/login'
 import { Route as FlowImport } from './routes/flow'
-import { Route as IndexImport } from './routes/index'
+import { Route as authenticatedImport } from './routes/__authenticated'
+import { Route as authenticatedIndexImport } from './routes/__authenticated/index'
+import { Route as authenticatedNotesImport } from './routes/__authenticated/notes'
+import { Route as authenticatedNotesNoteIdImport } from './routes/__authenticated/notes/$noteId'
 
 // Create/Update Routes
+
+const PingRoute = PingImport.update({
+  id: '/ping',
+  path: '/ping',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LoginRoute = LoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const FlowRoute = FlowImport.update({
   id: '/flow',
@@ -22,21 +39,38 @@ const FlowRoute = FlowImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
+const authenticatedRoute = authenticatedImport.update({
+  id: '/__authenticated',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authenticatedIndexRoute = authenticatedIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => authenticatedRoute,
+} as any)
+
+const authenticatedNotesRoute = authenticatedNotesImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => authenticatedRoute,
+} as any)
+
+const authenticatedNotesNoteIdRoute = authenticatedNotesNoteIdImport.update({
+  id: '/$noteId',
+  path: '/$noteId',
+  getParentRoute: () => authenticatedNotesRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+    '/__authenticated': {
+      id: '/__authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authenticatedImport
       parentRoute: typeof rootRoute
     }
     '/flow': {
@@ -46,44 +80,131 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FlowImport
       parentRoute: typeof rootRoute
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/ping': {
+      id: '/ping'
+      path: '/ping'
+      fullPath: '/ping'
+      preLoaderRoute: typeof PingImport
+      parentRoute: typeof rootRoute
+    }
+    '/__authenticated/notes': {
+      id: '/__authenticated/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof authenticatedNotesImport
+      parentRoute: typeof authenticatedImport
+    }
+    '/__authenticated/': {
+      id: '/__authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof authenticatedIndexImport
+      parentRoute: typeof authenticatedImport
+    }
+    '/__authenticated/notes/$noteId': {
+      id: '/__authenticated/notes/$noteId'
+      path: '/$noteId'
+      fullPath: '/notes/$noteId'
+      preLoaderRoute: typeof authenticatedNotesNoteIdImport
+      parentRoute: typeof authenticatedNotesImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface authenticatedNotesRouteChildren {
+  authenticatedNotesNoteIdRoute: typeof authenticatedNotesNoteIdRoute
+}
+
+const authenticatedNotesRouteChildren: authenticatedNotesRouteChildren = {
+  authenticatedNotesNoteIdRoute: authenticatedNotesNoteIdRoute,
+}
+
+const authenticatedNotesRouteWithChildren = authenticatedNotesRoute._addFileChildren(
+  authenticatedNotesRouteChildren,
+)
+
+interface authenticatedRouteChildren {
+  authenticatedNotesRoute: typeof authenticatedNotesRouteWithChildren
+  authenticatedIndexRoute: typeof authenticatedIndexRoute
+}
+
+const authenticatedRouteChildren: authenticatedRouteChildren = {
+  authenticatedNotesRoute: authenticatedNotesRouteWithChildren,
+  authenticatedIndexRoute: authenticatedIndexRoute,
+}
+
+const authenticatedRouteWithChildren = authenticatedRoute._addFileChildren(
+  authenticatedRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '': typeof authenticatedRouteWithChildren
   '/flow': typeof FlowRoute
+  '/login': typeof LoginRoute
+  '/ping': typeof PingRoute
+  '/notes': typeof authenticatedNotesRouteWithChildren
+  '/': typeof authenticatedIndexRoute
+  '/notes/$noteId': typeof authenticatedNotesNoteIdRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/flow': typeof FlowRoute
+  '/login': typeof LoginRoute
+  '/ping': typeof PingRoute
+  '/notes': typeof authenticatedNotesRouteWithChildren
+  '/': typeof authenticatedIndexRoute
+  '/notes/$noteId': typeof authenticatedNotesNoteIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
+  '/__authenticated': typeof authenticatedRouteWithChildren
   '/flow': typeof FlowRoute
+  '/login': typeof LoginRoute
+  '/ping': typeof PingRoute
+  '/__authenticated/notes': typeof authenticatedNotesRouteWithChildren
+  '/__authenticated/': typeof authenticatedIndexRoute
+  '/__authenticated/notes/$noteId': typeof authenticatedNotesNoteIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/flow'
+  fullPaths: '' | '/flow' | '/login' | '/ping' | '/notes' | '/' | '/notes/$noteId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/flow'
-  id: '__root__' | '/' | '/flow'
+  to: '/flow' | '/login' | '/ping' | '/notes' | '/' | '/notes/$noteId'
+  id:
+    | '__root__'
+    | '/__authenticated'
+    | '/flow'
+    | '/login'
+    | '/ping'
+    | '/__authenticated/notes'
+    | '/__authenticated/'
+    | '/__authenticated/notes/$noteId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  authenticatedRoute: typeof authenticatedRouteWithChildren
   FlowRoute: typeof FlowRoute
+  LoginRoute: typeof LoginRoute
+  PingRoute: typeof PingRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  authenticatedRoute: authenticatedRouteWithChildren,
   FlowRoute: FlowRoute,
+  LoginRoute: LoginRoute,
+  PingRoute: PingRoute,
 }
 
 export const routeTree = rootRoute
@@ -96,15 +217,42 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
-        "/flow"
+        "/__authenticated",
+        "/flow",
+        "/login",
+        "/ping"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/__authenticated": {
+      "filePath": "__authenticated.tsx",
+      "children": [
+        "/__authenticated/notes",
+        "/__authenticated/"
+      ]
     },
     "/flow": {
       "filePath": "flow.tsx"
+    },
+    "/login": {
+      "filePath": "login.tsx"
+    },
+    "/ping": {
+      "filePath": "ping.tsx"
+    },
+    "/__authenticated/notes": {
+      "filePath": "__authenticated/notes.tsx",
+      "parent": "/__authenticated",
+      "children": [
+        "/__authenticated/notes/$noteId"
+      ]
+    },
+    "/__authenticated/": {
+      "filePath": "__authenticated/index.tsx",
+      "parent": "/__authenticated"
+    },
+    "/__authenticated/notes/$noteId": {
+      "filePath": "__authenticated/notes/$noteId.tsx",
+      "parent": "/__authenticated/notes"
     }
   }
 }

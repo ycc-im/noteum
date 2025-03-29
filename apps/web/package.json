@@ -6,23 +6,24 @@
   "scripts": {
     "dev": "vinxi dev",
     "build": "vinxi build",
-    "start": "vinxi start"
+    "start": "bun run .output/server/index.mjs"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
-    "@noteum/ui": "^0.7.0",
     "@noteum/core": "^0.3.7",
+    "@noteum/ui": "^0.7.0",
     "@noteum/utils": "^0.2.5",
     "@tanstack/react-query": "^5.66.0",
     "@tanstack/react-query-devtools": "^5.66.0",
-    "@tanstack/react-router": "^1.112.17",
-    "@tanstack/react-start": "^1.112.17",
-    "@tanstack/router-devtools": "^1.112.17",
-    "@tanstack/router-plugin": "^1.112.17",
-    "@trpc/client": "^10.45.2",
-    "@trpc/server": "^10.45.2",
+    "@tanstack/react-router": "^1.114.29",
+    "@tanstack/react-start": "^1.114.29",
+    "@tanstack/router-devtools": "^1.114.29",
+    "@tanstack/router-plugin": "^1.114.29",
+    "@trpc/tanstack-react-query": "11.0.1",
+    "@trpc/client": "^11.0.1",
+    "@trpc/server": "^11.0.1",
     "@xyflow/react": "^12.4.4",
     "autoprefixer": "^10.4.20",
     "clsx": "^2.1.1",

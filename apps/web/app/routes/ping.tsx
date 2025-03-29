@@ -1,40 +1,12 @@
-import * as React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
+import * as React from 'react'
 
-export const Route = createFileRoute('/')({
-  component: IndexComponent,
+export const Route = createFileRoute('/ping')({
+  component: PingComponent,
 })
 
-function IndexComponent() {
-  // 使用直接的fetch调用服务器的ping接口
-  const pingQuery = useQuery({
-    queryKey: ['serverPing'],
-    queryFn: async () => {
-      try {
-        // 调用外部服务器的ping接口
-        const response = await fetch('http://localhost:9157/trpc/ping')
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`)
-        }
-        const data = await response.json()
-        return {
-          success: true,
-          message: data.result?.data || 'pong',
-          timestamp: new Date().toISOString(),
-        }
-      } catch (error) {
-        console.error('Fetch error:', error)
-        return {
-          success: false,
-          message: 'Could not connect to server',
-          timestamp: new Date().toISOString(),
-        }
-      }
-    },
-    refetchOnWindowFocus: false,
-  })
-
+function PingComponent() {
+  const { data, isLoading, isError } = trpc.hello.useQuery({ name: 'John' })
   return (
     <div className={`p-2`}>
       <div className={`text-lg`}>Welcome Home!</div>
@@ -46,7 +18,7 @@ function IndexComponent() {
         1 New Invoice
       </a>
 
-      <div className="my-4 p-4 border rounded bg-gray-50">
+      {/* <div className="my-4 p-4 border rounded bg-gray-50">
         <h2 className="text-lg font-semibold mb-2">Ping Server Status:</h2>
         {pingQuery.isLoading ? (
           <div className="text-gray-500">Loading server status...</div>
@@ -67,7 +39,7 @@ function IndexComponent() {
             </div>
           </div>
         )}
-      </div>
+      </div> */}
 
       <hr className={`my-2`} />
       <div className={`max-w-xl`}>

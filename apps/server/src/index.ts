@@ -1,33 +1,36 @@
-import { trpc } from '@elysiajs/trpc'
-import { initTRPC } from '@trpc/server'
-import { Elysia } from 'elysia'
-import cors from '@elysiajs/cors'
-import { pingRouter } from './routers/ping'
+import { Hono } from 'hono'
+import { trpcServer } from '@hono/trpc-server'
+import { appRouter } from './trpc/router'
+import { cors } from 'hono/cors'
+import { logger } from 'hono/logger'
 
-const t = initTRPC.create()
+// 创建 Hono 应用实例
+const app = new Hono()
 
-const router = t.router({
-  ...pingRouter._def.procedures,
+// 定义基础路由
+app.get('/', (c) => {
+  return c.text('Hello Hono with tRPC!')
 })
 
-export type Router = typeof router
+// 添加一个测试路由
+app.get('/test', (c) => {
+  return c.json({ message: 'Test route works!' })
+})
 
-// 获取环境变量PORT，默认为9157
-const PORT = process.env.PORT ? parseInt(process.env.PORT) : 9157
+app.use(cors())
+app.use(logger())
+// 集成 tRPC 路由
+app.use(
+  '/trpc/*',
+  trpcServer({
+    router: appRouter,
+  }),
+)
 
-export const app = new Elysia()
-  .use(cors())
-  // 添加根路径处理程序
-  .get('/', () => {
-    return {
-      message: 'Server is running. Try accessing /trpc/ping to test the API.',
-    }
-  })
-  .use(
-    trpc(router, {
-      endpoint: '/trpc',
-    }),
-  )
-  .listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}/trpc`)
-  })
+const port = process.env.PORT ? parseInt(process.env.PORT) : 9157
+
+// 导出 Hono 应用实例
+export default {
+  port,
+  fetch: app.fetch,
+}

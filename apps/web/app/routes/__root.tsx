@@ -24,7 +24,6 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 function RootComponent() {
   return (
     <RootDocument>
-      {/* @ts-expect-error Type mismatch between React Router and React 18 */}
       <Outlet />
     </RootDocument>
   )
@@ -41,9 +40,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
         {process.env.NODE_ENV === 'development' && (
           <>
-            {/* @ts-expect-error Type mismatch between React Query and React 18 */}
             <ReactQueryDevtools position="bottom" buttonPosition="bottom-left" />
-            {/* @ts-expect-error Type mismatch between React Router and React 18 */}
             <TanStackRouterDevtools position="bottom-right" />
           </>
         )}

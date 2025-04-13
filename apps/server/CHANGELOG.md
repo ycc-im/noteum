@@ -1,5 +1,12 @@
 # @noteum/server
 
+## 0.6.0
+
+### Minor Changes
+
+- Changes:
+  - [feat(server): add prisma system settings model and ignore generated files](https://github.com/ycc-im/noteum/commit/b5ce9092b4b4f04e09bf6be7b42e0d3ddc9bdb11)
+
 ## 0.5.0
 
 ### Minor Changes

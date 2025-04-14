@@ -23,7 +23,7 @@
     "docker:dev": "docker-compose -f docker-compose.yml up",
     "lint": "biome check .",
     "format": "biome format --write \"{packages,apps}/**/*.{ts,tsx,js,jsx}\"",
-    "check": "biome check --apply .",
+    "check": "biome check --write .",
     "type-check": "cd packages/ui && bun run typecheck",
     "test": "bun test",
     "pre-push": "bun run lint && bun run type-check && bun run test",

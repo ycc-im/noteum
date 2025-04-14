@@ -44,7 +44,7 @@ jobs:
       - name: Code quality checks
         run: |
           echo "Running Biome checks..."
-          biome check .
+          bun run check
 
       - name: Type check
         run: bun run type-check

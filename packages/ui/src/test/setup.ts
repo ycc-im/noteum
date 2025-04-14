@@ -1,7 +1,7 @@
-import { expect, afterEach, vi } from 'vitest'
+import matchers from '@testing-library/jest-dom/matchers'
 import { cleanup } from '@testing-library/react'
 import { JSDOM } from 'jsdom'
-import matchers from '@testing-library/jest-dom/matchers'
+import { afterEach, expect, vi } from 'vitest'
 
 // 初始化JSDOM
 const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {

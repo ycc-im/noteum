@@ -1,16 +1,16 @@
-import * as React from 'react'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import {
   HeadContent,
-  Scripts,
   Outlet,
+  Scripts,
   createRootRouteWithContext,
   useRouterState,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import type * as React from 'react'
 
-import type { TRPCProxy } from '../types/trpc'
 import type { QueryClient } from '@tanstack/react-query'
+import type { TRPCProxy } from '../types/trpc'
 
 export interface RouterAppContext {
   trpc: TRPCProxy
@@ -31,7 +31,7 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html>
+    <html lang="zh-CN">
       <head>
         <HeadContent />
       </head>

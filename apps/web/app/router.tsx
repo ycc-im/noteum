@@ -1,5 +1,5 @@
-import { createRouter as createTanStackRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { createRouter as createTanStackRouter } from '@tanstack/react-router'
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
 import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query'
 
@@ -52,9 +52,7 @@ export function createRouter() {
       queryClient,
     },
     defaultPendingComponent: () => (
-      <div
-        className={`fixed inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50`}
-      >
+      <div className="fixed inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50">
         <Spinner size="large" color="primary" />
       </div>
     ),

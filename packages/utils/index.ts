@@ -1,4 +1,4 @@
-export * from './src/utils';
+export * from './src/utils'
 
 // For testing purposes
-console.log("Utils module loaded");
+console.log('Utils module loaded')

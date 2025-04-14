@@ -5,7 +5,7 @@
  * @returns Sum of a and b
  */
 export function add(a: number, b: number): number {
-  return a + b;
+  return a + b
 }
 
 /**
@@ -14,6 +14,6 @@ export function add(a: number, b: number): number {
  * @returns Formatted string
  */
 export function capitalize(str: string): string {
-  if (!str) return '';
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  if (!str) return ''
+  return str.charAt(0).toUpperCase() + str.slice(1)
 }

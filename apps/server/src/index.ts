@@ -1,8 +1,8 @@
-import { Hono } from 'hono'
 import { trpcServer } from '@hono/trpc-server'
-import { appRouter } from './trpc/router'
+import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
+import { appRouter } from './trpc/router'
 
 // 创建 Hono 应用实例
 const app = new Hono()
@@ -27,7 +27,7 @@ app.use(
   }),
 )
 
-const port = process.env.PORT ? parseInt(process.env.PORT) : 9157
+const port = process.env.PORT ? Number.parseInt(process.env.PORT) : 9157
 
 // 导出 Hono 应用实例
 export default {

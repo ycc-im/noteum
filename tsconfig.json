@@ -24,8 +24,5 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
   },
-  "exclude": [
-    "**/*.stories.tsx",
-    "**/*.stories.ts"
-  ]
+  "exclude": ["**/*.stories.tsx", "**/*.stories.ts"]
 }

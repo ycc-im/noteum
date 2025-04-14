@@ -1,5 +1,5 @@
-import * as React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import * as React from 'react'
 
 export const Route = createFileRoute('/__authenticated/notes')({
   component: NotesComponent,
@@ -77,11 +77,26 @@ function NotesComponent() {
   // 分类和标签数据
   const categories = [
     { name: '全部', count: notes.length },
-    { name: '工作', count: notes.filter((note) => note.category === '工作').length },
-    { name: '个人', count: notes.filter((note) => note.category === '个人').length },
-    { name: '学习', count: notes.filter((note) => note.category === '学习').length },
-    { name: '健康', count: notes.filter((note) => note.category === '健康').length },
-    { name: '娱乐', count: notes.filter((note) => note.category === '娱乐').length },
+    {
+      name: '工作',
+      count: notes.filter((note) => note.category === '工作').length,
+    },
+    {
+      name: '个人',
+      count: notes.filter((note) => note.category === '个人').length,
+    },
+    {
+      name: '学习',
+      count: notes.filter((note) => note.category === '学习').length,
+    },
+    {
+      name: '健康',
+      count: notes.filter((note) => note.category === '健康').length,
+    },
+    {
+      name: '娱乐',
+      count: notes.filter((note) => note.category === '娱乐').length,
+    },
   ]
 
   const [selectedCategory, setSelectedCategory] = React.useState('全部')
@@ -111,7 +126,10 @@ function NotesComponent() {
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            role="img"
+            aria-label="新建笔记"
           >
+            <title>新建笔记</title>
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           新建笔记
@@ -130,7 +148,10 @@ function NotesComponent() {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  role="img"
+                  aria-label="搜索"
                 >
+                  <title>搜索</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -177,7 +198,7 @@ function NotesComponent() {
                   <div className="px-4 py-4 sm:px-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <div className={`w-3 h-3 rounded-full bg-${note.color}-500 mr-3`}></div>
+                        <div className={`w-3 h-3 rounded-full bg-${note.color}-500 mr-3`} />
                         <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">
                           {note.title}
                         </p>

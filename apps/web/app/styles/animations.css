@@ -1,13 +1,22 @@
 /* 笔记本线条打字效果 */
 @keyframes typewriter {
-  0% { stroke-dashoffset: 40; }
-  100% { stroke-dashoffset: 0; }
+  0% {
+    stroke-dashoffset: 40;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
 
 /* 笔的书写动画 */
 @keyframes writingPen {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(-20deg); }
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-20deg);
+  }
 }
 
 /* 应用于线条的类 */

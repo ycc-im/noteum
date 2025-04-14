@@ -1,11 +1,11 @@
 // 模拟 Block 类型
 export interface MockBlock {
-  id: string;
-  content: string;
-  type: 'text' | 'image' | 'code' | 'heading' | 'paragraph' | 'list-item' | 'quote';
-  children?: MockBlock[];
-  collapsed?: boolean;
-  indent: number;
+  id: string
+  content: string
+  type: 'text' | 'image' | 'code' | 'heading' | 'paragraph' | 'list-item' | 'quote'
+  children?: MockBlock[]
+  collapsed?: boolean
+  indent: number
 }
 
 // 模拟数据
@@ -34,10 +34,10 @@ export const mockBlocks: MockBlock[] = [
             content: 'console.log("Hello World");',
             type: 'text',
             indent: 2,
-          }
-        ]
-      }
-    ]
+          },
+        ],
+      },
+    ],
   },
   {
     id: '2',
@@ -50,7 +50,7 @@ export const mockBlocks: MockBlock[] = [
         content: '这是第二段文本内容',
         type: 'text',
         indent: 1,
-      }
-    ]
-  }
-];
+      },
+    ],
+  },
+]

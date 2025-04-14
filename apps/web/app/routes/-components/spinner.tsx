@@ -25,7 +25,14 @@ export function Spinner({ size = 'medium', color = 'primary' }: SpinnerProps) {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className={sizeClasses[size]}>
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        <svg
+          viewBox="0 0 100 100"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-full"
+          role="img"
+          aria-label="加载动画"
+        >
+          <title>加载动画</title>
           {/* 笔记本轮廓 */}
           <rect
             x="20"
@@ -81,9 +88,7 @@ export function Spinner({ size = 'medium', color = 'primary' }: SpinnerProps) {
       </div>
 
       {/* 动画定义 */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
+      <style>{`
         @keyframes typewriter {
           0% { stroke-dashoffset: 40; }
           40% { stroke-dashoffset: 20; }
@@ -94,9 +99,7 @@ export function Spinner({ size = 'medium', color = 'primary' }: SpinnerProps) {
           0%, 100% { transform: rotate(0deg); }
           50% { transform: rotate(-15deg); }
         }
-      `,
-        }}
-      />
+      `}</style>
     </div>
   )
 }

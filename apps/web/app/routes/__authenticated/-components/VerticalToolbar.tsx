@@ -1,4 +1,4 @@
-import * as React from 'react'
+import type * as React from 'react'
 
 interface ToolbarButtonProps {
   icon: React.ReactNode
@@ -51,8 +51,11 @@ export const VerticalToolbar: React.FC<VerticalToolbarProps> = ({ className = ''
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            role="img"
+            aria-label="魔法功能"
           >
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            <title>魔法功能</title>
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg>
         }
         title="魔法功能"
@@ -72,9 +75,12 @@ export const VerticalToolbar: React.FC<VerticalToolbarProps> = ({ className = ''
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            role="img"
+            aria-label="代码片段"
           >
-            <polyline points="16 18 22 12 16 6"></polyline>
-            <polyline points="8 6 2 12 8 18"></polyline>
+            <title>代码片段</title>
+            <polyline points="16 18 22 12 16 6" />
+            <polyline points="8 6 2 12 8 18" />
           </svg>
         }
         title="代码片段"
@@ -94,8 +100,8 @@ export const VerticalToolbar: React.FC<VerticalToolbarProps> = ({ className = ''
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
           </svg>
         }
         title="添加链接"
@@ -115,8 +121,8 @@ export const VerticalToolbar: React.FC<VerticalToolbarProps> = ({ className = ''
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
           </svg>
         }
         title="文档功能"
@@ -136,9 +142,9 @@ export const VerticalToolbar: React.FC<VerticalToolbarProps> = ({ className = ''
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
           </svg>
         }
         title="上传文件"
@@ -158,9 +164,9 @@ export const VerticalToolbar: React.FC<VerticalToolbarProps> = ({ className = ''
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-            <polyline points="2 17 12 22 22 17"></polyline>
-            <polyline points="2 12 12 17 22 12"></polyline>
+            <polygon points="12 2 2 7 12 12 22 7 12 2" />
+            <polyline points="2 17 12 22 22 17" />
+            <polyline points="2 12 12 17 22 12" />
           </svg>
         }
         title="图层管理"
@@ -180,10 +186,10 @@ export const VerticalToolbar: React.FC<VerticalToolbarProps> = ({ className = ''
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="12" y1="18" x2="12" y2="12"></line>
-            <line x1="9" y1="15" x2="15" y2="15"></line>
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="12" y1="18" x2="12" y2="12" />
+            <line x1="9" y1="15" x2="15" y2="15" />
           </svg>
         }
         title="添加页面"
@@ -203,11 +209,11 @@ export const VerticalToolbar: React.FC<VerticalToolbarProps> = ({ className = ''
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="16" y1="13" x2="8" y2="13"></line>
-            <line x1="16" y1="17" x2="8" y2="17"></line>
-            <polyline points="10 9 9 9 8 9"></polyline>
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
           </svg>
         }
         title="文本文档"

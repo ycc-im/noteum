@@ -19,12 +19,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '>=22.0.0'
+          node-version: ">=22.0.0"
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 'latest'
+          bun-version: "latest"
 
       - name: Install dependencies
         run: bun install
@@ -37,12 +37,14 @@ jobs:
           mkdir -p packages/ui/dist
           mkdir -p apps/server/dist
           mkdir -p apps/web/dist
-          
+
           # 运行构建脚本
           bun run build
 
-      - name: Lint check
-        run: bun run lint
+      - name: Code quality checks
+        run: |
+          echo "运行 Biome 检查和格式化检查..."
+          bun run check
 
       - name: Type check
         run: bun run type-check
@@ -54,13 +56,13 @@ jobs:
         run: |
           # 获取当前包版本
           CURRENT_VERSION=$(node -p "require('./package.json').version")
-          
+
           # 检查是否已存在相同版本的tag
           if git rev-parse "v$CURRENT_VERSION" >/dev/null 2>&1; then
             echo "错误: 版本 v$CURRENT_VERSION 的tag已经存在，请更新版本号"
             exit 1
           fi
-          
+
           echo "版本检查通过: v$CURRENT_VERSION"
 
       # 构建检查已在前面的 "Build packages" 步骤中执行

@@ -1,12 +1,10 @@
 {
   "name": "noteum",
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@changesets/cli": "^2.28.1",
     "@commitlint/cli": "^19.7.1",
     "@commitlint/config-conventional": "^19.7.1",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "eslint": "^8.56.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
     "typescript": "^5.8.2"
@@ -18,15 +16,14 @@
     }
   },
   "lint-staged": {
-    "*.{js,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "*.{js,ts,tsx}": ["biome check --apply", "biome format --write"]
   },
   "private": true,
   "scripts": {
     "docker:dev": "docker-compose -f docker-compose.yml up",
-    "lint": "eslint \"{packages,apps}/**/*.{ts,tsx,js,jsx}\"",
+    "lint": "biome check \"{packages,apps}/**/*.{ts,tsx,js,jsx}\"",
+    "format": "biome format --write \"{packages,apps}/**/*.{ts,tsx,js,jsx}\"",
+    "check": "biome check --apply .",
     "type-check": "cd packages/ui && bun run typecheck",
     "test": "bun test",
     "pre-push": "bun run lint && bun run type-check && bun run test",
@@ -41,8 +38,5 @@
     "changeset": "changeset",
     "version-packages": "changeset version"
   },
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ]
+  "workspaces": ["packages/*", "apps/*"]
 }

@@ -21,7 +21,7 @@
   "private": true,
   "scripts": {
     "docker:dev": "docker-compose -f docker-compose.yml up",
-    "lint": "biome check \"{packages,apps}/**/*.{ts,tsx,js,jsx}\"",
+    "lint": "biome check .",
     "format": "biome format --write \"{packages,apps}/**/*.{ts,tsx,js,jsx}\"",
     "check": "biome check --apply .",
     "type-check": "cd packages/ui && bun run typecheck",

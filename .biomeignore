@@ -1,7 +1,37 @@
+# Dependencies
 node_modules/
+**/node_modules/
+
+# Build outputs
 dist/
 build/
 .next/
-coverage/
-**/*.d.ts
+.output/
+.vinxi/
+out/
+api/
+storybook-static/
+
+# Generated files
 **/generated/**/*
+**/*.d.ts
+*.tsbuildinfo
+
+# Test outputs
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Cache directories
+.cache/
+.eslintcache
+
+# Environment files
+.env*
+
+# Other
+*.tgz
+*.log
+.DS_Store

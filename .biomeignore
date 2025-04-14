@@ -1,31 +1,26 @@
 # Dependencies
 node_modules/
-**/node_modules/
+apps/*/node_modules/
+packages/*/node_modules/
 
 # Build outputs
 dist/
 build/
-.next/
-.output/
-**/.output/
-.vinxi/
-**/.vinxi/
-out/
-api/
-storybook-static/
+apps/web/.output/
+apps/web/.vinxi/
+apps/web/out/
+apps/web/api/
+apps/web/storybook-static/
+apps/server/dist/
+apps/server/build/
+packages/*/dist/
+packages/*/build/
 
 # Generated files
-**/generated/**/*
-**/*.d.ts
+apps/server/src/generated/
+apps/web/app/routeTree.gen.ts
+*.d.ts
 *.tsbuildinfo
-**/*.gen.ts
-**/*.gen.tsx
-
-# Nuxt/Nitro specific
-**/.nuxt/
-**/.nitro/
-**/nitro.json
-**/.env.build.json
 
 # Test outputs
 coverage/
@@ -37,14 +32,16 @@ playwright/.cache/
 # Cache directories
 .cache/
 .eslintcache
-**/.cache/
+.vinxi/
 
 # Environment files
-.env*
-**/.env*
+.env
+.env.development
+.env.test
+.env.production
+.env.local
 
 # Other
 *.tgz
 *.log
 .DS_Store
-**/.DS_Store

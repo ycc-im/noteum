@@ -11,12 +11,12 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": "bun lint-staged",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
-    "*.{js,ts,tsx}": ["biome check --apply", "biome format --write"]
+    "*.{js,ts,tsx}": ["biome check .", "biome format --write ."]
   },
   "private": true,
   "scripts": {

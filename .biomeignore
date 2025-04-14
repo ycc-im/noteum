@@ -7,7 +7,9 @@ dist/
 build/
 .next/
 .output/
+**/.output/
 .vinxi/
+**/.vinxi/
 out/
 api/
 storybook-static/
@@ -16,6 +18,14 @@ storybook-static/
 **/generated/**/*
 **/*.d.ts
 *.tsbuildinfo
+**/*.gen.ts
+**/*.gen.tsx
+
+# Nuxt/Nitro specific
+**/.nuxt/
+**/.nitro/
+**/nitro.json
+**/.env.build.json
 
 # Test outputs
 coverage/
@@ -27,11 +37,14 @@ playwright/.cache/
 # Cache directories
 .cache/
 .eslintcache
+**/.cache/
 
 # Environment files
 .env*
+**/.env*
 
 # Other
 *.tgz
 *.log
 .DS_Store
+**/.DS_Store

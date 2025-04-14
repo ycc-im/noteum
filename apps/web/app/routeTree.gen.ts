@@ -10,14 +10,14 @@
 
 // Import Routes
 
+import { Route as rootRoute } from './routes/__root'
+import { Route as PingImport } from './routes/ping'
+import { Route as LoginImport } from './routes/login'
+import { Route as FlowImport } from './routes/flow'
 import { Route as authenticatedImport } from './routes/__authenticated'
 import { Route as authenticatedIndexImport } from './routes/__authenticated/index'
 import { Route as authenticatedNotesImport } from './routes/__authenticated/notes'
 import { Route as authenticatedNotesNoteIdImport } from './routes/__authenticated/notes/$noteId'
-import { Route as rootRoute } from './routes/__root'
-import { Route as FlowImport } from './routes/flow'
-import { Route as LoginImport } from './routes/login'
-import { Route as PingImport } from './routes/ping'
 
 // Create/Update Routes
 
@@ -128,9 +128,8 @@ const authenticatedNotesRouteChildren: authenticatedNotesRouteChildren = {
   authenticatedNotesNoteIdRoute: authenticatedNotesNoteIdRoute,
 }
 
-const authenticatedNotesRouteWithChildren = authenticatedNotesRoute._addFileChildren(
-  authenticatedNotesRouteChildren,
-)
+const authenticatedNotesRouteWithChildren =
+  authenticatedNotesRoute._addFileChildren(authenticatedNotesRouteChildren)
 
 interface authenticatedRouteChildren {
   authenticatedNotesRoute: typeof authenticatedNotesRouteWithChildren
@@ -178,7 +177,14 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/flow' | '/login' | '/ping' | '/notes' | '/' | '/notes/$noteId'
+  fullPaths:
+    | ''
+    | '/flow'
+    | '/login'
+    | '/ping'
+    | '/notes'
+    | '/'
+    | '/notes/$noteId'
   fileRoutesByTo: FileRoutesByTo
   to: '/flow' | '/login' | '/ping' | '/notes' | '/' | '/notes/$noteId'
   id:

@@ -1,6 +1,6 @@
-import { type ReactNode } from 'react'
-import { FlowDemoClient } from './-components/flow/FlowDemo.client'
 import { createFileRoute } from '@tanstack/react-router'
+import type { ReactNode } from 'react'
+import { FlowDemoClient } from './-components/flow/FlowDemo.client'
 
 function FlowPage(): ReactNode {
   return (

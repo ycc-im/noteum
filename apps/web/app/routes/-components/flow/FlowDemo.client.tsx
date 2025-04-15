@@ -1,8 +1,8 @@
 'use client'
 
-import { type ReactNode } from 'react'
-import { ReactFlow, addEdge, useNodesState, useEdgesState } from '@xyflow/react'
+import { ReactFlow, addEdge, useEdgesState, useNodesState } from '@xyflow/react'
 import type { Connection, Edge, Node } from '@xyflow/react'
+import type { ReactNode } from 'react'
 import '@xyflow/react/dist/style.css'
 
 const initialNodes: Node[] = [

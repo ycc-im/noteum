@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+apps/*/node_modules/
+packages/*/node_modules/
+
+# Build outputs
+dist/
+build/
+apps/web/.output/
+apps/web/.output/**/*
+apps/web/.vinxi/
+apps/web/.vinxi/**/*
+apps/web/out/
+apps/web/api/
+apps/web/storybook-static/
+apps/server/dist/
+apps/server/build/
+packages/*/dist/
+packages/*/build/
+
+# Generated files
+apps/server/src/generated/
+apps/web/app/routeTree.gen.ts
+*.d.ts
+*.tsbuildinfo
+
+# Test outputs
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Cache directories
+.cache/
+.eslintcache
+.vinxi/
+
+# Environment files
+.env
+.env.development
+.env.test
+.env.production
+.env.local
+
+# Other
+*.tgz
+*.log
+.DS_Store

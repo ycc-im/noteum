@@ -1,6 +1,6 @@
 // 覆盖 @radix-ui/react-popover 的类型定义
 declare module '@radix-ui/react-popover' {
-  import * as React from 'react';
+  import type * as React from 'react';
 
   // Root
   type PopoverProps = {
@@ -9,14 +9,14 @@ declare module '@radix-ui/react-popover' {
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
   };
-  
+
   const Root: React.FC<PopoverProps>;
 
   // Trigger
   type PopoverTriggerProps = React.ComponentPropsWithoutRef<'button'> & {
     asChild?: boolean;
   };
-  
+
   const Trigger: React.ForwardRefExoticComponent<
     PopoverTriggerProps & React.RefAttributes<HTMLButtonElement>
   >;
@@ -38,7 +38,7 @@ declare module '@radix-ui/react-popover' {
     onFocusOutside?: (event: FocusOutsideEvent) => void;
     onInteractOutside?: (event: InteractOutsideEvent) => void;
   };
-  
+
   const Content: React.ForwardRefExoticComponent<
     PopoverContentProps & React.RefAttributes<HTMLDivElement>
   >;
@@ -49,7 +49,7 @@ declare module '@radix-ui/react-popover' {
     container?: HTMLElement | null;
     forceMount?: boolean;
   };
-  
+
   const Portal: React.FC<PopoverPortalProps>;
 
   // 事件类型
@@ -62,9 +62,9 @@ declare module '@radix-ui/react-popover' {
     Trigger,
     Portal,
     Content,
-    PopoverProps,
-    PopoverTriggerProps,
-    PopoverContentProps,
-    PopoverPortalProps
+    type PopoverProps,
+    type PopoverTriggerProps,
+    type PopoverContentProps,
+    type PopoverPortalProps,
   };
 }

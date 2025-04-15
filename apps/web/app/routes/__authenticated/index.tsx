@@ -1,23 +1,23 @@
-import * as React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import {
-  ReactFlow,
   Background,
-  Controls,
-  MiniMap,
-  Panel,
-  useNodesState,
-  useEdgesState,
-  MarkerType,
-  Node,
-  Edge,
-  Connection,
-  NodeTypes,
   BackgroundVariant,
-  NodeProps,
+  type Connection,
+  Controls,
+  type Edge,
   Handle,
+  MarkerType,
+  MiniMap,
+  type Node,
+  type NodeProps,
+  type NodeTypes,
+  Panel,
   Position,
+  ReactFlow,
+  useEdgesState,
+  useNodesState,
 } from '@xyflow/react'
+import * as React from 'react'
 import '@xyflow/react/dist/style.css'
 
 // 自定义样式，将ReactFlow logo移动到右下角
@@ -51,7 +51,7 @@ const NoteNode = ({ data }: NodeProps<NoteData>) => {
       <Handle type="source" position={Position.Bottom} className="w-2 h-2 !bg-gray-400" />
 
       <div className="flex items-center mb-2">
-        <div className={`w-3 h-3 rounded-full bg-${color}-500 mr-2`}></div>
+        <div className={`w-3 h-3 rounded-full bg-${color}-500 mr-2`} />
         <div className="font-medium text-gray-900 dark:text-white">{data.label}</div>
       </div>
       {data.content && (
@@ -108,7 +108,7 @@ function AuthenticatedIndexComponent() {
   const [editData, setEditData] = React.useState<NoteData | null>(null)
 
   // 当节点被选中时的处理函数
-  const onNodeClick = React.useCallback((event: React.MouseEvent, node: Node<NoteData>) => {
+  const onNodeClick = React.useCallback((_event: React.MouseEvent, node: Node<NoteData>) => {
     setSelectedNode(node)
   }, [])
 
@@ -214,10 +214,14 @@ function AuthenticatedIndexComponent() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label
+                  htmlFor="title"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
                   标题
                 </label>
                 <input
+                  id="title"
                   type="text"
                   value={editData.label}
                   onChange={(e) => setEditData({ ...editData, label: e.target.value })}
@@ -226,10 +230,14 @@ function AuthenticatedIndexComponent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label
+                  htmlFor="content"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
                   内容
                 </label>
                 <textarea
+                  id="content"
                   value={editData.content || ''}
                   onChange={(e) => setEditData({ ...editData, content: e.target.value })}
                   rows={5}
@@ -238,10 +246,14 @@ function AuthenticatedIndexComponent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label
+                  htmlFor="tags"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
                   标签
                 </label>
                 <input
+                  id="tags"
                   type="text"
                   value={editData.tags?.join(', ') || ''}
                   onChange={(e) =>
@@ -259,10 +271,14 @@ function AuthenticatedIndexComponent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label
+                  htmlFor="color"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
                   颜色
                 </label>
                 <select
+                  id="color"
                   value={editData.color || 'blue'}
                   onChange={(e) => setEditData({ ...editData, color: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"

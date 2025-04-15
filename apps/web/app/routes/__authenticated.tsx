@@ -1,5 +1,5 @@
-import * as React from 'react'
 import { Outlet, createFileRoute } from '@tanstack/react-router'
+import * as React from 'react'
 
 // 引入必要的图标组件
 const IconToday = () => (
@@ -317,7 +317,7 @@ function AuthenticatedLayout() {
                   className="flex items-center space-x-3 px-2 py-2 rounded hover:bg-gray-800"
                 >
                   <div className="flex items-center space-x-3">
-                    <span className="block w-3 h-3 bg-white"></span>
+                    <span className="block w-3 h-3 bg-white" />
                     <span>待办事项</span>
                   </div>
                 </a>
@@ -326,7 +326,7 @@ function AuthenticatedLayout() {
                   className="flex items-center space-x-3 px-2 py-2 rounded hover:bg-gray-800"
                 >
                   <div className="flex items-center space-x-3">
-                    <span className="block w-3 h-3 bg-green-500"></span>
+                    <span className="block w-3 h-3 bg-green-500" />
                     <span>创意</span>
                   </div>
                 </a>
@@ -335,7 +335,7 @@ function AuthenticatedLayout() {
                   className="flex items-center space-x-3 px-2 py-2 rounded hover:bg-gray-800"
                 >
                   <div className="flex items-center space-x-3">
-                    <span className="block w-3 h-3 bg-purple-500"></span>
+                    <span className="block w-3 h-3 bg-purple-500" />
                     <span>日常反思</span>
                   </div>
                 </a>

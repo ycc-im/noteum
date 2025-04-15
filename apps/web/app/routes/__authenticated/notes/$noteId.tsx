@@ -1,5 +1,5 @@
-import * as React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import * as React from 'react'
 
 export const Route = createFileRoute('/__authenticated/notes/$noteId')({
   component: NoteDetailComponent,
@@ -10,7 +10,7 @@ function NoteDetailComponent() {
 
   // 模拟笔记数据 - 实际应用中应从API获取
   const noteData = {
-    id: parseInt(noteId),
+    id: Number.parseInt(noteId),
     title: '项目计划讨论',
     category: '工作',
     date: '2025-03-26',
@@ -57,7 +57,10 @@ function NoteDetailComponent() {
   // 保存编辑
   const handleSave = () => {
     // 实际应用中应调用API保存数据
-    console.log('保存笔记:', { title: editableTitle, content: editableContent })
+    console.log('保存笔记:', {
+      title: editableTitle,
+      content: editableContent,
+    })
     setIsEditing(false)
   }
 
@@ -76,7 +79,10 @@ function NoteDetailComponent() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              role="img"
+              aria-label="返回"
             >
+              <title>返回</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -85,7 +91,7 @@ function NoteDetailComponent() {
               />
             </svg>
           </button>
-          <div className={`w-4 h-4 rounded-full bg-${noteData.color}-500`}></div>
+          <div className={`w-4 h-4 rounded-full bg-${noteData.color}-500`} />
           {isEditing ? (
             <input
               type="text"
@@ -184,7 +190,10 @@ function NoteDetailComponent() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              role="img"
+              aria-label="分类图标"
             >
+              <title>分类图标</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -227,7 +236,10 @@ function NoteDetailComponent() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              role="img"
+              aria-label="分类图标"
             >
+              <title>分类图标</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -244,7 +256,10 @@ function NoteDetailComponent() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              role="img"
+              aria-label="创建时间"
             >
+              <title>创建时间</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -263,7 +278,10 @@ function NoteDetailComponent() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              role="img"
+              aria-label="最后编辑时间"
             >
+              <title>最后编辑时间</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

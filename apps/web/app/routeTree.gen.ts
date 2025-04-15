@@ -128,9 +128,8 @@ const authenticatedNotesRouteChildren: authenticatedNotesRouteChildren = {
   authenticatedNotesNoteIdRoute: authenticatedNotesNoteIdRoute,
 }
 
-const authenticatedNotesRouteWithChildren = authenticatedNotesRoute._addFileChildren(
-  authenticatedNotesRouteChildren,
-)
+const authenticatedNotesRouteWithChildren =
+  authenticatedNotesRoute._addFileChildren(authenticatedNotesRouteChildren)
 
 interface authenticatedRouteChildren {
   authenticatedNotesRoute: typeof authenticatedNotesRouteWithChildren
@@ -178,7 +177,14 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/flow' | '/login' | '/ping' | '/notes' | '/' | '/notes/$noteId'
+  fullPaths:
+    | ''
+    | '/flow'
+    | '/login'
+    | '/ping'
+    | '/notes'
+    | '/'
+    | '/notes/$noteId'
   fileRoutesByTo: FileRoutesByTo
   to: '/flow' | '/login' | '/ping' | '/notes' | '/' | '/notes/$noteId'
   id:

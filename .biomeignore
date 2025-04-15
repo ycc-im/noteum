@@ -7,7 +7,9 @@ packages/*/node_modules/
 dist/
 build/
 apps/web/.output/
+apps/web/.output/**/*
 apps/web/.vinxi/
+apps/web/.vinxi/**/*
 apps/web/out/
 apps/web/api/
 apps/web/storybook-static/

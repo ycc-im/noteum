@@ -181,6 +181,56 @@ documentation:
     - docs/
     - packages/*/README.md
 
+# === Definition-First File Rule ===
+file_definition:
+  # Definition-First Workflow Enforcement
+  definition_first_workflow:
+    enabled: true
+    description: |
+      All new source code features or files must follow a strict definition-first workflow:
+      1. The definition (.md) file must be written and reviewed/approved before any test or implementation code is added.
+      2. Unit tests must be written according to the approved definition file, and reviewed/approved before implementation.
+      3. Implementation code (.ts, .js, etc.) can only be written after both the definition and test files are approved.
+      This process ensures clarity, reduces ambiguity, and improves maintainability and AI-friendliness.
+    enforcement:
+      - Do not create test or implementation files before the definition file is approved.
+      - Do not create implementation files before the test file is approved.
+      - All steps require explicit human approval before proceeding to the next.
+    exceptions:
+      - Bug fixes for existing files may skip definition if the purpose is clear and unchanged.
+      - Documentation-only changes.
+    note: |
+      This workflow is mandatory for all new features, utilities, and modules.
+  enabled: true
+  description: |
+    Every source code file (such as .ts, .tsx, .js, .py, etc.) must have a corresponding .md file as its definition document.
+    The .md file should be written before the code implementation, clearly describing the file's design purpose, inputs, outputs, dependencies, constraints, and other key aspects.
+    This improves team collaboration, maintainability, and enables LLMs to understand and generate code more accurately.
+  template:
+    - Purpose: Briefly describe the main function and business context of this code file.
+    - Inputs: List the main inputs (such as parameters, dependencies, external data, etc.).
+    - Outputs: List the main outputs (such as return values, exports, side effects, etc.).
+    - Dependencies: List other modules or resources this file depends on.
+    - Constraints: List any special constraints or caveats for this file.
+    - Examples: Provide usage examples or sample calls.
+    - ChangeLog: Important modification records.
+  validation:
+    check_md_for_each_code_file: true
+    check_code_for_each_md_file: true
+    auto_sync: false # Optional: whether to auto-generate code skeletons or doc drafts
+  file_types:
+    - .ts
+    - .tsx
+    - .js
+    - .jsx
+    - .py
+  exceptions:
+    - README.md
+    - Pure config files (such as .json, .yml, .env, etc.)
+  note: |
+    This "definition-first" development approach aims to improve code quality, maintainability, and AI-friendliness.
+    Team members should always write and maintain the corresponding .md file when creating or updating a code file.
+
 # CI/CD Configuration
 ci:
   provider: github-actions
@@ -197,37 +247,37 @@ docker:
     build: docker-compose build
     dev: docker-compose up -d
 
-# Component File Structure Rules
+  # Component File Structure Rules
   # files naming
   file_naming:
-    components: 'PascalCase'
-    utils: 'camelCase'
-    test: '*.test.ts'
-    story: '*.stories.tsx'
-    
+    components: "PascalCase"
+    utils: "camelCase"
+    test: "*.test.ts"
+    story: "*.stories.tsx"
+
   # directory naming
   directory_naming:
-    components: 'kebab-case'    
-    utils: 'kebab-case'         
-    hooks: 'kebab-case'         
+    components: "kebab-case"
+    utils: "kebab-case"
+    hooks: "kebab-case"
 
   # component structure
   component_structure:
     main_component:
-      pattern: '{ComponentName}.tsx'        # Main component file (e.g., Button.tsx)
-      case: 'PascalCase'                   # Use PascalCase
+      pattern: "{ComponentName}.tsx" # Main component file (e.g., Button.tsx)
+      case: "PascalCase" # Use PascalCase
     stories:
-      pattern: '{ComponentName}.stories.tsx' # Stories file (e.g., Button.stories.tsx)
-      case: 'PascalCase'                   # Use PascalCase
+      pattern: "{ComponentName}.stories.tsx" # Stories file (e.g., Button.stories.tsx)
+      case: "PascalCase" # Use PascalCase
     test:
-      pattern: '{ComponentName}.test.tsx'   # Test file (e.g., Button.test.tsx)
-      case: 'PascalCase'                   # Use PascalCase
+      pattern: "{ComponentName}.test.tsx" # Test file (e.g., Button.test.tsx)
+      case: "PascalCase" # Use PascalCase
     types:
-      pattern: '{ComponentName}.types.ts'   # Type definitions file (e.g., Button.types.ts)
-      case: 'PascalCase'                   # Use PascalCase
+      pattern: "{ComponentName}.types.ts" # Type definitions file (e.g., Button.types.ts)
+      case: "PascalCase" # Use PascalCase
     utils:
-      pattern: '{componentName}.utils.ts'   # Utility functions file (e.g., button.utils.ts)
-      case: 'camelCase'                    # Use camelCase
+      pattern: "{componentName}.utils.ts" # Utility functions file (e.g., button.utils.ts)
+      case: "camelCase" # Use camelCase
     index:
-      pattern: 'index.ts'                  # Export file
-      case: 'lowercase'                    # Use lowercase
+      pattern: "index.ts" # Export file
+      case: "lowercase" # Use lowercase

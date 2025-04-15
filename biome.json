@@ -8,7 +8,10 @@
       "**/src/generated/**",
       "**/.next/**",
       "**/build/**",
-      "**/routeTree.gen.ts"
+      "**/routeTree.gen.ts",
+      "**/.output/**",
+      "**/.vinxi/**",
+      "**/out/**"
     ]
   },
   "organizeImports": {

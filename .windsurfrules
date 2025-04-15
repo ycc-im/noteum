@@ -183,6 +183,24 @@ documentation:
 
 # === Definition-First File Rule ===
 file_definition:
+  # Definition-First Workflow Enforcement
+  definition_first_workflow:
+    enabled: true
+    description: |
+      All new source code features or files must follow a strict definition-first workflow:
+      1. The definition (.md) file must be written and reviewed/approved before any test or implementation code is added.
+      2. Unit tests must be written according to the approved definition file, and reviewed/approved before implementation.
+      3. Implementation code (.ts, .js, etc.) can only be written after both the definition and test files are approved.
+      This process ensures clarity, reduces ambiguity, and improves maintainability and AI-friendliness.
+    enforcement:
+      - Do not create test or implementation files before the definition file is approved.
+      - Do not create implementation files before the test file is approved.
+      - All steps require explicit human approval before proceeding to the next.
+    exceptions:
+      - Bug fixes for existing files may skip definition if the purpose is clear and unchanged.
+      - Documentation-only changes.
+    note: |
+      This workflow is mandatory for all new features, utilities, and modules.
   enabled: true
   description: |
     Every source code file (such as .ts, .tsx, .js, .py, etc.) must have a corresponding .md file as its definition document.

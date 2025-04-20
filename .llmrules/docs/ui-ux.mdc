@@ -1,0 +1,106 @@
+---
+title: UI/UX 设计规范
+category: design
+version: 1.0
+lastUpdated: 2025-04-21
+description: 用户界面和交互设计规范
+---
+
+<TableOfContents>
+  - [布局规范](#布局规范)
+  - [侧边栏设计](#侧边栏设计)
+  - [加载动画](#加载动画)
+  - [颜色系统](#颜色系统)
+  - [交互设计](#交互设计)
+  - [响应式设计](#响应式设计)
+  - [无障碍设计](#无障碍设计)
+</TableOfContents>
+
+# 布局规范
+
+<LayoutGuidelines>
+- 认证后页面采用左右布局
+- 左侧为可收起的侧边栏
+- 右侧为内容区域，自适应宽度
+- 内容区域随侧边栏收起展开而调整
+- 简洁的内容容器，用于显示Outlet内容
+</LayoutGuidelines>
+
+# 侧边栏设计
+
+## 基本特性
+
+<SidebarFeatures>
+- 可收起展开（默认展开状态）
+- 展开时宽度为64（w-64），收起时宽度为20（w-20）
+- 黑色背景，白色文字
+- 包含顶部导航控制区、主菜单区、底部工具栏
+- 使用SVG图标组件实现各种功能图标
+- 收起时只显示图标，展开时显示完整菜单项
+</SidebarFeatures>
+
+## 功能区域
+
+<SidebarSections>
+- 主要功能区：
+  - 今天、标签、收件箱、AI助手、保存布局等功能入口
+  - 创建新笔记的输入框
+  - 固定笔记区域（待办事项、创意、日常反思）
+  - 工作区管理
+- 底部工具栏：
+  - 通知、帮助、用户设置按钮
+  - 收起/展开侧边栏的控制按钮
+</SidebarSections>
+
+# 加载动画
+
+## 设计规范
+
+<LoadingAnimation>
+- 现代加载动画：旋转圆环 + 三脉冲点
+- 尺寸选项：small/medium/large
+- 颜色选项：primary/secondary/accent
+- 半透明背景 + 模糊效果，提升用户体验
+- 加载文本："LOADING NOTEUM..."
+- 在router.tsx中配置为全屏半透明背景，使动画显示在页面中央
+</LoadingAnimation>
+
+# 颜色系统
+
+<ColorSystem>
+- 主色：#3B82F6（蓝色）
+- 次色：#10B981（绿色）
+- 强调色：#8B5CF6（紫色）
+- 背景色：#FFFFFF（白色）
+- 文本色：#1F2937（深灰）
+- 边框色：#E5E7EB（浅灰）
+- 警告色：#EF4444（红色）
+</ColorSystem>
+
+# 交互设计
+
+<InteractionGuidelines>
+- 所有交互元素需有明确的悬停状态
+- 按钮点击需有反馈动效
+- 拖拽操作需有视觉指示
+- 表单提交需有加载状态
+- 错误信息需清晰展示
+</InteractionGuidelines>
+
+# 响应式设计
+
+<ResponsiveDesign>
+- 桌面优先设计
+- 支持平板和移动设备
+- 侧边栏在小屏幕上自动收起
+- 内容区域在小屏幕上占满宽度
+</ResponsiveDesign>
+
+# 无障碍设计
+
+<AccessibilityGuidelines>
+- 所有交互元素需支持键盘操作
+- 图标需有文本说明
+- 颜色对比度符合WCAG标准
+- 支持屏幕阅读器
+</AccessibilityGuidelines>

@@ -1,0 +1,77 @@
+---
+title: 数据模型规范
+category: architecture
+version: 1.0
+lastUpdated: 2025-04-21
+description: 流程图节点和工作区数据结构规范
+---
+
+<TableOfContents>
+  - [节点数据结构](#节点数据结构)
+  - [边数据结构](#边数据结构)
+  - [工作区数据结构](#工作区数据结构)
+  - [tRPC 接口](#trpc-接口)
+  - [最佳实践](#最佳实践)
+</TableOfContents>
+
+# 节点数据结构
+
+<DataStructure name="NodeData">
+- id: 节点ID
+- uid: 全局唯一标识符（支持多人系统）
+- type: 节点类型（如'note'）
+- position: 节点在画布上的位置坐标
+- label: 节点标题
+- content: 结构化内容（使用JSONB类型）
+  - type: 内容类型（text/rich_text/url/embed等）
+  - data: 根据类型不同的具体内容
+  - plainText: 用于搜索的纯文本版本
+- color: 节点颜色
+- tags: 标签数组（使用TEXT[]类型）
+- createdAt: 创建时间
+- updatedAt: 更新时间
+- parentId: 父节点ID
+- width: 节点宽度
+- height: 节点高度
+- workspaceId: 工作区ID（支持多空间）
+</DataStructure>
+
+# 边数据结构
+
+<DataStructure name="EdgeData">
+- id: 边ID
+- uid: 全局唯一标识符
+- source: 源节点ID
+- target: 目标节点ID
+- markerType: 箭头类型
+- label: 连接标签
+</DataStructure>
+
+# 工作区数据结构
+
+<DataStructure name="WorkspaceData">
+- id: 工作区ID
+- name: 工作区名称
+- description: 描述
+- ownerId: 所有者ID
+- members: 成员列表
+- settings: 工作区设置
+</DataStructure>
+
+# tRPC 接口
+
+<ApiEndpoints>
+- getNodesByDate: 根据日期获取节点数据
+- getNodesByWorkspace: 根据工作区获取节点数据
+- getAllWorkspaces: 获取所有工作区
+- getAllTags: 获取所有标签
+</ApiEndpoints>
+
+# 最佳实践
+
+<BestPractices>
+- 节点内容应使用结构化数据，便于搜索和渲染
+- 使用标签系统进行节点分类和快速查找
+- 工作区设计支持多用户协作
+- 边的设计支持不同类型的关系表示
+</BestPractices>

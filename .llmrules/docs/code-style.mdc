@@ -125,6 +125,13 @@ const useUser = (userId) => {
 
 # 命名规范
 
+## 语言规范
+
+<RuleBlock severity="high">
+变量、函数、类、接口等均使用英文命名，遵循 camelCase 或 PascalCase。
+不允许使用中文或拼音作为标识符。
+</RuleBlock>
+
 ## 变量命名
 
 <CodeBlock language="typescript" title="变量命名规范">
@@ -165,12 +172,19 @@ const input_field = () => {};
 
 # 注释规范
 
+## 注释语言
+
+<RuleBlock severity="high">
+所有代码注释必须使用英文，包括文件头注释、函数注释、行内注释等。
+注释应简洁明了，避免冗余。
+</RuleBlock>
+
 ## 文件头注释
 
 <CodeBlock language="typescript" title="文件头注释">
 /**
- * @file 用户管理模块
- * @description 处理用户相关的数据操作和业务逻辑
+ * @file User management module
+ * @description Handle user-related data operations and business logic
  * @module users
  */
 </CodeBlock>

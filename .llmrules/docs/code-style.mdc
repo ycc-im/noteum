@@ -1,17 +1,39 @@
-# 代码风格指南
+---
+title: 代码风格指南
+category: guidelines
+version: 1.0
+lastUpdated: 2025-04-21
+description: TypeScript 和 React 代码风格规范
+---
 
-## 总体原则
+<TableOfContents>
+  - [总体原则](#总体原则)
+  - [TypeScript 规范](#typescript-规范)
+  - [React 组件规范](#react-组件规范)
+  - [命名规范](#命名规范)
+  - [注释规范](#注释规范)
+  - [代码组织](#代码组织)
+  - [错误处理](#错误处理)
+  - [性能优化](#性能优化)
+  - [最佳实践](#最佳实践)
+  - [工具配置](#工具配置)
+  - [代码审查清单](#代码审查清单)
+</TableOfContents>
 
-1. 代码可读性优先
-2. 一致性
-3. 自文档化
-4. 类型安全
+# 总体原则
 
-## TypeScript 规范
+<PrincipleList>
+  - 代码可读性优先
+  - 一致性
+  - 自文档化
+  - 类型安全
+</PrincipleList>
 
-### 类型定义
+# TypeScript 规范
 
-```typescript
+## 类型定义
+
+<CodeBlock language="typescript" title="类型定义示例">
 // ✅ 推荐
 type User = {
   id: string;
@@ -22,21 +44,21 @@ type User = {
 
 // ❌ 避免
 type User = any;
-```
+</CodeBlock>
 
-### 类型断言
+## 类型断言
 
-```typescript
+<CodeBlock language="typescript" title="类型断言示例">
 // ✅ 推荐
 const user = data as User;
 
 // ❌ 避免
 const user = data as any;
-```
+</CodeBlock>
 
-### 泛型使用
+## 泛型使用
 
-```typescript
+<CodeBlock language="typescript" title="泛型使用示例">
 // ✅ 推荐
 function getFirst<T>(array: T[]): T | undefined {
   return array[0];
@@ -46,13 +68,13 @@ function getFirst<T>(array: T[]): T | undefined {
 function getFirst(array: any[]): any {
   return array[0];
 }
-```
+</CodeBlock>
 
-## React 组件规范
+# React 组件规范
 
-### 组件定义
+## 组件定义
 
-```typescript
+<CodeBlock language="typescript" title="组件定义规范">
 // ✅ 推荐
 type ButtonProps = {
   label: string;
@@ -60,7 +82,7 @@ type ButtonProps = {
   variant?: 'primary' | 'secondary';
 };
 
-const Button: React.FC<ButtonProps> = ({ label, onClick, variant = 'primary' }) => {
+const Button = ({ label, onClick, variant = 'primary' }: ButtonProps) => {
   return (
     <button className={`btn-${variant}`} onClick={onClick}>
       {label}
@@ -72,11 +94,11 @@ const Button: React.FC<ButtonProps> = ({ label, onClick, variant = 'primary' }) 
 const Button = (props: any) => {
   return <button onClick={props.onClick}>{props.label}</button>;
 };
-```
+</CodeBlock>
 
-### Hooks 规范
+## Hooks 规范
 
-```typescript
+<CodeBlock language="typescript" title="Hooks 使用规范">
 // ✅ 推荐
 const useUser = (userId: string) => {
   const [user, setUser] = useState<User | null>(null);
@@ -99,13 +121,13 @@ const useUser = (userId) => {
   }, []);
   return data;
 };
-```
+</CodeBlock>
 
-## 命名规范
+# 命名规范
 
-### 变量命名
+## 变量命名
 
-```typescript
+<CodeBlock language="typescript" title="变量命名规范">
 // ✅ 推荐
 const userName = 'John';
 const isActive = true;
@@ -115,11 +137,11 @@ const handleClick = () => {};
 const n = 'John';
 const flag = true;
 const do_something = () => {};
-```
+</CodeBlock>
 
-### 常量命名
+## 常量命名
 
-```typescript
+<CodeBlock language="typescript" title="常量命名规范">
 // ✅ 推荐
 const MAX_RETRY_COUNT = 3;
 const API_BASE_URL = '/api/v1';
@@ -127,11 +149,11 @@ const API_BASE_URL = '/api/v1';
 // ❌ 避免
 const max = 3;
 const url = '/api/v1';
-```
+</CodeBlock>
 
-### 组件命名
+## 组件命名
 
-```typescript
+<CodeBlock language="typescript" title="组件命名规范">
 // ✅ 推荐
 const UserProfile = () => {};
 const InputField = () => {};
@@ -139,23 +161,23 @@ const InputField = () => {};
 // ❌ 避免
 const profile = () => {};
 const input_field = () => {};
-```
+</CodeBlock>
 
-## 注释规范
+# 注释规范
 
-### 文件头注释
+## 文件头注释
 
-```typescript
+<CodeBlock language="typescript" title="文件头注释">
 /**
  * @file 用户管理模块
  * @description 处理用户相关的数据操作和业务逻辑
  * @module users
  */
-```
+</CodeBlock>
 
-### 函数注释
+## 函数注释
 
-```typescript
+<CodeBlock language="typescript" title="函数注释">
 /**
  * 获取用户信息
  * @param {string} userId - 用户ID
@@ -165,11 +187,11 @@ const input_field = () => {};
 async function getUser(userId: string): Promise<User> {
   // 实现
 }
-```
+</CodeBlock>
 
-### 行内注释
+## 行内注释
 
-```typescript
+<CodeBlock language="typescript" title="行内注释">
 // ✅ 推荐
 // 检查用户权限
 if (!hasPermission(user, 'admin')) {
@@ -179,13 +201,13 @@ if (!hasPermission(user, 'admin')) {
 // ❌ 避免
 // 检查
 if (!p) throw new Error('error');
-```
+</CodeBlock>
 
-## 代码组织
+# 代码组织
 
-### 导入顺序
+## 导入顺序
 
-```typescript
+<CodeBlock language="typescript" title="导入顺序规范">
 // 1. React 和第三方库导入
 import React, { useState, useEffect } from 'react';
 import { trpc } from '@trpc/client';
@@ -201,18 +223,18 @@ import { Button } from '@/components/Button';
 
 // 5. 样式导入
 import styles from './styles.module.css';
-```
+</CodeBlock>
 
-### 导出规范
+## 导出规范
 
-```typescript
+<CodeBlock language="typescript" title="导出规范">
 // ✅ 推荐
 export interface User {
   id: string;
   name: string;
 }
 
-export const UserProfile: React.FC<UserProfileProps> = () => {
+export const UserProfile = (props: UserProfileProps) => {
   // 实现
 };
 
@@ -220,13 +242,13 @@ export const UserProfile: React.FC<UserProfileProps> = () => {
 export default function UserProfile() {
   // 实现
 }
-```
+</CodeBlock>
 
-## 错误处理
+# 错误处理
 
-### 异步错误处理
+## 异步错误处理
 
-```typescript
+<CodeBlock language="typescript" title="异步错误处理">
 // ✅ 推荐
 try {
   const user = await fetchUser(userId);
@@ -245,13 +267,13 @@ try {
 } catch (e: any) {
   console.error(e);
 }
-```
+</CodeBlock>
 
-## 性能优化
+# 性能优化
 
-### React 优化
+## React 优化
 
-```typescript
+<CodeBlock language="typescript" title="React 性能优化">
 // ✅ 推荐
 const MemoizedComponent = React.memo(({ data }) => {
   return <div>{data}</div>;
@@ -261,11 +283,11 @@ const MemoizedComponent = React.memo(({ data }) => {
 const Component = ({ data }) => {
   return <div>{data}</div>;
 };
-```
+</CodeBlock>
 
-### 事件处理
+## 事件处理
 
-```typescript
+<CodeBlock language="typescript" title="事件处理优化">
 // ✅ 推荐
 const MyComponent = () => {
   const handleClick = useCallback(() => {
@@ -279,24 +301,26 @@ const MyComponent = () => {
 const MyComponent = () => {
   return <button onClick={() => console.log('clicked')}>点击</button>;
 };
-```
+</CodeBlock>
 
-## 最佳实践
+# 最佳实践
 
-1. 使用 TypeScript 的严格模式
-2. 优先使用函数式组件和 Hooks
-3. 保持组件纯函数特性
-4. 避免过深的组件嵌套
-5. 合理使用状态管理
-6. 遵循 DRY 原则
-7. 编写单元测试
-8. 及时处理 ESLint 警告
+<BestPractices>
+  - 使用 TypeScript 的严格模式
+  - 优先使用函数式组件和 Hooks
+  - 保持组件纯函数特性
+  - 避免过深的组件嵌套
+  - 合理使用状态管理
+  - 遵循 DRY 原则
+  - 编写单元测试
+  - 及时处理 ESLint 警告
+</BestPractices>
 
-## 工具配置
+# 工具配置
 
-### ESLint 规则
+## ESLint 规则
 
-```json
+<CodeBlock language="json" title="ESLint 配置">
 {
   "extends": [
     "eslint:recommended",
@@ -309,11 +333,11 @@ const MyComponent = () => {
     "react-hooks/rules-of-hooks": "error"
   }
 }
-```
+</CodeBlock>
 
-### Prettier 配置
+## Prettier 配置
 
-```json
+<CodeBlock language="json" title="Prettier 配置">
 {
   "semi": true,
   "trailingComma": "es5",
@@ -321,15 +345,17 @@ const MyComponent = () => {
   "printWidth": 80,
   "tabWidth": 2
 }
-```
+</CodeBlock>
 
-## 代码审查清单
+# 代码审查清单
 
-1. 类型定义完整性
-2. 错误处理完备性
-3. 性能优化合理性
-4. 代码可读性
-5. 测试覆盖率
-6. 文档完整性
-7. 代码重复度
-8. 命名规范性
+<CheckList>
+  - 类型定义完整性
+  - 错误处理完备性
+  - 性能优化合理性
+  - 代码可读性
+  - 测试覆盖率
+  - 文档完整性
+  - 代码重复度
+  - 命名规范性
+</CheckList>

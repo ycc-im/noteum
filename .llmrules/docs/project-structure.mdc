@@ -35,6 +35,16 @@ noteum/
 ```
 </ProjectStructure>
 
+# 路由结构
+
+<RouteStructure>
+- 根布局路由 (__root.tsx)：提供基本 HTML 结构，包含所有其他路由
+- 认证布局路由 (__authenticated.tsx)：提供认证后的页面框架，包含导航栏、用户菜单等 UI 元素
+- 登录页面 (login.tsx)：独立页面，不受认证框架约束
+- 首页 (__authenticated/index.tsx)：位于认证框架内，匹配根路径 "/"
+- ping 路由 (ping.tsx)：独立路由，用于服务状态检测
+</RouteStructure>
+
 # Monorepo 结构说明
 
 ## apps 目录

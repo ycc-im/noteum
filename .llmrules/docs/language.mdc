@@ -1,0 +1,89 @@
+---
+title: 语言使用规范
+category: guidelines
+version: 1.0
+lastUpdated: 2025-04-21
+description: 项目中中英文使用规范
+---
+
+<TableOfContents>
+  - [总体原则](#总体原则)
+  - [必须使用英文的场景](#必须使用英文的场景)
+  - [使用中文的场景](#使用中文的场景)
+  - [混合使用规范](#混合使用规范)
+  - [命名规范](#命名规范)
+  - [文档规范](#文档规范)
+</TableOfContents>
+
+# 总体原则
+
+<PrincipleList>
+  - 全局默认使用中文进行沟通和文档编写
+  - 特定技术场景必须使用英文
+  - 规则优先级：特定场景规则 > 全局语言设置
+</PrincipleList>
+
+# 必须使用英文的场景
+
+<RuleBlock severity="high">
+以下内容**必须使用英文**，不得使用中文或拼音：
+
+## Pull Request 相关内容
+- PR 标题
+- PR 描述
+- PR 评论
+- Code Review 评论
+
+## 代码相关内容
+- 代码注释
+- 变量命名
+- 函数命名
+- 文档字符串
+
+## Git 相关内容
+- Commit 消息
+- Branch 名称
+- Tag 名称
+
+以上规则的优先级高于全局语言设置。
+</RuleBlock>
+
+# 使用中文的场景
+
+<ChineseUsage>
+以下场景应使用中文：
+
+- 用户界面文本
+- 错误提示信息
+- 用户文档
+- 需求文档
+- 团队内部沟通
+</ChineseUsage>
+
+# 混合使用规范
+
+<MixedUsageGuidelines>
+- 技术术语优先使用英文原文，不必强行翻译
+- 中文文档中的代码片段使用英文
+- 英文命名中不得混入拼音或中文
+- 中英文混排时，中英文之间应有空格
+</MixedUsageGuidelines>
+
+# 命名规范
+
+<NamingConventions>
+- 所有代码相关命名必须使用英文
+- 变量和函数使用 camelCase
+- 类和接口使用 PascalCase
+- 常量使用 UPPER_SNAKE_CASE
+- 文件名使用 kebab-case 或与内容主体保持一致
+</NamingConventions>
+
+# 文档规范
+
+<DocumentationGuidelines>
+- API 文档使用英文编写
+- 用户指南使用中文编写
+- 技术架构文档可使用中文，但术语应保持英文原文
+- 注释必须使用英文
+</DocumentationGuidelines>

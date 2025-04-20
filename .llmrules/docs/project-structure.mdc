@@ -1,0 +1,219 @@
+---
+title: 项目结构规范
+category: architecture
+version: 1.0
+lastUpdated: 2025-04-21
+description: Monorepo 项目结构和规范指南
+---
+
+<TableOfContents>
+  - [目录结构](#目录结构)
+  - [Monorepo 结构说明](#monorepo-结构说明)
+  - [文件命名规范](#文件命名规范)
+  - [新包开发规范](#新包开发规范)
+  - [版本控制](#版本控制)
+  - [依赖管理](#依赖管理)
+  - [构建优化](#构建优化)
+  - [发布流程](#发布流程)
+  - [注意事项](#注意事项)
+</TableOfContents>
+
+# 目录结构
+
+<ProjectStructure>
+```
+noteum/
+├── apps/                # 应用程序目录
+│   ├── server/         # 后端服务
+│   └── web/           # Web前端应用
+├── packages/           # 共享包目录
+│   ├── core/          # 核心业务逻辑
+│   ├── ui/            # UI组件库
+│   └── utils/         # 通用工具函数
+├── docker/            # Docker相关配置
+└── plans/             # 项目计划和文档
+```
+</ProjectStructure>
+
+# Monorepo 结构说明
+
+## apps 目录
+
+<PackageDescription title="应用目录说明">
+  - 存放最终交付的应用程序
+  - 每个应用都是独立可部署的单元
+  - 应用间通过 packages 中的共享包通信
+</PackageDescription>
+
+## packages 目录
+
+<PackageDescription title="共享包说明">
+  - 存放可复用的内部依赖包
+  - 每个包都需要有完整的类型定义
+  - 包之间的依赖关系需要明确声明
+  - 遵循最小依赖原则
+</PackageDescription>
+
+## 包的职责划分
+
+<PackageResponsibilities>
+1. core
+   - 核心业务逻辑
+   - 数据模型定义
+   - 业务规则实现
+
+2. ui
+   - 可复用UI组件
+   - 主题系统
+   - 样式工具
+
+3. utils
+   - 通用工具函数
+   - 类型定义
+   - 测试辅助工具
+</PackageResponsibilities>
+
+# 文件命名规范
+
+## 目录命名
+
+<NamingRules type="directory">
+  - 使用 kebab-case
+  - 清晰表达目录用途
+  - 避免过深的嵌套（最多4层）
+</NamingRules>
+
+## 文件命名
+
+<NamingRules type="file">
+  1. 组件文件
+     - 使用 PascalCase
+     - 例：`Button.tsx`, `UserProfile.tsx`
+
+  2. 工具文件
+     - 使用 camelCase
+     - 例：`stringUtils.ts`, `dateHelper.ts`
+
+  3. 类型定义文件
+     - 使用 `.d.ts` 后缀
+     - 例：`types.d.ts`, `api.d.ts`
+
+  4. 测试文件
+     - 使用 `.test.ts` 或 `.spec.ts` 后缀
+     - 例：`Button.test.tsx`, `stringUtils.spec.ts`
+</NamingRules>
+
+# 新包开发规范
+
+## 必需文件
+
+<RequiredFiles>
+  - `package.json`
+  - `README.md`
+  - `tsconfig.json`
+  - `index.ts`
+</RequiredFiles>
+
+## 目录结构
+
+<DirectoryStructure type="package">
+```
+package-name/
+├── src/
+│   └── index.ts
+├── test/
+│   └── index.test.ts
+├── package.json
+├── README.md
+└── tsconfig.json
+```
+</DirectoryStructure>
+
+## README.md 内容要求
+
+<ReadmeRequirements>
+  - 包的用途说明
+  - 安装指南
+  - 使用示例
+  - API文档
+  - 注意事项
+</ReadmeRequirements>
+
+# 版本控制
+
+## 分支策略
+
+<BranchStrategy>
+  - main: 主分支，保持稳定可发布状态
+  - develop: 开发分支，集成特性分支
+  - feature/*: 特性分支
+  - bugfix/*: 缺陷修复分支
+</BranchStrategy>
+
+## 提交规范
+
+<CommitRules>
+  - 遵循 Conventional Commits
+  - 包名作为 scope
+  - 清晰的提交信息
+</CommitRules>
+
+# 依赖管理
+
+## 包间依赖
+
+<DependencyRules type="internal">
+  - 明确声明依赖关系
+  - 避免循环依赖
+  - 保持依赖树扁平
+</DependencyRules>
+
+## 外部依赖
+
+<DependencyRules type="external">
+  - 统一版本管理
+  - 谨慎添加新依赖
+  - 定期更新安全补丁
+</DependencyRules>
+
+# 构建优化
+
+## 构建顺序
+
+<BuildOrder>
+  - utils -> core -> ui -> apps
+  - 并行构建无依赖包
+</BuildOrder>
+
+## 缓存策略
+
+<CacheStrategy>
+  - 使用构建缓存
+  - 合理设置缓存失效规则
+</CacheStrategy>
+
+# 发布流程
+
+## 版本管理
+
+<VersioningStrategy>
+  - 使用 changeset 管理版本
+  - 遵循 semver 规范
+</VersioningStrategy>
+
+## 发布检查
+
+<ReleaseChecklist>
+  - 确保测试通过
+  - 检查类型定义
+  - 验证构建产物
+</ReleaseChecklist>
+
+# 注意事项
+
+<ImportantNotes>
+  1. 保持目录结构清晰
+  2. 避免跨包直接引用源码
+  3. 及时更新文档
+  4. 遵循依赖管理规范
+</ImportantNotes>

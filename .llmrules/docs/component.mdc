@@ -1,15 +1,38 @@
-# UI 组件开发规范
+---
+title: UI 组件开发规范
+category: development
+version: 1.0
+lastUpdated: 2025-04-21
+description: React 组件开发规范和最佳实践
+---
 
-## 组件设计原则
+<TableOfContents>
+  - [组件设计原则](#组件设计原则)
+  - [组件目录结构](#组件目录结构)
+  - [组件命名规范](#组件命名规范)
+  - [组件属性定义](#组件属性定义)
+  - [组件实现规范](#组件实现规范)
+  - [状态管理](#状态管理)
+  - [可访问性规范](#可访问性规范)
+  - [性能优化](#性能优化)
+  - [组件测试](#组件测试)
+  - [文档规范](#文档规范)
+  - [最佳实践](#最佳实践)
+</TableOfContents>
 
-1. 单一职责原则
-2. 组件可复用性
-3. 可维护性
-4. 可测试性
-5. 可访问性
+# 组件设计原则
 
-## 组件目录结构
+<PrincipleList>
+  - 单一职责原则
+  - 组件可复用性
+  - 可维护性
+  - 可测试性
+  - 可访问性
+</PrincipleList>
 
+# 组件目录结构
+
+<DirectoryStructure>
 ```
 components/
 ├── Button/
@@ -25,12 +48,13 @@ components/
     ├── Card.css
     └── index.ts
 ```
+</DirectoryStructure>
 
-## 组件命名规范
+# 组件命名规范
 
-### 文件命名
+## 文件命名
 
-```typescript
+<CodeBlock language="typescript" title="文件命名示例">
 // ✅ 推荐
 Button.tsx
 UserProfile.tsx
@@ -40,25 +64,36 @@ NavigationBar.tsx
 button.tsx
 userProfile.tsx
 navigation-bar.tsx
-```
+</CodeBlock>
 
-### 组件命名
+## 组件命名
 
-```typescript
+<CodeBlock language="typescript" title="组件命名示例">
 // ✅ 推荐
-export const Button: React.FC<ButtonProps> = () => {};
-export const UserProfile: React.FC<UserProfileProps> = () => {};
+type ButtonProps = {
+  onClick(): void;
+  children: React.ReactNode;
+};
+
+export const Button = (props: ButtonProps) => {
+  return <button onClick={props.onClick}>{props.children}</button>;
+};
+
+// 无 props 的组件
+export const Logo = () => {
+  return <img src="logo.png" alt="Logo" />;
+};
 
 // ❌ 避免
-export const button = () => {};
-export const userProfile = () => {};
-```
+export const button = () => {};  // 使用小写
+export const userProfile = {};   // 使用小写
+</CodeBlock>
 
-## 组件属性定义
+# 组件属性定义
 
-### 类型定义
+## 类型定义
 
-```typescript
+<CodeBlock language="typescript" title="属性类型定义">
 interface ButtonProps {
   /** 按钮内容 */
   children: React.ReactNode;
@@ -71,44 +106,54 @@ interface ButtonProps {
   /** 点击处理函数 */
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
-```
+</CodeBlock>
 
-### 默认属性
+<PropsTable component="Button">
+| 属性 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| children | React.ReactNode | - | 按钮内容 |
+| variant | 'primary' \| 'secondary' \| 'text' | 'primary' | 按钮变体 |
+| size | 'small' \| 'medium' \| 'large' | 'medium' | 按钮大小 |
+| disabled | boolean | false | 是否禁用 |
+| onClick | (event: React.MouseEvent) => void | - | 点击处理函数 |
+</PropsTable>
 
-```typescript
+## 默认属性
+
+<CodeBlock language="typescript" title="默认属性设置">
 const defaultProps = {
   variant: 'primary' as const,
   size: 'medium' as const,
   disabled: false
 };
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button = ({
   children,
   variant = defaultProps.variant,
   size = defaultProps.size,
   disabled = defaultProps.disabled,
   onClick
-}) => {
+}: ButtonProps) => {
   // 实现
 };
-```
+</CodeBlock>
 
-## 组件实现规范
+# 组件实现规范
 
-### 基本结构
+## 基本结构
 
-```typescript
+<CodeBlock language="typescript" title="组件基本结构">
 import React from 'react';
 import type { ButtonProps } from './Button.types';
 import './Button.css';
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button = ({
   children,
   variant = 'primary',
   size = 'medium',
   disabled = false,
   onClick
-}) => {
+}: ButtonProps) => {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (!disabled && onClick) {
       onClick(event);
@@ -125,11 +170,11 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
-```
+</CodeBlock>
 
-### 样式管理
+## 样式管理
 
-```typescript
+<CodeBlock language="typescript" title="样式管理">
 // 使用 CSS Modules
 import styles from './Button.module.css';
 
@@ -144,22 +189,22 @@ import styles from './Button.module.css';
 >
   {children}
 </button>
-```
+</CodeBlock>
 
-## 状态管理
+# 状态管理
 
-### 本地状态
+## 本地状态
 
-```typescript
+<CodeBlock language="typescript" title="本地状态管理">
 const [isOpen, setIsOpen] = useState(false);
 const toggleOpen = useCallback(() => {
   setIsOpen(prev => !prev);
 }, []);
-```
+</CodeBlock>
 
-### 复杂状态
+## 复杂状态
 
-```typescript
+<CodeBlock language="typescript" title="复杂状态管理">
 interface State {
   isOpen: boolean;
   activeTab: string;
@@ -183,13 +228,13 @@ const reducer = (state: State, action: Action): State => {
       return state;
   }
 };
-```
+</CodeBlock>
 
-## 可访问性规范
+# 可访问性规范
 
-### ARIA 属性使用
+## ARIA 属性使用
 
-```typescript
+<CodeBlock language="typescript" title="ARIA 属性示例">
 // 按钮示例
 <button
   aria-label="关闭对话框"
@@ -208,11 +253,11 @@ const reducer = (state: State, action: Action): State => {
   <h2 id="dialog-title">标题</h2>
   <p id="dialog-description">描述内容</p>
 </div>
-```
+</CodeBlock>
 
-### 键盘导航
+## 键盘导航
 
-```typescript
+<CodeBlock language="typescript" title="键盘支持">
 const handleKeyDown = (event: React.KeyboardEvent) => {
   switch (event.key) {
     case 'Enter':
@@ -224,13 +269,13 @@ const handleKeyDown = (event: React.KeyboardEvent) => {
       break;
   }
 };
-```
+</CodeBlock>
 
-## 性能优化
+# 性能优化
 
-### 组件优化
+## 组件优化
 
-```typescript
+<CodeBlock language="typescript" title="性能优化策略">
 // 使用 memo
 export const MemoizedComponent = React.memo(
   ({ value }: Props) => <div>{value}</div>,
@@ -246,33 +291,13 @@ const handleClick = useCallback(() => {
 const computedValue = useMemo(() => {
   return expensiveComputation(props.value);
 }, [props.value]);
-```
+</CodeBlock>
 
-### 条件渲染优化
+# 组件测试
 
-```typescript
-// ✅ 推荐
-const [isVisible, setIsVisible] = useState(false);
+## 单元测试
 
-return (
-  <div>
-    {isVisible && <ExpensiveComponent />}
-  </div>
-);
-
-// ❌ 避免
-return (
-  <div>
-    <ExpensiveComponent style={{ display: isVisible ? 'block' : 'none' }} />
-  </div>
-);
-```
-
-## 组件测试
-
-### 单元测试
-
-```typescript
+<CodeBlock language="typescript" title="单元测试示例">
 import { render, fireEvent } from '@testing-library/react';
 import { Button } from './Button';
 
@@ -291,38 +316,13 @@ describe('Button', () => {
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 });
-```
+</CodeBlock>
 
-### 快照测试
+# 文档规范
 
-```typescript
-it('should match snapshot', () => {
-  const { container } = render(<Button>Click me</Button>);
-  expect(container).toMatchSnapshot();
-});
-```
+## Storybook 配置
 
-## 文档规范
-
-### 组件文档
-
-```typescript
-/**
- * 按钮组件
- * @component Button
- * @example
- * ```tsx
- * <Button variant="primary" size="medium">
- *   点击我
- * </Button>
- * ```
- */
-export const Button: React.FC<ButtonProps> = // ...
-```
-
-### Storybook 配置
-
-```typescript
+<CodeBlock language="typescript" title="Storybook 配置">
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from './Button';
 
@@ -347,36 +347,38 @@ export const Primary: Story = {
     children: '主要按钮'
   }
 };
-```
+</CodeBlock>
 
-## 最佳实践
+# 最佳实践
 
-1. 组件设计
-   - 保持组件职责单一
-   - 提取可复用逻辑到 hooks
-   - 使用适当的属性类型
-   - 提供合理的默认值
+<BestPractices>
+  1. 组件设计
+     - 保持组件职责单一
+     - 提取可复用逻辑到 hooks
+     - 使用适当的属性类型
+     - 提供合理的默认值
 
-2. 性能考虑
-   - 适当使用 memo
-   - 优化重渲染
-   - 延迟加载大型组件
-   - 优化事件处理器
+  2. 性能考虑
+     - 适当使用 memo
+     - 优化重渲染
+     - 延迟加载大型组件
+     - 优化事件处理器
 
-3. 可访问性
-   - 提供键盘支持
-   - 使用语义化标签
-   - 添加适当的 ARIA 属性
-   - 确保足够的颜色对比度
+  3. 可访问性
+     - 提供键盘支持
+     - 使用语义化标签
+     - 添加适当的 ARIA 属性
+     - 确保足够的颜色对比度
 
-4. 测试覆盖
-   - 编写单元测试
-   - 添加集成测试
-   - 维护快照测试
-   - 测试边界情况
+  4. 测试覆盖
+     - 编写单元测试
+     - 添加集成测试
+     - 维护快照测试
+     - 测试边界情况
 
-5. 文档完整性
-   - 添加组件说明
-   - 提供使用示例
-   - 说明属性用途
-   - 记录特殊行为
+  5. 文档完整性
+     - 添加组件说明
+     - 提供使用示例
+     - 说明属性用途
+     - 记录特殊行为
+</BestPractices>

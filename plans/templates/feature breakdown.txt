@@ -1,0 +1,171 @@
+Below is a holistic, step‐by‐step feature and task breakdown for “noteum” based on the partially completed project and our Next.js SaaS Starter Template. Each task comes with a clear user story, details the user flow and UI requirements, and lists the key state/data elements required. Remember that we always use shadcn/ui components with Tailwind CSS (using our built‐in Tailwind color variables) and native libraries (e.g. Lucide React for icons, react-quill or another rich text editor as a static import) per our outlined requirements.
+
+─────────────────────────────  
+1. Overall App Layout & Header Integration  
+─────────────────────────────  
+User Story:  
+“As an authenticated user, I want a consistent, intuitive layout so that I can easily navigate noteum’s features.”
+
+Task Details:  
+• Location: app/app/page.tsx and Header update in components/app/Header.tsx  
+• Scope:  
+ – Create the overall application layout (wrapping the header, sidebar/navigation, main content area, and footer if needed) in app/app/page.tsx.  
+ – Update the existing Header.tsx style to use shadcn/ui components and Tailwind CSS classes (e.g., bg-primary, text-primary-foreground) to match our overall design.  
+• User Flow:  
+ 1. After sign-in, the user enters the gated “app” area.  
+ 2. The header (already included in app/layout.tsx) displays navigation items (e.g., Notes, Create Note, Profile, Billing).  
+ 3. The layout provides a stable, responsive container where subsequent features (listing, editing, and detail views) load.  
+• Data / State:  
+ – No dynamic data required at this stage; only the design and structural layout are set up.  
+ – Ensure that any placeholder components are replaced with actual shadcn/ui components.  
+
+─────────────────────────────  
+2. Notes List Page – Home for Notes  
+─────────────────────────────  
+User Story:  
+“As an authenticated user, I want to view a list of my existing notes so that I can quickly access and manage them.”
+
+Task Details:  
+• Location: app/notes/page.tsx  
+• Scope:  
+ – Build a page that queries the backend (using our Supabase client in utils/supabase) for the user’s notes.  
+ – Render the note items in a clean list view using shadcn/ui Card or List components.  
+ – Implement a search bar at the top for filtering notes by title/content.  
+ – Each note item displays a title, short preview snippet, and last updated timestamp.  
+• User Flow:  
+ 1. The user navigates to the “Notes” route.  
+ 2. A search input at the top lets the user filter results in real time.  
+ 3. Clicking a note navigates to the detailed view of that note.  
+• UI Details:  
+ – Use shadcn/ui Cards with proper margins and responsive grid or list design.  
+ – Use Lucide React icons where applicable (e.g., a “search” icon in the search bar).  
+• Data / State:  
+ – State to hold the list of notes and the text in the search field.  
+ – Notes data includes note ID, title, content snippet, and timestamp.  
+ – Data is fetched (using our Supabase frontend utilities) on render and updated on search input.
+
+─────────────────────────────  
+3. Note Detail & Rich Editor Page  
+─────────────────────────────  
+User Story:  
+“As a user, I want to view a note in detail and edit it so that I can update its content or fix errors.”
+
+Task Details:  
+• Location: app/notes/[id].tsx (or similar parametric route)  
+• Scope:  
+ – Develop a detailed view page for a selected note that supports both editing and viewing.  
+ – Integrate a rich text editor (e.g., react-quill imported statically) for the note content.  
+ – Provide inputs for title and the main content.  
+ – Add save and delete actions (buttons) styled with shadcn/ui components.  
+• User Flow:  
+ 1. The user clicks on a note from the list.  
+ 2. The application loads the note’s current data (title, content, last updated timestamp).  
+ 3. The user can directly edit the note; after changes, the user clicks the “Save” button to commit changes.  
+ 4. If desired, the user can click “Delete” to remove the note.  
+• UI Details:  
+ – Title input styled with shadcn/ui Input and Label components.  
+ – Rich text editor container adopts our Tailwind classes for margins/padding, with a background wrapper (e.g., bg-primary) if needed.  
+ – Use appropriate spacing and layout (e.g., a two-button group for “Save” and “Delete”).  
+• Data / State:  
+ – Local state holds the note’s title and rich content.  
+ – On save, trigger a server action to update the note in the database via Supabase utilities.  
+ – Deletion triggers a similar server action that updates the UI accordingly by removing the note from the list.
+
+─────────────────────────────  
+4. Create New Note Feature  
+─────────────────────────────  
+User Story:  
+“As a user, I want to create a new note so that I can capture new ideas and save them for later.”
+
+Task Details:  
+• Location: May be a dedicated route (e.g., app/notes/new.tsx) or an “empty state” in the list page that routes to the rich editor view (reusing the note detail page with no preloaded data).  
+• Scope:  
+ – Build a UI that uses the same rich text editor as for note editing.  
+ – Provide inputs for a title and content area.  
+ – Include a “Save” button that creates the note.  
+• User Flow:  
+ 1. The user clicks a “Create Note” button in the Header or within the notes list page.  
+ 2. The app routes to the new note editor.  
+ 3. The user enters a title and content, then clicks “Save” to add the note.  
+ 4. After saving, the user is redirected back to the notes list with the new note visible.  
+• UI Details:  
+ – Use shadcn/ui components for all inputs and buttons.  
+ – Ensure the layout is consistent with the notes detail/edit page.  
+• Data / State:  
+ – New note state begins empty and is updated as the user types.  
+ – On save, invoke a server action (using our Supabase utilities) to add the note linked to the authenticated user.
+
+─────────────────────────────  
+5. Note Deletion & Archival Workflow  
+─────────────────────────────  
+User Story:  
+“As a user, I want to delete or archive a note so that I can manage my notes and reduce clutter.”
+
+Task Details:  
+• Location: This feature is embedded on the Note Detail page and potentially via quick action buttons in thenotes list.  
+• Scope:  
+ – Implement a “Delete” (or toggle “Archive”) action that prompts the user for confirmation.  
+ – Replace any placeholder deletion logic with actual server actions that update the database state (e.g., a flag on the note model) via Supabase utilities.  
+• User Flow:  
+ 1. On the note detail page, the user clicks the “Delete” button.  
+ 2. A confirmation modal (using shadcn/ui Modal component) appears asking for confirmation.  
+ 3. If confirmed, the note is deleted (or marked as archived) and the user is redirected to the notes list.  
+• UI Details:  
+ – Button styling must match the Tailwind and shadcn/ui design system (e.g., using bg-destructive for delete actions).  
+ – The modal uses shadcn/ui for consistent look and feels.  
+• Data / State:  
+ – Track the current note ID.  
+ – Update database (and local component state) on successful deletion or archival action.
+
+─────────────────────────────  
+6. Update Navigation & Header Links  
+─────────────────────────────  
+User Story:  
+“As a user, I want clear navigation options in the header so that I can switch between notes, profile, billing, etc.”
+
+Task Details:  
+• Location: components/app/Header.tsx  
+• Scope:  
+ – Enhance the header component to include clear navigation links (Notes List, Create Note, Profile, Billing).  
+ – Use Lucide React icons next to navigation text where appropriate.  
+ – Use shadcn/ui navigation/menu components ensuring the header adapts to different screen sizes.  
+• User Flow:  
+ 1. The header displays navigation links at all times when the user is in the app area.  
+ 2. Clicking a navigation item routes the user to the corresponding page (e.g., /notes, /notes/new, /profile, /billing).  
+• UI Details:  
+ – Guaranteed visual consistency by using built-in Tailwind classes (like text-primary-foreground, bg-primary).  
+ – The header is responsive by design.  
+• Data / State:  
+ – Navigation is static; dynamic active link styling can be computed based on the current route.
+
+─────────────────────────────  
+7. Data Sync & Authentication Refinement  
+─────────────────────────────  
+User Story:  
+“As an authenticated user, my note data is securely linked to my account, and I can expect real-time updates as I create, edit, or delete notes.”
+
+Task Details:  
+• Location: Throughout app/notes pages and integrated with auth utilities  
+• Scope:  
+ – Make sure all note actions (create, read, update, delete) include the authenticated user’s information.  
+ – Ensure that server actions (already available in app/actions/) are fully integrated to validate note ownership and sync with Supabase.  
+ – Replace any placeholder logic with actual database calls using our Supabase client from utils/supabase.  
+• User Flow:  
+ 1. Upon sign-in, the user’s notes automatically load based on their user ID.  
+ 2. Any action the user performs (save, delete, create) is immediately reflected in the view.  
+• UI Details:  
+ – Feedback elements (e.g., toast notifications using shadcn/ui alerts) confirm a successful save or deletion.  
+• Data / State:  
+ – Manage the notes state centrally on the pages where needed.  
+ – Auth state is already provided by our authentication system.  
+ – Ensure secure updates via our server-side actions.
+
+─────────────────────────────  
+Summary  
+─────────────────────────────  
+• Task 1 sets up the overall UI layout and ensures the header is up-to-date, forming the foundation of our app.  
+• Tasks 2–5 progressively build the core note functionality: listing, detailed editing/viewing, creation, and deletion/archival.  
+• Task 6 refines the navigation, ensuring users can easily find and switch between features.  
+• Task 7 reinforces data security and proper integration with the existing authentication and Supabase setup.
+
+By following this breakdown, noteum will transition from a partial project into a fully functional note-taking application, following our specified design systems, libraries, and integration patterns.

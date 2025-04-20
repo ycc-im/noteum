@@ -1,0 +1,22 @@
+# Source: .llmrules
+# Type: Global Rules
+# Priority: High
+
+# 继承 llmrules 规范
+inherit:
+  source: "../../.llmrules"
+  apply: true
+
+# 全局补全行为
+completion:
+  follow_standards: true
+  context_aware: true
+  add_imports: true
+  type_safe: true
+
+# 通用规则
+rules:
+  - source: "../../.llmrules/docs/code-style.mdc"
+    apply_to: ["**/*.ts", "**/*.tsx"]
+  - source: "../../.llmrules/docs/component.mdc"
+    apply_to: ["**/*.tsx"]

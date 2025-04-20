@@ -1,0 +1,99 @@
+Below is one example of a minimal tree‐view project structure for “noteum” that leverages our Next.js SaaS Starter Template while adding just the new routes/components needed for the note‐taking features. In this version, we add a dedicated “notes” section (with list, detail/edit, and new note pages) and update the Header for proper navigation while leaving the authentication, payment, and core configurations untouched.
+
+─────────────────────────────  
+Project Tree Structure  
+─────────────────────────────
+
+project-root/  
+├── app/  
+│   ├── app/                           // Authenticated “dashboard” area  
+│   │   ├── billing/                   // Billing & subscription management  
+│   │   ├── profile/                   // User profile pages  
+│   │   ├── layout.tsx                 // Dashboard layout wrapper (includes Header)  
+│   │   └── page.tsx                   // Overall app landing page (Task 1 – layout)  
+│   │  
+│   ├── notes/                         // “Notes” feature pages  
+│   │   ├── new.tsx                    // Create New Note page (Task 4)  
+│   │   ├── [id].tsx                   // Note detail & rich editor page (Tasks 3 & 5)  
+│   │   └── page.tsx                   // Notes list page with search (Task 2)  
+│   │  
+│   ├── actions/                       // Server actions (form handling, mutations)  
+│   │   ├── auth.ts                   // Authentication actions (signin, signout)  
+│   │   └── stripe.ts                 // Stripe payment actions  
+│   │  
+│   ├── api/                           // API routes for external services  
+│   │   ├── auth/                     // Authentication API endpoints  
+│   │   ├── (payment)/                // Payment-related endpoints  
+│   │   ├── profile/                  // User profile endpoints  
+│   │   └── webhook/                  // Webhook handlers (e.g., Stripe)  
+│   │  
+│   ├── success/                       // Success pages (e.g., post-payment)  
+│   ├── layout.tsx                     // Root layout with providers  
+│   └── page.tsx                       // Public landing page for unauthenticated users  
+│  
+├── components/  
+│   ├── app/  
+│   │   └── Header.tsx                // Updated Header using shadcn/ui and Tailwind (Tasks 1 & 6)  
+│   │  
+│   ├── email/                         // Email template components  
+│   ├── stripe/                        // Stripe integration components  
+│   ├── ui/                           // Base UI components (buttons, inputs, etc.)  
+│   ├── user/                         // User-related components  
+│   ├── CheckoutButton.tsx            // Stripe checkout functionality  
+│   ├── Pricing.tsx                   // Pricing section component  
+│   ├── SessionProvider.tsx           // Auth session provider  
+│   ├── sign-in.tsx                   // Sign in component  
+│   └── sign-out.tsx                  // Sign out component  
+│  
+├── lib/  
+│   ├── hooks/                        // Custom React hooks  
+│   ├── auth.config.ts                // Authentication configuration  
+│   ├── auth.ts                       // Authentication utilities  
+│   ├── authSendRequest.ts            // Auth request handlers  
+│   ├── mail.ts                       // Email service configuration  
+│   └── utils.ts                      // General utility functions  
+│  
+├── types/  
+│   ├── database.types.ts             // Database schema types (Supabase)  
+│   └── next-auth.d.ts                // Next-Auth type extensions  
+│  
+├── utils/  
+│   ├── supabase/                     // Supabase client and utilities  
+│   │   ├── client.ts                 // Supabase client configuration  
+│   │   ├── front.ts                  // Frontend Supabase utilities  
+│   │   ├── server.ts                 // Server-side Supabase utilities  
+│   │   └── user.ts                   // User-related Supabase utilities  
+│   └── stripe.ts                     // Stripe utility functions  
+│  
+├── supabase/                         // Supabase project configuration  
+│   └── config.toml                   // Supabase configuration file  
+│  
+├── public/                           // Static assets (images, fonts, etc.)  
+├── .env.local                        // Local environment variables  
+├── config.ts                         // App configuration  
+├── middleware.ts                     // Next.js middleware (authentication, routing)  
+└── [config files]                    // e.g., next.config.ts, tailwind.config.ts, etc.
+
+─────────────────────────────  
+How It Fits the “Noteum” Feature Set  
+─────────────────────────────
+1. Overall App Layout & Header (Task 1 & 6):  
+ • The main authenticated page (app/app/page.tsx) uses a layout (via app/app/layout.tsx) which includes the updated Header (components/app/Header.tsx).  
+ • Header.tsx is enhanced with shadcn/ui components, Tailwind classes (e.g., bg-primary, text-primary-foreground), and Lucide React icons for quick navigation (Notes, Create Note, Profile, Billing).
+
+2. Notes List Page (Task 2):  
+ • Located at app/notes/page.tsx, this page queries the Supabase backend (using utils/supabase/front.ts) to display the authenticated user’s notes in a clean list using shadcn/ui Card or List components.  
+ • A search bar (with an embedded Lucide “search” icon) sits atop the list for real-time filtering.
+
+3. Note Detail & Rich Editor Page (Tasks 3 & 5):  
+ • The dynamic route app/notes/[id].tsx loads the selected note’s details.  
+ • It integrates a statically imported rich text editor (e.g., react-quill) and shadcn/ui Input/Buttons for editing or deleting the note while interacting with Supabase via server actions.
+
+4. Create New Note Feature (Task 4):  
+ • The dedicated route app/notes/new.tsx reuses the rich editor UI for inputting a title and content, and uses a "Save" button (styled with shadcn/ui) to create a note.  
+ • After saving, users are redirected back to the updated notes list.
+
+5. Data Sync & Auth Refinement (Task 7):  
+ • Every note action (create, update, delete) passes through server actions (in app/actions/) that leverage our Supabase utilities, ensuring each note is securely tied to the authenticated user.
+
+By using this structure you can keep the core SaaS features (auth, payment) intact while adding “noteum” and its note-specific UI/UX in a way that aligns with our minimal and modular project design philosophy.

@@ -1,0 +1,124 @@
+We are building a next js project based on an existing next js template that have auth, payment built already, below are rules you have to follow:
+
+<frontend rules>
+1. MUST Use 'use client' directive for client-side components; In Next.js, page components are server components by default, and React hooks like useEffect can only be used in client components.
+2. The UI has to look great, using polished component from shadcn, tailwind when possible; Don't recreate shadcn components, make sure you use 'shadcn@latest add xxx' CLI to add components
+3. MUST adding debugging log & comment for every single feature we implement
+4. Make sure to concatenate strings correctly using backslash
+7. Use stock photos from picsum.photos where appropriate, only valid URLs you know exist
+8. Don't update shadcn components unless otherwise specified
+9. Configure next.config.js image remotePatterns to enable stock photos from picsum.photos
+11. MUST implement the navigation elements items in their rightful place i.e. Left sidebar, Top header
+12. Accurately implement necessary grid layouts
+13. Follow proper import practices:
+   - Use @/ path aliases
+   - Keep component imports organized
+   - Update current src/app/page.tsx with new comprehensive code
+   - Don't forget root route (page.tsx) handling
+   - You MUST complete the entire prompt before stopping
+</frontend rules>
+
+<styling_requirements>
+- You ALWAYS tries to use the shadcn/ui library.
+- You MUST USE the builtin Tailwind CSS variable based colors as used in the examples, like bg-primary or text-primary-foreground.
+- You DOES NOT use indigo or blue colors unless specified in the prompt.
+- You MUST generate responsive designs.
+- The React Code Block is rendered on top of a white background. If v0 needs to use a different background color, it uses a wrapper element with a background color Tailwind class.
+</styling_requirements>
+
+<frameworks_and_libraries>
+- You prefers Lucide React for icons, and shadcn/ui for components.
+- You MAY use other third-party libraries if necessary or requested by the user.
+- You imports the shadcn/ui components from "@/components/ui"
+- You DOES NOT use fetch or make other network requests in the code.
+- You DOES NOT use dynamic imports or lazy loading for components or libraries. Ex: const Confetti = dynamic(...) is NOT allowed. Use import Confetti from 'react-confetti' instead.
+- Prefer using native Web APIs and browser features when possible. For example, use the Intersection Observer API for scroll-based animations or lazy loading.
+</frameworks_and_libraries>
+
+# Overall App Layout & Header Integration Implementation Guide
+
+## Task
+Implement the overall application layout and update the header to ensure a consistent and intuitive navigation experience for authenticated users.
+
+## Implementation Guide
+
+### 1. Set Up Overall Application Layout
+
+**Location:** `app/app/page.tsx`
+
+- **Objective:** Create a layout that wraps the header, sidebar/navigation, main content area, and footer (if needed).
+
+#### Steps:
+
+1. **Create the Layout Structure:**
+   - Use a combination of `div` elements to define the layout structure.
+   - Ensure the layout is responsive using Tailwind CSS classes.
+
+2. **Integrate shadcn/ui Components:**
+   - Use shadcn/ui components for any UI elements like buttons or inputs within the layout.
+   - Ensure the layout uses Tailwind CSS classes such as `bg-primary` and `text-primary-foreground` for consistent styling.
+
+3. **Responsive Design:**
+   - Use Tailwind CSS grid or flex utilities to ensure the layout is responsive.
+   - Test the layout on different screen sizes to ensure it adapts well.
+
+4. **Debug Logging:**
+   - Add console logs to track the rendering of the layout and any dynamic components.
+   - Example: `console.log("Rendering main application layout");`
+
+### 2. Update Header Component
+
+**Location:** `components/app/Header.tsx`
+
+- **Objective:** Update the existing header to use shadcn/ui components and Tailwind CSS for styling.
+
+#### Steps:
+
+1. **Refactor Header Structure:**
+   - Use shadcn/ui components for navigation items and buttons.
+   - Ensure the header uses Tailwind CSS classes for styling.
+
+2. **Add Navigation Links:**
+   - Include navigation links for "Notes", "Create Note", "Profile", and "Billing".
+   - Use Lucide React icons next to navigation text for visual enhancement.
+
+3. **Responsive Design:**
+   - Ensure the header is responsive and adapts to different screen sizes.
+   - Use Tailwind CSS utilities like `flex`, `justify-between`, and `items-center`.
+
+4. **Debug Logging:**
+   - Add console logs to track user interactions with the header.
+   - Example: `console.log("User clicked on Notes link");`
+
+### 3. Ensure Integration with Existing Layout
+
+- **Objective:** Ensure the new layout and header integrate seamlessly with the existing application structure.
+
+#### Steps:
+
+1. **Verify Header Inclusion:**
+   - Ensure the updated `Header.tsx` is included in `app/layout.tsx`.
+
+2. **Test Navigation Flow:**
+   - Verify that clicking on navigation links routes the user to the correct pages.
+   - Ensure the header remains consistent across different pages.
+
+3. **Debug Logging:**
+   - Add logs to track navigation events and ensure correct routing.
+   - Example: `console.log("Navigating to Profile page");`
+
+### 4. Finalize and Review
+
+- **Objective:** Ensure the layout and header are finalized and ready for use.
+
+#### Steps:
+
+1. **Review Styling:**
+   - Ensure all components use the correct Tailwind CSS classes and shadcn/ui components.
+   - Verify that the design is visually appealing and consistent.
+
+2. **Debug Logging:**
+   - Review all console logs to ensure they provide useful information for debugging.
+   - Remove any unnecessary logs before final deployment.
+
+By following these steps, you will create a consistent and intuitive layout for the "noteum" application, ensuring users can easily navigate its features.

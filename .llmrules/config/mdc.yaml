@@ -1,0 +1,102 @@
+# AI 工具文档解析配置
+
+# 文档组件定义
+components:
+  # 文档结构组件
+  Overview:
+    description: "文档概述，帮助 AI 工具理解文档的主要目的和范围"
+    requirement: "必须包含清晰的目标说明"
+
+  TableOfContents:
+    description: "文档目录，帮助 AI 工具理解文档结构"
+    auto_generate: true
+
+  CodeBlock:
+    description: "代码示例，包含具体的实现参考"
+    attributes:
+      - language
+      - title
+      - focus_lines
+
+  BestPractices:
+    description: "最佳实践列表，指导 AI 工具生成符合规范的代码"
+    format: "structured_list"
+
+  ComponentDoc:
+    description: "组件文档，定义组件的规范和用法"
+    sections:
+      - props
+      - examples
+      - notes
+
+# AI 工具指令
+ai_instructions:
+  code_generation:
+    - "生成的代码必须遵循文档中定义的规范"
+    - "使用文档中的示例作为参考"
+    - "遵循最佳实践部分的建议"
+
+  code_review:
+    - "根据文档规范进行代码审查"
+    - "检查是否符合定义的标准"
+    - "参考最佳实践进行评估"
+
+  documentation:
+    - "生成的文档应遵循规定的格式"
+    - "包含必要的组件和结构"
+    - "确保文档的完整性和准确性"
+
+# 验证规则
+validation:
+  structure:
+    - "确保文档包含必要的组件"
+    - "验证组件的使用是否正确"
+    - "检查文档结构的完整性"
+
+  content:
+    - "验证代码示例的格式"
+    - "检查最佳实践的完整性"
+    - "确保文档的一致性"
+
+# 工具适配
+tool_adapters:
+  cline:
+    - "理解并应用文档规范"
+    - "生成符合规范的代码"
+    - "提供符合规范的建议"
+
+  roo_code:
+    - "遵循代码风格指南"
+    - "应用定义的最佳实践"
+    - "执行规范的代码补全"
+
+  cursor:
+    - "基于规范提供建议"
+    - "生成符合标准的代码"
+    - "协助规范执行"
+
+  windsurf:
+    - "确保项目级规范遵循"
+    - "辅助规范实施"
+    - "提供规范相关建议"
+
+# 文档格式设置
+format_settings:
+  markdown:
+    dialect: "gfm"
+    extensions:
+      - "tables"
+      - "footnotes"
+      - "definition_lists"
+
+  code_blocks:
+    highlight: true
+    line_numbers: true
+    copy_button: true
+
+# 输出控制
+output:
+  format: "mdc"
+  components:
+    preserve_whitespace: true
+    indent_size: 2

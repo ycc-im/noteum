@@ -13,8 +13,8 @@
     "@noteum/core": "^0.3.7",
     "@noteum/utils": "^0.2.5",
     "@prisma/client": "^6.6.0",
-    "@trpc/client": "11.0.1",
-    "@trpc/server": "11.0.1",
+    "@trpc/client": "11.1.1",
+    "@trpc/server": "11.1.1",
     "hono": "^4.7.5",
     "zod": "^3.24.2"
   },

@@ -1,7 +1,0 @@
-{
-  "composite": true,
-  "extends": "../../../tsconfig.base.json",
-
-  "files": ["/client/main.tsx"],
-  "include": ["src"]
-}

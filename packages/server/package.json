@@ -1,0 +1,16 @@
+{
+  "name": "@noteum/server",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Starting server dev server...'",
+    "build": "echo 'Building server app...'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@noteum/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

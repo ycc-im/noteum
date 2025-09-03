@@ -1,0 +1,27 @@
+{
+  "name": "noteum-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-powered note-taking application with web and desktop clients",
+  "scripts": {
+    "dev": "pnpm --filter \"./packages/*\" --parallel dev",
+    "build": "pnpm --filter \"./packages/*\" --parallel build",
+    "lint": "prettier --check .",
+    "lint:fix": "prettier --write .",
+    "typecheck": "pnpm --filter \"./packages/*\" --parallel typecheck"
+  },
+  "keywords": [
+    "ai",
+    "notes",
+    "react",
+    "tauri",
+    "nestjs",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  }
+}

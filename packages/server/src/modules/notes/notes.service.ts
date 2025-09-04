@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { 
   CreateNoteRequest, 
   CreateNoteResponse, 
-  GetNotesRequest, 
-  GetNotesResponse,
+  GetNoteRequest, 
+  GetNoteResponse,
   UpdateNoteRequest,
   UpdateNoteResponse,
   DeleteNoteRequest,
-  DeleteNoteResponse 
+  DeleteNoteResponse,
 } from '@noteum/shared';
 
 @Injectable()
@@ -15,58 +15,80 @@ export class NotesService {
   async createNote(data: CreateNoteRequest): Promise<CreateNoteResponse> {
     // TODO: Implement actual note creation logic
     return {
-      success: true,
-      message: 'Note created successfully',
+      metadata: {
+        status: 0, // SUCCESS
+        message: 'Note created successfully',
+        requestId: 'req_' + Date.now()
+      },
       note: {
         id: 'note_' + Date.now(),
-        title: data.title,
-        content: data.content,
-        userId: data.userId,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    };
+        title: data.getTitle(),
+        content: data.getContent(),
+        authorId: data.getAuthorId(),
+        status: 1, // PUBLISHED
+        tagsList: data.getTagsList(),
+        category: data.getCategory(),
+        isPublic: data.getIsPublic(),
+        viewCount: 0,
+        contentType: data.getContentType()
+      }
+    } as any;
   }
 
-  async getNotes(data: GetNotesRequest): Promise<GetNotesResponse> {
-    // TODO: Implement actual notes retrieval logic
+  async getNote(data: GetNoteRequest): Promise<GetNoteResponse> {
+    // TODO: Implement actual note retrieval logic
     return {
-      success: true,
-      notes: [
-        {
-          id: 'note_1',
-          title: 'Sample Note',
-          content: 'This is a sample note content',
-          userId: data.userId,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      ],
-      total: 1,
-    };
+      metadata: {
+        status: 0, // SUCCESS
+        message: 'Note retrieved successfully',
+        requestId: 'req_' + Date.now()
+      },
+      note: {
+        id: data.getId(),
+        title: 'Sample Note',
+        content: 'This is a sample note content',
+        authorId: 'user_1',
+        status: 1, // PUBLISHED
+        tagsList: ['tag1', 'tag2'],
+        category: 'general',
+        isPublic: true,
+        viewCount: 0,
+        contentType: 'text/markdown'
+      }
+    } as any;
   }
 
   async updateNote(data: UpdateNoteRequest): Promise<UpdateNoteResponse> {
     // TODO: Implement actual note update logic
     return {
-      success: true,
-      message: 'Note updated successfully',
-      note: {
-        id: data.noteId,
-        title: data.title || 'Updated Note',
-        content: data.content || 'Updated content',
-        userId: data.userId,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+      metadata: {
+        status: 0, // SUCCESS
+        message: 'Note updated successfully',
+        requestId: 'req_' + Date.now()
       },
-    };
+      note: {
+        id: data.getId(),
+        title: data.getTitle() || 'Updated Note',
+        content: data.getContent() || 'Updated content',
+        authorId: 'user_1',
+        status: data.getStatus(),
+        tagsList: data.getTagsList(),
+        category: data.getCategory(),
+        isPublic: data.getIsPublic(),
+        viewCount: 0,
+        contentType: data.getContentType()
+      }
+    } as any;
   }
 
   async deleteNote(data: DeleteNoteRequest): Promise<DeleteNoteResponse> {
     // TODO: Implement actual note deletion logic
     return {
-      success: true,
-      message: 'Note deleted successfully',
-    };
+      metadata: {
+        status: 0, // SUCCESS
+        message: 'Note deleted successfully',
+        requestId: 'req_' + Date.now()
+      }
+    } as any;
   }
 }

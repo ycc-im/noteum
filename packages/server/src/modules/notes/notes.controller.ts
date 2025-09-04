@@ -4,8 +4,8 @@ import { NotesService } from './notes.service';
 import { 
   CreateNoteRequest, 
   CreateNoteResponse, 
-  GetNotesRequest, 
-  GetNotesResponse,
+  GetNoteRequest, 
+  GetNoteResponse,
   UpdateNoteRequest,
   UpdateNoteResponse,
   DeleteNoteRequest,
@@ -21,9 +21,9 @@ export class NotesController {
     return this.notesService.createNote(data);
   }
 
-  @GrpcMethod('NotesService', 'GetNotes')
-  async getNotes(data: GetNotesRequest): Promise<GetNotesResponse> {
-    return this.notesService.getNotes(data);
+  @GrpcMethod('NotesService', 'GetNote')
+  async getNote(data: GetNoteRequest): Promise<GetNoteResponse> {
+    return this.notesService.getNote(data);
   }
 
   @GrpcMethod('NotesService', 'UpdateNote')

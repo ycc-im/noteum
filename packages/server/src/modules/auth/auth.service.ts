@@ -1,51 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import { 
-  LoginRequest, 
-  LoginResponse, 
-  RegisterRequest, 
-  RegisterResponse,
-  LogoutRequest,
-  LogoutResponse 
+  AuthenticateUserRequest, 
+  AuthenticateUserResponse,
+  CreateUserRequest,
+  CreateUserResponse
 } from '@noteum/shared';
 
 @Injectable()
 export class AuthService {
-  async login(data: LoginRequest): Promise<LoginResponse> {
-    // TODO: Implement actual login logic
+  async authenticateUser(data: AuthenticateUserRequest): Promise<AuthenticateUserResponse> {
+    // TODO: Implement actual authentication logic
     return {
-      success: true,
-      message: 'Login successful',
-      token: 'mock_token_' + Date.now(),
+      metadata: {
+        status: 0, // SUCCESS
+        message: 'Authentication successful',
+        requestId: 'req_' + Date.now()
+      },
+      accessToken: 'mock_access_token_' + Date.now(),
+      refreshToken: 'mock_refresh_token_' + Date.now(),
       user: {
         id: '1',
-        email: data.email,
-        name: 'Mock User',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    };
+        username: data.getUsernameOrEmail(),
+        email: data.getUsernameOrEmail(),
+        displayName: 'Mock User',
+        avatarUrl: '',
+        isActive: true
+      }
+    } as any;
   }
 
-  async register(data: RegisterRequest): Promise<RegisterResponse> {
+  async register(data: CreateUserRequest): Promise<CreateUserResponse> {
     // TODO: Implement actual registration logic
     return {
-      success: true,
-      message: 'Registration successful',
+      metadata: {
+        status: 0, // SUCCESS
+        message: 'Registration successful',
+        requestId: 'req_' + Date.now()
+      },
       user: {
         id: '1',
-        email: data.email,
-        name: data.name,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    };
+        username: data.getUsername(),
+        email: data.getEmail(),
+        displayName: data.getDisplayName(),
+        avatarUrl: data.getAvatarUrl(),
+        isActive: true
+      }
+    } as any;
   }
 
-  async logout(data: LogoutRequest): Promise<LogoutResponse> {
-    // TODO: Implement actual logout logic
-    return {
-      success: true,
-      message: 'Logout successful',
-    };
-  }
 }

@@ -1,0 +1,188 @@
+syntax = "proto3";
+
+package noteum.note;
+
+import "common.proto";
+
+// 笔记状态
+enum NoteStatus {
+  DRAFT = 0;
+  PUBLISHED = 1;
+  ARCHIVED = 2;
+  DELETED = 3;
+}
+
+// 笔记信息
+message Note {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string author_id = 4;
+  NoteStatus status = 5;
+  repeated string tags = 6;
+  string category = 7;
+  bool is_public = 8;
+  common.Timestamp created_at = 9;
+  common.Timestamp updated_at = 10;
+  int32 view_count = 11;
+  string content_type = 12; // markdown, plain_text, html
+}
+
+// 笔记标签
+message Tag {
+  string id = 1;
+  string name = 2;
+  string color = 3;
+  int32 usage_count = 4;
+  common.Timestamp created_at = 5;
+}
+
+// 笔记分类
+message Category {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  int32 note_count = 4;
+  common.Timestamp created_at = 5;
+}
+
+// 创建笔记请求
+message CreateNoteRequest {
+  string title = 1;
+  string content = 2;
+  string author_id = 3;
+  repeated string tags = 4;
+  string category = 5;
+  bool is_public = 6;
+  string content_type = 7;
+}
+
+// 创建笔记响应
+message CreateNoteResponse {
+  common.ResponseMetadata metadata = 1;
+  Note note = 2;
+}
+
+// 获取笔记请求
+message GetNoteRequest {
+  string id = 1;
+}
+
+// 获取笔记响应
+message GetNoteResponse {
+  common.ResponseMetadata metadata = 1;
+  Note note = 2;
+}
+
+// 更新笔记请求
+message UpdateNoteRequest {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  repeated string tags = 4;
+  string category = 5;
+  bool is_public = 6;
+  NoteStatus status = 7;
+  string content_type = 8;
+}
+
+// 更新笔记响应
+message UpdateNoteResponse {
+  common.ResponseMetadata metadata = 1;
+  Note note = 2;
+}
+
+// 删除笔记请求
+message DeleteNoteRequest {
+  string id = 1;
+}
+
+// 删除笔记响应
+message DeleteNoteResponse {
+  common.ResponseMetadata metadata = 1;
+}
+
+// 获取笔记列表请求
+message ListNotesRequest {
+  common.PaginationRequest pagination = 1;
+  string author_id = 2;
+  NoteStatus status = 3;
+  string category = 4;
+  repeated string tags = 5;
+  string search_query = 6;
+  bool public_only = 7;
+}
+
+// 获取笔记列表响应
+message ListNotesResponse {
+  common.ResponseMetadata metadata = 1;
+  repeated Note notes = 2;
+  common.PaginationResponse pagination = 3;
+}
+
+// 搜索笔记请求
+message SearchNotesRequest {
+  string query = 1;
+  common.PaginationRequest pagination = 2;
+  string author_id = 3;
+  repeated string tags = 4;
+  string category = 5;
+  bool public_only = 6;
+}
+
+// 搜索笔记响应
+message SearchNotesResponse {
+  common.ResponseMetadata metadata = 1;
+  repeated Note notes = 2;
+  common.PaginationResponse pagination = 3;
+}
+
+// 获取标签列表请求
+message ListTagsRequest {
+  string search_query = 1;
+  int32 limit = 2;
+}
+
+// 获取标签列表响应
+message ListTagsResponse {
+  common.ResponseMetadata metadata = 1;
+  repeated Tag tags = 2;
+}
+
+// 获取分类列表请求
+message ListCategoriesRequest {
+  string search_query = 1;
+}
+
+// 获取分类列表响应
+message ListCategoriesResponse {
+  common.ResponseMetadata metadata = 1;
+  repeated Category categories = 2;
+}
+
+// 笔记服务
+service NoteService {
+  // 创建笔记
+  rpc CreateNote(CreateNoteRequest) returns (CreateNoteResponse);
+  
+  // 获取笔记
+  rpc GetNote(GetNoteRequest) returns (GetNoteResponse);
+  
+  // 更新笔记
+  rpc UpdateNote(UpdateNoteRequest) returns (UpdateNoteResponse);
+  
+  // 删除笔记
+  rpc DeleteNote(DeleteNoteRequest) returns (DeleteNoteResponse);
+  
+  // 获取笔记列表
+  rpc ListNotes(ListNotesRequest) returns (ListNotesResponse);
+  
+  // 搜索笔记
+  rpc SearchNotes(SearchNotesRequest) returns (SearchNotesResponse);
+  
+  // 获取标签列表
+  rpc ListTags(ListTagsRequest) returns (ListTagsResponse);
+  
+  // 获取分类列表
+  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse);
+}

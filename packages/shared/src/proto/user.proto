@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+package noteum.user;
+
+import "common.proto";
+
+// 用户信息
+message User {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string display_name = 4;
+  string avatar_url = 5;
+  bool is_active = 6;
+  common.Timestamp created_at = 7;
+  common.Timestamp updated_at = 8;
+}
+
+// 用户创建请求
+message CreateUserRequest {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+  string display_name = 4;
+  string avatar_url = 5;
+}
+
+// 用户创建响应
+message CreateUserResponse {
+  common.ResponseMetadata metadata = 1;
+  User user = 2;
+}
+
+// 获取用户请求
+message GetUserRequest {
+  string id = 1;
+}
+
+// 获取用户响应
+message GetUserResponse {
+  common.ResponseMetadata metadata = 1;
+  User user = 2;
+}
+
+// 更新用户请求
+message UpdateUserRequest {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string display_name = 4;
+  string avatar_url = 5;
+}
+
+// 更新用户响应
+message UpdateUserResponse {
+  common.ResponseMetadata metadata = 1;
+  User user = 2;
+}
+
+// 删除用户请求
+message DeleteUserRequest {
+  string id = 1;
+}
+
+// 删除用户响应
+message DeleteUserResponse {
+  common.ResponseMetadata metadata = 1;
+}
+
+// 获取用户列表请求
+message ListUsersRequest {
+  common.PaginationRequest pagination = 1;
+  string search_query = 2;
+  bool active_only = 3;
+}
+
+// 获取用户列表响应
+message ListUsersResponse {
+  common.ResponseMetadata metadata = 1;
+  repeated User users = 2;
+  common.PaginationResponse pagination = 3;
+}
+
+// 用户认证请求
+message AuthenticateUserRequest {
+  string username_or_email = 1;
+  string password = 2;
+}
+
+// 用户认证响应
+message AuthenticateUserResponse {
+  common.ResponseMetadata metadata = 1;
+  User user = 2;
+  string access_token = 3;
+  string refresh_token = 4;
+  common.Timestamp expires_at = 5;
+}
+
+// 用户服务
+service UserService {
+  // 创建用户
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  
+  // 获取用户
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  
+  // 更新用户
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+  
+  // 删除用户
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+  
+  // 获取用户列表
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+  
+  // 用户认证
+  rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse);
+}

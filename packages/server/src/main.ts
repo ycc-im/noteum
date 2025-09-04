@@ -3,6 +3,7 @@ import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { join } from 'path';
+import { GrpcExceptionFilter } from './common/filters/grpc-exception.filter';
 
 async function bootstrap() {
   // Create the gRPC microservice
@@ -27,6 +28,9 @@ async function bootstrap() {
     whitelist: true,
     forbidNonWhitelisted: true,
   }));
+
+  // Enable global exception filter
+  app.useGlobalFilters(new GrpcExceptionFilter());
 
   // Start the microservice
   await app.listen();

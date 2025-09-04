@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { validate } from './config.validation';
 
 describe('Config Validation', () => {

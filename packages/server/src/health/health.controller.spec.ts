@@ -1,11 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HealthCheckService, TerminusModule, HttpHealthIndicator } from '@nestjs/terminus';
+import { HealthCheckService, TerminusModule } from '@nestjs/terminus';
 import { HealthController } from './health.controller';
 
 describe('HealthController', () => {
   let controller: HealthController;
   let healthCheckService: HealthCheckService;
-  let httpHealthIndicator: HttpHealthIndicator;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -15,7 +14,6 @@ describe('HealthController', () => {
 
     controller = module.get<HealthController>(HealthController);
     healthCheckService = module.get<HealthCheckService>(HealthCheckService);
-    httpHealthIndicator = module.get<HttpHealthIndicator>(HttpHealthIndicator);
   });
 
   it('should be defined', () => {
@@ -43,22 +41,17 @@ describe('HealthController', () => {
   describe('check', () => {
     it('should perform health check', async () => {
       const mockHealthResult = {
-        status: 'ok',
+        status: 'ok' as any,
         info: {},
         error: {},
         details: {},
       };
 
       jest.spyOn(healthCheckService, 'check').mockResolvedValue(mockHealthResult);
-      jest.spyOn(httpHealthIndicator, 'pingCheck').mockResolvedValue({
-        'nestjs-docs': { status: 'up' },
-      });
 
       const result = await controller.check();
       expect(result).toEqual(mockHealthResult);
-      expect(healthCheckService.check).toHaveBeenCalledWith([
-        expect.any(Function),
-      ]);
+      expect(healthCheckService.check).toHaveBeenCalledWith([]);
     });
   });
 });

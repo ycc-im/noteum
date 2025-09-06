@@ -32,13 +32,13 @@ export const NoteSchema = z.object({
   type: NoteTypeSchema,
   position: PositionSchema.optional(),
   size: SizeSchema.optional(),
-  style: z.record(z.any()).optional(),
+  style: z.record(z.string(), z.any()).optional(),
   
   // Content and metadata
   tags: z.array(z.string()).default([]),
   embedding: z.array(z.number()).optional(),
-  metadata: z.record(z.any()).optional(),
-  slots: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
+  slots: z.record(z.string(), z.any()).optional(),
   
   // Hierarchy and connections
   parentId: z.string().uuid().optional(),
@@ -72,10 +72,10 @@ export const CreateNoteSchema = z.object({
   type: NoteTypeSchema.default('text'),
   position: PositionSchema.optional(),
   size: SizeSchema.optional(),
-  style: z.record(z.any()).optional(),
+  style: z.record(z.string(), z.any()).optional(),
   tags: z.array(z.string()).max(20).default([]),
-  metadata: z.record(z.any()).optional(),
-  slots: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
+  slots: z.record(z.string(), z.any()).optional(),
   parentId: z.string().uuid().optional(),
   isPublic: z.boolean().default(false),
   permissions: NotePermissionsSchema.default('private'),
@@ -91,10 +91,10 @@ export const UpdateNoteSchema = z.object({
   type: NoteTypeSchema.optional(),
   position: PositionSchema.optional(),
   size: SizeSchema.optional(),
-  style: z.record(z.any()).optional(),
+  style: z.record(z.string(), z.any()).optional(),
   tags: z.array(z.string()).max(20).optional(),
-  metadata: z.record(z.any()).optional(),
-  slots: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
+  slots: z.record(z.string(), z.any()).optional(),
   parentId: z.string().uuid().optional(),
   isPublic: z.boolean().optional(),
   permissions: NotePermissionsSchema.optional(),
@@ -168,7 +168,7 @@ export const CreateVersionSchema = z.object({
   version: z.number().int().positive(),
   title: z.string().min(1).max(500),
   content: z.string(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
   createdBy: z.string().uuid(),
 });
 
@@ -203,7 +203,7 @@ export const CreateConnectionSchema = z.object({
   targetId: z.string().uuid(),
   type: ConnectionTypeSchema,
   label: z.string().max(100).optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 
 export const GetConnectionsSchema = z.object({
@@ -258,7 +258,7 @@ export const RecordActivitySchema = z.object({
   noteId: z.string().uuid(),
   userId: z.string().uuid(),
   action: z.enum(['created', 'updated', 'viewed', 'shared', 'deleted']),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 
 export const GetActivitySchema = z.object({

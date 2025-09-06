@@ -5,6 +5,7 @@
   "description": "AI-powered note-taking application with web and desktop clients",
   "scripts": {
     "dev": "pnpm --filter \"./packages/*\" --parallel dev",
+    "start": "pnpm --filter \"./packages/*\" --parallel dev",
     "build": "pnpm --filter \"./packages/*\" --parallel build",
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .",

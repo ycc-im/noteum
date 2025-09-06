@@ -50,7 +50,7 @@ export const UserPreferencesSchema = z.object({
   recentTags: z.array(z.string()).max(20),
   
   // Custom settings
-  customFields: z.record(z.any()).optional(),
+  customFields: z.record(z.string(), z.any()).optional(),
 });
 
 // Main User schema
@@ -167,8 +167,8 @@ export const RecordUserActivitySchema = z.object({
   userId: z.string().uuid(),
   action: UserActivityActionSchema,
   resourceId: z.string().uuid().optional(),
-  metadata: z.record(z.any()).optional(),
-  ipAddress: z.string().ip().optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
+  ipAddress: z.string().regex(/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/).optional(),
   userAgent: z.string().optional(),
 });
 
@@ -254,7 +254,7 @@ export const UserActivitySchema = z.object({
   userId: z.string().uuid(),
   action: UserActivityActionSchema,
   resourceId: z.string().uuid().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
   ipAddress: z.string().optional(),
   userAgent: z.string().optional(),
   timestamp: z.date(),

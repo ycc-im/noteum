@@ -66,3 +66,8 @@ export type NoteServiceClient = NoteGrpcPb.NoteServiceClient;
 
 // Re-export namespaces for advanced usage
 export { CommonPb, UserPb, NotePb, UserGrpcPb, NoteGrpcPb };
+
+// Database types for Noteum PostgreSQL schema
+export * from './database';
+export * from './notes';
+export * from './users';

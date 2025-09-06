@@ -41,7 +41,12 @@ export const notesRouter = router({
     .input(CreateNoteSchema)
     .mutation(async ({ input }) => {
       try {
-        const note = await notesRepository.create(input);
+        const note = await notesRepository.create({
+          ...input,
+          children: [],
+          connections: [],
+          versionHistory: []
+        });
         
         // Record activity
         await notesRepository.recordActivity({
@@ -259,6 +264,7 @@ export const notesRouter = router({
     .mutation(async ({ input }) => {
       try {
         const version = await notesRepository.createVersion(input.noteId, {
+          noteId: input.noteId,
           version: input.version,
           title: input.title,
           content: input.content,
@@ -466,7 +472,14 @@ export const notesRouter = router({
     .input(BulkCreateNotesSchema)
     .mutation(async ({ input }) => {
       try {
-        const result = await notesRepository.bulkCreate(input.notes);
+        const result = await notesRepository.bulkCreate(
+          input.notes.map(note => ({
+            ...note,
+            children: [],
+            connections: [],
+            versionHistory: []
+          }))
+        );
         return result;
       } catch (error) {
         throw new TRPCError({

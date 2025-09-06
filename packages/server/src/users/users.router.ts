@@ -60,7 +60,17 @@ export const usersRouter = router({
           });
         }
         
-        const user = await usersRepository.create(input);
+        const user = await usersRepository.create({
+          ...input,
+          isEmailVerified: false,
+          isActive: true,
+          notesLimit: input.subscription === 'free' ? 1000 : 
+                     input.subscription === 'pro' ? 10000 :
+                     input.subscription === 'team' ? 50000 : 1000000,
+          storageLimit: input.subscription === 'free' ? 100 :
+                       input.subscription === 'pro' ? 1000 :
+                       input.subscription === 'team' ? 5000 : 50000
+        });
         
         // Record registration activity
         await usersRepository.recordActivity({
@@ -470,7 +480,10 @@ export const usersRouter = router({
     .input(CreateInviteSchema)
     .mutation(async ({ input }) => {
       try {
-        const invite = await usersRepository.createInvite(input);
+        const invite = await usersRepository.createInvite({
+          ...input,
+          status: 'pending'
+        });
         return invite;
       } catch (error) {
         throw new TRPCError({

@@ -1,7 +1,13 @@
 import { initTRPC, TRPCError } from '@trpc/server';
+import { AuthInfo } from '../auth/jwt-validator';
 
-// Initialize tRPC
-const t = initTRPC.create({
+// Define the context type
+export interface Context {
+  user?: AuthInfo;
+}
+
+// Initialize tRPC with context
+const t = initTRPC.context<Context>().create({
   errorFormatter({ shape, error }) {
     return {
       ...shape,
@@ -23,11 +29,24 @@ export const publicProcedure = t.procedure;
 // - Logging
 // - Context injection
 
-// Example protected procedure (for future use)
-export const protectedProcedure = publicProcedure.use(({ next }) => {
-  // TODO: Add authentication middleware
-  // For now, just pass through
-  return next();
+// Authentication middleware
+const authMiddleware = t.middleware(({ ctx, next }) => {
+  if (!ctx.user) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'Authentication required',
+    });
+  }
+  
+  return next({
+    ctx: {
+      ...ctx,
+      user: ctx.user,
+    },
+  });
 });
+
+// Protected procedure that requires authentication
+export const protectedProcedure = publicProcedure.use(authMiddleware);
 
 export { TRPCError };

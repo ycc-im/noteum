@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { appRouter } from './trpc.router';
+import { appRouter } from './router';
 
 @Injectable()
 export class TrpcService {

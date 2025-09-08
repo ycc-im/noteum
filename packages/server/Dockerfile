@@ -1,131 +1,75 @@
-# Multi-stage Dockerfile for NestJS Server Application
-# Optimized for both development and production builds
-
-# =======================================
-# Stage 1: Base Image with Dependencies
-# =======================================
+# Multi-stage build for NestJS server application
+# 1. Base stage with Node.js and pnpm
 FROM node:20-alpine AS base
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
+RUN corepack enable && corepack prepare pnpm@9 --activate
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nestjs
 
-# Install pnpm for efficient package management
-RUN npm install -g pnpm
-
-# =======================================
-# Stage 2: Dependency Installation
-# =======================================
+# 2. Dependencies stage - install all dependencies
 FROM base AS deps
-
-# Copy workspace configuration files
-COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
+WORKDIR /app
+# Copy package files for workspace resolution
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/server/package.json ./packages/server/
 COPY packages/shared/package.json ./packages/shared/
+# Install all dependencies
+RUN pnpm install --frozen-lockfile
 
-# Install dependencies with frozen lockfile for reproducible builds
-RUN pnpm install --frozen-lockfile --production=false
-
-# =======================================
-# Stage 3: Development Stage
-# =======================================
+# 3. Development stage
 FROM base AS development
-
-# Copy installed dependencies
+WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/packages/server/node_modules ./packages/server/node_modules
-COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
-
-# Copy source code
 COPY . .
-
-# Set working directory to server package
-WORKDIR /app/packages/server
-
-# Expose development port
+# Ensure nestjs user owns all files and can write to all directories
+RUN chown -R nestjs:nodejs /app
+USER nestjs
 EXPOSE 3001
-
-# Health check for development
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
-
-# Development command with hot reload
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3001/health || exit 1
 CMD ["pnpm", "run", "start:dev"]
 
-# =======================================
-# Stage 4: Build Stage
-# =======================================
+# 4. Builder stage - build the application
 FROM base AS builder
-
-# Copy installed dependencies
+WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/packages/server/node_modules ./packages/server/node_modules
-COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
-
-# Copy source code
 COPY . .
-
-# Build the shared package first (if it has a build step)
-WORKDIR /app/packages/shared
-RUN if [ -f "package.json" ] && grep -q "build" package.json; then pnpm run build; fi
-
-# Build the server application
-WORKDIR /app/packages/server
 RUN pnpm run build
 
-# =======================================
-# Stage 5: Production Dependencies
-# =======================================
+# 5. Production dependencies stage
 FROM base AS prod-deps
-
-# Copy workspace configuration files
-COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
+WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/server/package.json ./packages/server/
 COPY packages/shared/package.json ./packages/shared/
+RUN pnpm install --frozen-lockfile --prod
 
-# Install only production dependencies
-RUN pnpm install --frozen-lockfile --production=true
-
-# =======================================
-# Stage 6: Production Stage
-# =======================================
-FROM node:20-alpine AS production
+# 6. Production stage
+FROM base AS production
+WORKDIR /app
 
 # Install dumb-init for proper signal handling
 RUN apk add --no-cache dumb-init
 
-# Create non-root user for security
-RUN addgroup --system --gid 1001 nestjs && \
-    adduser --system --uid 1001 nestjs
-
-WORKDIR /app
-
 # Copy production dependencies
-COPY --from=prod-deps --chown=nestjs:nestjs /app/node_modules ./node_modules
-COPY --from=prod-deps --chown=nestjs:nestjs /app/packages/server/node_modules ./packages/server/node_modules
-COPY --from=prod-deps --chown=nestjs:nestjs /app/packages/shared/node_modules ./packages/shared/node_modules
+COPY --from=prod-deps /app/node_modules ./node_modules
+COPY --from=prod-deps /app/package.json ./package.json
 
 # Copy built application
-COPY --from=builder --chown=nestjs:nestjs /app/packages/server/dist ./packages/server/dist
-COPY --from=builder --chown=nestjs:nestjs /app/packages/shared/dist ./packages/shared/dist 2>/dev/null || true
+COPY --from=builder /app/packages/server/dist ./packages/server/dist
+COPY --from=builder /app/packages/server/package.json ./packages/server/
+COPY --from=builder /app/packages/shared ./packages/shared/
 
-# Copy necessary runtime files
-COPY --from=builder --chown=nestjs:nestjs /app/packages/server/package.json ./packages/server/
-COPY --from=builder --chown=nestjs:nestjs /app/packages/shared/package.json ./packages/shared/ 2>/dev/null || true
-
-# Set working directory to server package
-WORKDIR /app/packages/server
-
-# Switch to non-root user
+# Set proper ownership
+RUN chown -R nestjs:nodejs /app
 USER nestjs
 
-# Expose production port
+# Expose port
 EXPOSE 3001
 
-# Health check for production
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:3001/health || exit 1
 
-# Use dumb-init for proper signal handling in containers
+# Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
-
-# Production command
-CMD ["node", "dist/main.js"]
+CMD ["node", "packages/server/dist/main.js"]

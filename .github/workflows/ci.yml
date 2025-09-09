@@ -1,4 +1,4 @@
-name: 'Continuous Integration'
+name: "Continuous Integration"
 
 on:
   push:
@@ -13,9 +13,9 @@ on:
 
 jobs:
   quality-checks:
-    name: 'Code Quality & Tests'
+    name: "Code Quality & Tests"
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,8 +28,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
-          cache: 'pnpm'
+          node-version: "lts/*"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -50,9 +50,9 @@ jobs:
         continue-on-error: true
 
   security-scan:
-    name: 'Security Audit'
+    name: "Security Audit"
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -65,8 +65,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
-          cache: 'pnpm'
+          node-version: "lts/*"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -75,9 +75,9 @@ jobs:
         run: pnpm audit
 
   build-validation:
-    name: 'Build Validation'
+    name: "Build Validation"
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -90,8 +90,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
-          cache: 'pnpm'
+          node-version: "lts/*"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

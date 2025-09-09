@@ -24,7 +24,7 @@ services:
       # Exclude node_modules to avoid conflicts
       - /app/packages/server/node_modules
       - /app/packages/shared/node_modules
-    command: ["pnpm", "run", "start:dev"]
+    command: ["sh", "-c", "cd packages/server && pnpm run start:dev"]
     # Remove healthcheck for faster startup in development
     healthcheck:
       disable: true
@@ -32,7 +32,7 @@ services:
   # Web Development Configuration
   web:
     build:
-      target: builder  # Use builder stage for development
+      target: development  # Use development stage for hot reloading
     environment:
       NODE_ENV: development
     volumes:
@@ -51,7 +51,10 @@ services:
       # Exclude node_modules to avoid conflicts
       - /app/packages/web/node_modules
       - /app/packages/shared/node_modules
-    command: ["pnpm", "run", "dev"]
+    command: ["sh", "-c", "cd packages/web && pnpm run dev"]
+    # Remove dependency on server healthcheck in development
+    depends_on:
+      - postgres
     # Remove healthcheck for faster startup in development
     healthcheck:
       disable: true

@@ -33,6 +33,24 @@ COPY packages/web/ ./packages/web/
 # Build the shared package first (if it needs building)
 RUN cd packages/shared && pnpm build || true
 
+# =============================================================================
+# Development Stage: For development with hot reloading (no build step)
+# =============================================================================
+FROM builder AS development
+# Install curl for healthcheck
+RUN apk add --no-cache curl
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+# Set ownership and switch user
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+EXPOSE 3000
+CMD ["sh", "-c", "cd packages/web && pnpm run dev"]
+
+# =============================================================================
+# Builder Final Stage: Complete the build
+# =============================================================================
+FROM builder AS builder-final
 # Build the web application
 RUN cd packages/web && pnpm run build
 

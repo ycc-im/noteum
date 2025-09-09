@@ -11,7 +11,10 @@ interface ProtectedRouteProps {
  * Route protection component that requires authentication
  * Redirects to login if user is not authenticated
  */
-export default function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
+export default function ProtectedRoute({
+  children,
+  fallback,
+}: ProtectedRouteProps) {
   const { isAuthenticated, isLoading } = useLogto()
   const navigate = useNavigate()
 
@@ -21,7 +24,7 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
       const currentPath = window.location.pathname + window.location.search
       navigate({
         to: '/login',
-        search: currentPath !== '/' ? { redirect: currentPath } : undefined
+        search: currentPath !== '/' ? { redirect: currentPath } : undefined,
       })
     }
   }, [isLoading, isAuthenticated, navigate])

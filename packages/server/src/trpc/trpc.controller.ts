@@ -12,7 +12,11 @@ export class TrpcController {
   ) {}
 
   @All('*')
-  async handler(@Req() req: Request, @Res() res: Response, @Next() next: NextFunction) {
+  async handler(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Next() next: NextFunction,
+  ) {
     const middleware = createExpressMiddleware({
       router: this.trpcService.getRouter(),
       createContext: ({ req }) => this.contextService.createContext(req),

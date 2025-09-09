@@ -7,14 +7,14 @@ import { Context } from '../trpc/trpc';
  */
 export function getUserIdFromContext(ctx: Context): string {
   const userId = ctx.user?.sub;
-  
+
   if (!userId) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'User ID not found in token',
     });
   }
-  
+
   return userId;
 }
 
@@ -32,14 +32,14 @@ export function getUserEmailFromContext(ctx: Context): string | null {
  */
 export function getUserFromContext(ctx: Context) {
   const user = ctx.user;
-  
+
   if (!user) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'User not found in token',
     });
   }
-  
+
   return {
     id: user.sub,
     email: user.email,

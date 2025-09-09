@@ -9,12 +9,15 @@ status: in_progress
 # Stream C: Docker Compose Main Configuration Update
 
 ## Scope
+
 在现有 docker-compose.yml 中添加 web 和 server 服务
 
 ## Files
+
 - docker-compose.yml
 
 ## Dependencies
+
 - Stream A: Web Service Dockerfile (已完成)
 - Stream B: Server Service Dockerfile (已完成)
 
@@ -53,32 +56,38 @@ status: in_progress
 ### 🔧 技术配置详情
 
 #### 服务端口映射
+
 - PostgreSQL: 5432 -> 5432
 - pgAdmin: 80 -> 8080 (http://localhost:8080)
 - Server: 3001 -> 3001, 5001 -> 5001
 - Web: 3000 -> 3000
 
 #### 网络配置
+
 - 专用网络: `noteum-network` (bridge)
 - 服务间通过容器名通信
 - 外部访问通过端口映射
 
 #### 数据持久化
+
 - `postgres_data`: PostgreSQL 数据持久化
 - `pgadmin_data`: pgAdmin 配置持久化
 
 #### 环境变量配置
+
 - Server: 完整的数据库连接配置
 - Web: API 端点和主机名配置
 - 开发/生产环境区分
 
 ### 📊 文件创建统计
+
 - ✅ `docker-compose.yml` - 主配置文件 (108 行)
-- ✅ `docker-compose.override.yml` - 开发环境 (54 行)  
+- ✅ `docker-compose.override.yml` - 开发环境 (54 行)
 - ✅ `docker-compose.prod.yml` - 生产环境 (52 行)
 - ✅ `docker-compose.README.md` - 完整文档 (200+ 行)
 
 ### 🎯 配置验证
+
 - ✅ Docker Compose 语法验证通过
 - ✅ 服务依赖关系正确配置
 - ✅ 健康检查配置完整
@@ -86,11 +95,13 @@ status: in_progress
 - ✅ 生产环境资源优化
 
 ## Coordination Status
+
 - ✅ Web Dockerfile 依赖：已存在 `packages/web/Dockerfile`
-- ⚠️  Server Dockerfile 依赖：配置已准备，等待 Dockerfile 完成
+- ⚠️ Server Dockerfile 依赖：配置已准备，等待 Dockerfile 完成
 - ✅ 配置文件已就绪，可以在 Server Dockerfile 完成后立即使用
 
 ## Next Steps for Full Integration
+
 1. 等待 Stream B 完成 `packages/server/Dockerfile`
 2. 测试完整的服务启动: `docker-compose up`
 3. 验证服务间通信和数据库连接

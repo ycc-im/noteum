@@ -37,7 +37,7 @@ const authMiddleware = t.middleware(({ ctx, next }) => {
       message: 'Authentication required',
     });
   }
-  
+
   return next({
     ctx: {
       ...ctx,

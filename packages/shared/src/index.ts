@@ -4,7 +4,7 @@
 export const GREETING = "Hello from shared package!";
 
 // 导出所有 UI 组件
-export * from './components';
+export * from "./components";
 
 // 导出所有类型定义 (包含数据库类型和tRPC类型)
-export * from './types';
+export * from "./types";

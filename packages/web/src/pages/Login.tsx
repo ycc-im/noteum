@@ -28,8 +28,10 @@ export default function Login(props: LoginProps) {
     // If not loading and not authenticated, initiate sign in
     if (!isLoading && !isAuthenticated && typeof window !== 'undefined') {
       const redirectUri = `${window.location.origin}/auth/callback`
-      const state = search.redirect ? JSON.stringify({ redirect: search.redirect }) : undefined
-      
+      const state = search.redirect
+        ? JSON.stringify({ redirect: search.redirect })
+        : undefined
+
       signIn(redirectUri, state)
     }
   }, [isAuthenticated, isLoading, signIn, navigate, search.redirect])
@@ -63,7 +65,9 @@ export default function Login(props: LoginProps) {
             onClick={() => {
               if (typeof window !== 'undefined') {
                 const redirectUri = `${window.location.origin}/auth/callback`
-                const state = search.redirect ? JSON.stringify({ redirect: search.redirect }) : undefined
+                const state = search.redirect
+                  ? JSON.stringify({ redirect: search.redirect })
+                  : undefined
                 signIn(redirectUri, state)
               }
             }}

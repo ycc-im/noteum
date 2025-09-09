@@ -1,4 +1,10 @@
-import { IsEnum, IsNumber, IsOptional, IsString, validateSync } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  validateSync,
+} from 'class-validator';
 import { plainToClass, Transform } from 'class-transformer';
 
 enum Environment {

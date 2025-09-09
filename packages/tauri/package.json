@@ -3,14 +3,19 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "echo 'Starting tauri dev server...'",
-    "build": "echo 'Building tauri app...'",
-    "typecheck": "tsc --noEmit"
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "typecheck": "tsc --noEmit",
+    "tauri": "tauri"
   },
   "dependencies": {
-    "@noteum/shared": "workspace:*"
+    "@noteum/shared": "workspace:*",
+    "@tauri-apps/api": "^1.6.0",
+    "chrono": "^1.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "@tauri-apps/cli": "^1.6.2",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
   }
 }

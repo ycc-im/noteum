@@ -49,9 +49,9 @@ export const notesRouter = router({
           userId, // Use userId from context instead of input
           children: [],
           connections: [],
-          versionHistory: []
+          versionHistory: [],
         });
-        
+
         // Record activity
         await notesRepository.recordActivity({
           noteId: note.id,
@@ -59,7 +59,7 @@ export const notesRouter = router({
           action: 'created',
           metadata: { title: note.title, type: note.type },
         });
-        
+
         return note;
       } catch (error) {
         if (error instanceof TRPCError) {
@@ -78,21 +78,21 @@ export const notesRouter = router({
     .query(async ({ input }) => {
       try {
         const note = await notesRepository.findById(input.id);
-        
+
         if (!note) {
           throw new TRPCError({
             code: 'NOT_FOUND',
             message: 'Note not found',
           });
         }
-        
+
         // Record view activity
         await notesRepository.recordActivity({
           noteId: note.id,
           userId: note.userId,
           action: 'viewed',
         });
-        
+
         return note;
       } catch (error) {
         if (error instanceof TRPCError) {
@@ -118,7 +118,7 @@ export const notesRouter = router({
           status: input.status,
           type: input.type,
         });
-        
+
         return result;
       } catch (error) {
         throw new TRPCError({
@@ -135,14 +135,14 @@ export const notesRouter = router({
       try {
         const { id, ...updateData } = input;
         const note = await notesRepository.update(id, updateData);
-        
+
         if (!note) {
           throw new TRPCError({
             code: 'NOT_FOUND',
             message: 'Note not found or access denied',
           });
         }
-        
+
         // Record activity
         await notesRepository.recordActivity({
           noteId: note.id,
@@ -150,7 +150,7 @@ export const notesRouter = router({
           action: 'updated',
           metadata: { changes: Object.keys(updateData) },
         });
-        
+
         return note;
       } catch (error) {
         if (error instanceof TRPCError) {
@@ -169,14 +169,14 @@ export const notesRouter = router({
     .mutation(async ({ input }) => {
       try {
         const success = await notesRepository.delete(input.id);
-        
+
         if (!success) {
           throw new TRPCError({
             code: 'NOT_FOUND',
             message: 'Note not found or access denied',
           });
         }
-        
+
         return { success, id: input.id };
       } catch (error) {
         if (error instanceof TRPCError) {
@@ -201,7 +201,7 @@ export const notesRouter = router({
           threshold: input.threshold,
           filters: input.filters,
         });
-        
+
         return {
           results,
           query: input.query,
@@ -226,7 +226,7 @@ export const notesRouter = router({
           limit: input.limit,
           filters: input.filters,
         });
-        
+
         return {
           results,
           query: input.query,
@@ -252,7 +252,7 @@ export const notesRouter = router({
           threshold: input.threshold,
           filters: input.filters,
         });
-        
+
         return {
           results,
           total: results.length,
@@ -280,7 +280,7 @@ export const notesRouter = router({
           metadata: input.metadata,
           createdBy: input.createdBy,
         });
-        
+
         return version;
       } catch (error) {
         throw new TRPCError({
@@ -310,15 +310,18 @@ export const notesRouter = router({
     .input(GetVersionSchema)
     .query(async ({ input }) => {
       try {
-        const version = await notesRepository.getVersion(input.noteId, input.version);
-        
+        const version = await notesRepository.getVersion(
+          input.noteId,
+          input.version,
+        );
+
         if (!version) {
           throw new TRPCError({
             code: 'NOT_FOUND',
             message: 'Version not found',
           });
         }
-        
+
         return version;
       } catch (error) {
         if (error instanceof TRPCError) {
@@ -336,15 +339,18 @@ export const notesRouter = router({
     .input(RevertToVersionSchema)
     .mutation(async ({ input }) => {
       try {
-        const note = await notesRepository.revertToVersion(input.noteId, input.version);
-        
+        const note = await notesRepository.revertToVersion(
+          input.noteId,
+          input.version,
+        );
+
         if (!note) {
           throw new TRPCError({
             code: 'NOT_FOUND',
             message: 'Note or version not found',
           });
         }
-        
+
         // Record activity
         await notesRepository.recordActivity({
           noteId: note.id,
@@ -352,7 +358,7 @@ export const notesRouter = router({
           action: 'updated',
           metadata: { action: 'revert', version: input.version },
         });
-        
+
         return note;
       } catch (error) {
         if (error instanceof TRPCError) {
@@ -371,15 +377,18 @@ export const notesRouter = router({
     .input(UpdatePositionSchema)
     .mutation(async ({ input }) => {
       try {
-        const note = await notesRepository.updatePosition(input.id, input.position);
-        
+        const note = await notesRepository.updatePosition(
+          input.id,
+          input.position,
+        );
+
         if (!note) {
           throw new TRPCError({
             code: 'NOT_FOUND',
             message: 'Note not found',
           });
         }
-        
+
         return note;
       } catch (error) {
         if (error instanceof TRPCError) {
@@ -398,14 +407,14 @@ export const notesRouter = router({
     .mutation(async ({ input }) => {
       try {
         const note = await notesRepository.updateSize(input.id, input.size);
-        
+
         if (!note) {
           throw new TRPCError({
             code: 'NOT_FOUND',
             message: 'Note not found',
           });
         }
-        
+
         return note;
       } catch (error) {
         if (error instanceof TRPCError) {
@@ -454,15 +463,17 @@ export const notesRouter = router({
     .input(DeleteConnectionSchema)
     .mutation(async ({ input }) => {
       try {
-        const success = await notesRepository.deleteConnection(input.connectionId);
-        
+        const success = await notesRepository.deleteConnection(
+          input.connectionId,
+        );
+
         if (!success) {
           throw new TRPCError({
             code: 'NOT_FOUND',
             message: 'Connection not found',
           });
         }
-        
+
         return { success, id: input.connectionId };
       } catch (error) {
         if (error instanceof TRPCError) {
@@ -482,12 +493,12 @@ export const notesRouter = router({
     .mutation(async ({ input }) => {
       try {
         const result = await notesRepository.bulkCreate(
-          input.notes.map(note => ({
+          input.notes.map((note) => ({
             ...note,
             children: [],
             connections: [],
-            versionHistory: []
-          }))
+            versionHistory: [],
+          })),
         );
         return result;
       } catch (error) {
@@ -534,7 +545,10 @@ export const notesRouter = router({
     .input(GetNotesByTagsSchema)
     .query(async ({ input }) => {
       try {
-        const notes = await notesRepository.findByTags(input.tags, input.userId);
+        const notes = await notesRepository.findByTags(
+          input.tags,
+          input.userId,
+        );
         return notes;
       } catch (error) {
         throw new TRPCError({
@@ -549,7 +563,10 @@ export const notesRouter = router({
     .input(GetRecentNotesSchema)
     .query(async ({ input }) => {
       try {
-        const notes = await notesRepository.findRecent(input.userId, input.limit);
+        const notes = await notesRepository.findRecent(
+          input.userId,
+          input.limit,
+        );
         return notes;
       } catch (error) {
         throw new TRPCError({
@@ -564,7 +581,10 @@ export const notesRouter = router({
     .input(GetPopularNotesSchema)
     .query(async ({ input }) => {
       try {
-        const notes = await notesRepository.findPopular(input.userId, input.limit);
+        const notes = await notesRepository.findPopular(
+          input.userId,
+          input.limit,
+        );
         return notes;
       } catch (error) {
         throw new TRPCError({
@@ -579,7 +599,10 @@ export const notesRouter = router({
     .input(GetSimilarNotesSchema)
     .query(async ({ input }) => {
       try {
-        const notes = await notesRepository.findSimilar(input.noteId, input.limit);
+        const notes = await notesRepository.findSimilar(
+          input.noteId,
+          input.limit,
+        );
         return notes;
       } catch (error) {
         throw new TRPCError({
@@ -610,7 +633,10 @@ export const notesRouter = router({
     .input(GetActivitySchema)
     .query(async ({ input }) => {
       try {
-        const activities = await notesRepository.getActivity(input.noteId, input.limit);
+        const activities = await notesRepository.getActivity(
+          input.noteId,
+          input.limit,
+        );
         return activities;
       } catch (error) {
         throw new TRPCError({
@@ -626,7 +652,10 @@ export const notesRouter = router({
     .input(ExportNotesSchema)
     .query(async ({ input }) => {
       try {
-        const data = await notesRepository.exportNotes(input.userId, input.format);
+        const data = await notesRepository.exportNotes(
+          input.userId,
+          input.format,
+        );
         return {
           data,
           format: input.format,
@@ -645,7 +674,11 @@ export const notesRouter = router({
     .input(ImportNotesSchema)
     .mutation(async ({ input }) => {
       try {
-        const result = await notesRepository.importNotes(input.userId, input.data, input.format);
+        const result = await notesRepository.importNotes(
+          input.userId,
+          input.data,
+          input.format,
+        );
         return result;
       } catch (error) {
         throw new TRPCError({

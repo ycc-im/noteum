@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server';
-import { router, publicProcedure } from '../trpc/trpc';
+import { router, publicProcedure, protectedProcedure } from '../trpc/trpc';
 import { NotesRepository } from '../repositories/notes.repository';
+import { getUserIdFromContext } from '../auth/helpers';
 import {
   CreateNoteSchema,
   UpdateNoteSchema,
@@ -37,22 +38,33 @@ const notesRepository = new NotesRepository();
 
 export const notesRouter = router({
   // Basic CRUD Operations
-  create: publicProcedure
+  create: protectedProcedure
     .input(CreateNoteSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       try {
-        const note = await notesRepository.create(input);
+        const userId = getUserIdFromContext(ctx);
+
+        const note = await notesRepository.create({
+          ...input,
+          userId, // Use userId from context instead of input
+          children: [],
+          connections: [],
+          versionHistory: []
+        });
         
         // Record activity
         await notesRepository.recordActivity({
           noteId: note.id,
-          userId: input.userId,
+          userId,
           action: 'created',
           metadata: { title: note.title, type: note.type },
         });
         
         return note;
       } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to create note',
@@ -61,7 +73,7 @@ export const notesRouter = router({
       }
     }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(GetNoteByIdSchema)
     .query(async ({ input }) => {
       try {
@@ -94,11 +106,13 @@ export const notesRouter = router({
       }
     }),
 
-  getByUser: publicProcedure
+  getByUser: protectedProcedure
     .input(GetNotesByUserSchema)
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       try {
-        const result = await notesRepository.findByUserId(input.userId, {
+        const userId = getUserIdFromContext(ctx);
+
+        const result = await notesRepository.findByUserId(userId, {
           page: input.page,
           limit: input.limit,
           status: input.status,
@@ -115,7 +129,7 @@ export const notesRouter = router({
       }
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(UpdateNoteSchema)
     .mutation(async ({ input }) => {
       try {
@@ -150,7 +164,7 @@ export const notesRouter = router({
       }
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(DeleteNoteSchema)
     .mutation(async ({ input }) => {
       try {
@@ -177,7 +191,7 @@ export const notesRouter = router({
     }),
 
   // Vector/Semantic Search Operations
-  searchSemantic: publicProcedure
+  searchSemantic: protectedProcedure
     .input(SemanticSearchSchema)
     .query(async ({ input }) => {
       try {
@@ -203,7 +217,7 @@ export const notesRouter = router({
       }
     }),
 
-  searchFullText: publicProcedure
+  searchFullText: protectedProcedure
     .input(FullTextSearchSchema)
     .query(async ({ input }) => {
       try {
@@ -228,7 +242,7 @@ export const notesRouter = router({
       }
     }),
 
-  searchVector: publicProcedure
+  searchVector: protectedProcedure
     .input(VectorSearchSchema)
     .query(async ({ input }) => {
       try {
@@ -254,11 +268,12 @@ export const notesRouter = router({
     }),
 
   // Version Management
-  createVersion: publicProcedure
+  createVersion: protectedProcedure
     .input(CreateVersionSchema)
     .mutation(async ({ input }) => {
       try {
         const version = await notesRepository.createVersion(input.noteId, {
+          noteId: input.noteId,
           version: input.version,
           title: input.title,
           content: input.content,
@@ -276,7 +291,7 @@ export const notesRouter = router({
       }
     }),
 
-  getVersions: publicProcedure
+  getVersions: protectedProcedure
     .input(GetVersionsSchema)
     .query(async ({ input }) => {
       try {
@@ -291,7 +306,7 @@ export const notesRouter = router({
       }
     }),
 
-  getVersion: publicProcedure
+  getVersion: protectedProcedure
     .input(GetVersionSchema)
     .query(async ({ input }) => {
       try {
@@ -317,7 +332,7 @@ export const notesRouter = router({
       }
     }),
 
-  revertToVersion: publicProcedure
+  revertToVersion: protectedProcedure
     .input(RevertToVersionSchema)
     .mutation(async ({ input }) => {
       try {
@@ -352,7 +367,7 @@ export const notesRouter = router({
     }),
 
   // React Flow Position and Size Operations
-  updatePosition: publicProcedure
+  updatePosition: protectedProcedure
     .input(UpdatePositionSchema)
     .mutation(async ({ input }) => {
       try {
@@ -378,7 +393,7 @@ export const notesRouter = router({
       }
     }),
 
-  updateSize: publicProcedure
+  updateSize: protectedProcedure
     .input(UpdateSizeSchema)
     .mutation(async ({ input }) => {
       try {
@@ -405,7 +420,7 @@ export const notesRouter = router({
     }),
 
   // Connection Management
-  createConnection: publicProcedure
+  createConnection: protectedProcedure
     .input(CreateConnectionSchema)
     .mutation(async ({ input }) => {
       try {
@@ -420,7 +435,7 @@ export const notesRouter = router({
       }
     }),
 
-  getConnections: publicProcedure
+  getConnections: protectedProcedure
     .input(GetConnectionsSchema)
     .query(async ({ input }) => {
       try {
@@ -435,7 +450,7 @@ export const notesRouter = router({
       }
     }),
 
-  deleteConnection: publicProcedure
+  deleteConnection: protectedProcedure
     .input(DeleteConnectionSchema)
     .mutation(async ({ input }) => {
       try {
@@ -462,11 +477,18 @@ export const notesRouter = router({
     }),
 
   // Bulk Operations
-  bulkCreate: publicProcedure
+  bulkCreate: protectedProcedure
     .input(BulkCreateNotesSchema)
     .mutation(async ({ input }) => {
       try {
-        const result = await notesRepository.bulkCreate(input.notes);
+        const result = await notesRepository.bulkCreate(
+          input.notes.map(note => ({
+            ...note,
+            children: [],
+            connections: [],
+            versionHistory: []
+          }))
+        );
         return result;
       } catch (error) {
         throw new TRPCError({
@@ -477,7 +499,7 @@ export const notesRouter = router({
       }
     }),
 
-  bulkUpdate: publicProcedure
+  bulkUpdate: protectedProcedure
     .input(BulkUpdateNotesSchema)
     .mutation(async ({ input }) => {
       try {
@@ -492,7 +514,7 @@ export const notesRouter = router({
       }
     }),
 
-  bulkDelete: publicProcedure
+  bulkDelete: protectedProcedure
     .input(BulkDeleteNotesSchema)
     .mutation(async ({ input }) => {
       try {
@@ -508,7 +530,7 @@ export const notesRouter = router({
     }),
 
   // Advanced Query Operations
-  getByTags: publicProcedure
+  getByTags: protectedProcedure
     .input(GetNotesByTagsSchema)
     .query(async ({ input }) => {
       try {
@@ -523,7 +545,7 @@ export const notesRouter = router({
       }
     }),
 
-  getRecent: publicProcedure
+  getRecent: protectedProcedure
     .input(GetRecentNotesSchema)
     .query(async ({ input }) => {
       try {
@@ -538,7 +560,7 @@ export const notesRouter = router({
       }
     }),
 
-  getPopular: publicProcedure
+  getPopular: protectedProcedure
     .input(GetPopularNotesSchema)
     .query(async ({ input }) => {
       try {
@@ -553,7 +575,7 @@ export const notesRouter = router({
       }
     }),
 
-  getSimilar: publicProcedure
+  getSimilar: protectedProcedure
     .input(GetSimilarNotesSchema)
     .query(async ({ input }) => {
       try {
@@ -569,7 +591,7 @@ export const notesRouter = router({
     }),
 
   // Activity Tracking
-  recordActivity: publicProcedure
+  recordActivity: protectedProcedure
     .input(RecordActivitySchema)
     .mutation(async ({ input }) => {
       try {
@@ -584,7 +606,7 @@ export const notesRouter = router({
       }
     }),
 
-  getActivity: publicProcedure
+  getActivity: protectedProcedure
     .input(GetActivitySchema)
     .query(async ({ input }) => {
       try {
@@ -600,7 +622,7 @@ export const notesRouter = router({
     }),
 
   // Export/Import Operations
-  export: publicProcedure
+  export: protectedProcedure
     .input(ExportNotesSchema)
     .query(async ({ input }) => {
       try {
@@ -619,7 +641,7 @@ export const notesRouter = router({
       }
     }),
 
-  import: publicProcedure
+  import: protectedProcedure
     .input(ImportNotesSchema)
     .mutation(async ({ input }) => {
       try {

@@ -6,5 +6,5 @@ export const GREETING = "Hello from shared package!";
 // 导出所有 UI 组件
 export * from './components';
 
-// 导出所有 Proto 类型和 gRPC 服务定义
+// 导出所有类型定义 (包含数据库类型和tRPC类型)
 export * from './types';

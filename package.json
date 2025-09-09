@@ -5,6 +5,7 @@
   "description": "AI-powered note-taking application with web and desktop clients",
   "scripts": {
     "dev": "pnpm --filter \"./packages/*\" --parallel dev",
+    "start": "pnpm --filter \"./packages/*\" --parallel dev",
     "dev:web": "pnpm --filter web dev",
     "dev:tauri": "pnpm --filter @noteum/tauri dev",
     "build": "pnpm --filter \"./packages/*\" --parallel build",
@@ -29,5 +30,10 @@
   "devDependencies": {
     "prettier": "^3.0.0",
     "typescript": "^5.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "tmp": ">=0.2.4"
+    }
   }
 }

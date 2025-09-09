@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { router, publicProcedure } from '../trpc/trpc';
+import { router, publicProcedure, protectedProcedure } from '../trpc/trpc';
 import { UsersRepository } from '../repositories/users.repository';
 import {
   CreateUserSchema,
@@ -60,7 +60,17 @@ export const usersRouter = router({
           });
         }
         
-        const user = await usersRepository.create(input);
+        const user = await usersRepository.create({
+          ...input,
+          isEmailVerified: false,
+          isActive: true,
+          notesLimit: input.subscription === 'free' ? 1000 : 
+                     input.subscription === 'pro' ? 10000 :
+                     input.subscription === 'team' ? 50000 : 1000000,
+          storageLimit: input.subscription === 'free' ? 100 :
+                       input.subscription === 'pro' ? 1000 :
+                       input.subscription === 'team' ? 5000 : 50000
+        });
         
         // Record registration activity
         await usersRepository.recordActivity({
@@ -95,7 +105,7 @@ export const usersRouter = router({
       }
     }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(GetUserByIdSchema)
     .query(async ({ input }) => {
       try {
@@ -134,7 +144,7 @@ export const usersRouter = router({
       }
     }),
 
-  getByLogtoId: publicProcedure
+  getByLogtoId: protectedProcedure
     .input(GetUserByLogtoIdSchema)
     .query(async ({ input }) => {
       try {
@@ -160,7 +170,7 @@ export const usersRouter = router({
       }
     }),
 
-  getByUsername: publicProcedure
+  getByUsername: protectedProcedure
     .input(GetUserByUsernameSchema)
     .query(async ({ input }) => {
       try {
@@ -194,7 +204,7 @@ export const usersRouter = router({
       }
     }),
 
-  getByEmail: publicProcedure
+  getByEmail: protectedProcedure
     .input(GetUserByEmailSchema)
     .query(async ({ input }) => {
       try {
@@ -220,7 +230,7 @@ export const usersRouter = router({
       }
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(UpdateUserSchema)
     .mutation(async ({ input }) => {
       try {
@@ -270,7 +280,7 @@ export const usersRouter = router({
       }
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(DeleteUserSchema)
     .mutation(async ({ input }) => {
       try {
@@ -297,7 +307,7 @@ export const usersRouter = router({
     }),
 
   // Settings and Preferences Management
-  updateSettings: publicProcedure
+  updateSettings: protectedProcedure
     .input(UpdateUserSettingsSchema)
     .mutation(async ({ input }) => {
       try {
@@ -323,7 +333,7 @@ export const usersRouter = router({
       }
     }),
 
-  updatePreferences: publicProcedure
+  updatePreferences: protectedProcedure
     .input(UpdateUserPreferencesSchema)
     .mutation(async ({ input }) => {
       try {
@@ -350,7 +360,7 @@ export const usersRouter = router({
     }),
 
   // Authentication and Verification
-  verifyEmail: publicProcedure
+  verifyEmail: protectedProcedure
     .input(VerifyEmailSchema)
     .mutation(async ({ input }) => {
       try {
@@ -376,7 +386,7 @@ export const usersRouter = router({
       }
     }),
 
-  updateLastLogin: publicProcedure
+  updateLastLogin: protectedProcedure
     .input(UpdateLastLoginSchema)
     .mutation(async ({ input }) => {
       try {
@@ -399,7 +409,7 @@ export const usersRouter = router({
     }),
 
   // Activity Tracking
-  recordActivity: publicProcedure
+  recordActivity: protectedProcedure
     .input(RecordUserActivitySchema)
     .mutation(async ({ input }) => {
       try {
@@ -414,7 +424,7 @@ export const usersRouter = router({
       }
     }),
 
-  getActivity: publicProcedure
+  getActivity: protectedProcedure
     .input(GetUserActivitySchema)
     .query(async ({ input }) => {
       try {
@@ -435,7 +445,7 @@ export const usersRouter = router({
     }),
 
   // Statistics
-  getStats: publicProcedure
+  getStats: protectedProcedure
     .input(GetUserStatsSchema)
     .query(async ({ input }) => {
       try {
@@ -450,7 +460,7 @@ export const usersRouter = router({
       }
     }),
 
-  updateStorageUsage: publicProcedure
+  updateStorageUsage: protectedProcedure
     .input(UpdateStorageUsageSchema)
     .mutation(async ({ input }) => {
       try {
@@ -466,11 +476,14 @@ export const usersRouter = router({
     }),
 
   // Collaboration
-  createInvite: publicProcedure
+  createInvite: protectedProcedure
     .input(CreateInviteSchema)
     .mutation(async ({ input }) => {
       try {
-        const invite = await usersRepository.createInvite(input);
+        const invite = await usersRepository.createInvite({
+          ...input,
+          status: 'pending'
+        });
         return invite;
       } catch (error) {
         throw new TRPCError({
@@ -481,7 +494,7 @@ export const usersRouter = router({
       }
     }),
 
-  getInvites: publicProcedure
+  getInvites: protectedProcedure
     .input(GetInvitesSchema)
     .query(async ({ input }) => {
       try {
@@ -496,7 +509,7 @@ export const usersRouter = router({
       }
     }),
 
-  updateInviteStatus: publicProcedure
+  updateInviteStatus: protectedProcedure
     .input(UpdateInviteStatusSchema)
     .mutation(async ({ input }) => {
       try {
@@ -523,7 +536,7 @@ export const usersRouter = router({
     }),
 
   // Search and Discovery
-  search: publicProcedure
+  search: protectedProcedure
     .input(SearchUsersSchema)
     .query(async ({ input }) => {
       try {
@@ -550,7 +563,7 @@ export const usersRouter = router({
     }),
 
   // Admin Operations
-  list: publicProcedure
+  list: protectedProcedure
     .input(ListUsersSchema)
     .query(async ({ input }) => {
       try {
@@ -573,7 +586,7 @@ export const usersRouter = router({
       }
     }),
 
-  updateSubscription: publicProcedure
+  updateSubscription: protectedProcedure
     .input(UpdateSubscriptionSchema)
     .mutation(async ({ input }) => {
       try {
@@ -611,7 +624,7 @@ export const usersRouter = router({
     }),
 
   // Bulk Operations
-  bulkUpdateSettings: publicProcedure
+  bulkUpdateSettings: protectedProcedure
     .input(BulkUpdateSettingsSchema)
     .mutation(async ({ input }) => {
       try {
@@ -675,7 +688,7 @@ export const usersRouter = router({
     }),
 
   // Profile Management
-  updateProfile: publicProcedure
+  updateProfile: protectedProcedure
     .input(UpdateProfileSchema)
     .mutation(async ({ input }) => {
       try {
@@ -710,7 +723,7 @@ export const usersRouter = router({
     }),
 
   // Password Management (if not using Logto exclusively)
-  changePassword: publicProcedure
+  changePassword: protectedProcedure
     .input(ChangePasswordSchema)
     .mutation(async ({ input }) => {
       try {
@@ -730,7 +743,7 @@ export const usersRouter = router({
       }
     }),
 
-  resetPassword: publicProcedure
+  resetPassword: protectedProcedure
     .input(ResetPasswordSchema)
     .mutation(async ({ input }) => {
       try {

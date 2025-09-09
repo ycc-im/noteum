@@ -55,7 +55,7 @@ export default function NoteWorkflow() {
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
+    [setEdges],
   )
 
   return (

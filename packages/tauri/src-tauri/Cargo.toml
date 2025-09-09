@@ -1,18 +1,16 @@
 [package]
 name = "noteum-desktop"
 version = "1.0.0"
-description = "Noteum Desktop Application"
+description = "AI-powered note-taking desktop application"
 authors = ["Noteum Team"]
+license = "Apache-2.0"
+repository = "https://github.com/ycc-im/noteum"
 edition = "2021"
 rust-version = "1.70"
 
 [lib]
 name = "noteum_desktop_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
-
-[[bin]]
-name = "noteum-desktop"
-path = "src/main.rs"
 
 [build-dependencies]
 tauri-build = { version = "2.0.0-rc", features = [] }
@@ -26,6 +24,7 @@ tauri-plugin-window-state = "2.0.0-rc"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tokio = { version = "1.0", features = ["full"] }
+chrono = { version = "0.4", features = ["serde"] }
 
 [features]
 # This feature is used for production builds or when `devPath` points to the filesystem

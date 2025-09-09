@@ -2,26 +2,26 @@
 // 导出所有组件的类型定义和工厂函数
 
 // Button 组件
-export type { ButtonProps } from './Button';
+export type { ButtonProps } from "./Button";
 export {
   getButtonClasses,
   getButtonAttributes,
-  createButtonConfig
-} from './Button';
+  createButtonConfig,
+} from "./Button";
 
-// Input 组件  
-export type { InputProps } from './Input';
+// Input 组件
+export type { InputProps } from "./Input";
 export {
   getInputClasses,
   getLabelClasses,
   getErrorMessageClasses,
   getHelperTextClasses,
   getInputAttributes,
-  createInputConfig
-} from './Input';
+  createInputConfig,
+} from "./Input";
 
 // 组件库版本信息
-export const COMPONENTS_VERSION = '1.0.0';
+export const COMPONENTS_VERSION = "1.0.0";
 
 // 组件库配置
 export interface ComponentsConfig {

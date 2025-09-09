@@ -178,10 +178,19 @@ importers:
       '@noteum/shared':
         specifier: workspace:*
         version: link:../shared
+      '@tauri-apps/api':
+        specifier: '>=2.0.0-rc.0'
+        version: 2.8.0
+      chrono:
+        specifier: ^1.0.0
+        version: 1.0.5
     devDependencies:
       '@tauri-apps/cli':
         specifier: '>=2.0.0-rc.0'
         version: 2.8.4
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.13
       typescript:
         specifier: ^5.0.0
         version: 5.9.2
@@ -1895,6 +1904,9 @@ packages:
     resolution: {integrity: sha512-VEEOxc4mvyu67O+Bl0APtYjwcNRcL9it9B4HKbNgcBTIOEalhk+ufBl4kiqc8WP1sx1+NAaiS+3CcJBhrqaSRg==}
     engines: {node: '>=12'}
 
+  '@tauri-apps/api@2.8.0':
+    resolution: {integrity: sha512-ga7zdhbS2GXOMTIZRT0mYjKJtR9fivsXzsyq5U3vjDL0s6DTMwYRm0UHNjzTY5dh4+LSC68Sm/7WEiimbQNYlw==}
+
   '@tauri-apps/cli-darwin-arm64@2.8.4':
     resolution: {integrity: sha512-BKu8HRkYV01SMTa7r4fLx+wjgtRK8Vep7lmBdHDioP6b8XH3q2KgsAyPWfEZaZIkZ2LY4SqqGARaE9oilNe0oA==}
     engines: {node: '>= 10'}
@@ -2933,6 +2945,9 @@ packages:
   chrome-trace-event@1.0.4:
     resolution: {integrity: sha512-rNjApaLzuwaOTjCiT8lSDdGN1APCiqkChLMJxJPWLunPAt5fy8xgU9/jNOchV84wfIxrA0lRQB7oCT8jrn/wrQ==}
     engines: {node: '>=6.0'}
+
+  chrono@1.0.5:
+    resolution: {integrity: sha512-gjmpLxZa8iRaQXpV/sEV3ZkDuvwg0FqM1YrhaxdybN/DQJyfs1fG6UkJXkkOKLk/Hb712hsVV5EGR8f8A5sBdA==}
 
   ci-info@3.9.0:
     resolution: {integrity: sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ==}
@@ -8287,6 +8302,8 @@ snapshots:
 
   '@tanstack/virtual-file-routes@1.131.2': {}
 
+  '@tauri-apps/api@2.8.0': {}
+
   '@tauri-apps/cli-darwin-arm64@2.8.4':
     optional: true
 
@@ -9506,6 +9523,8 @@ snapshots:
   chownr@3.0.0: {}
 
   chrome-trace-event@1.0.4: {}
+
+  chrono@1.0.5: {}
 
   ci-info@3.9.0: {}
 

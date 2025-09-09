@@ -13,15 +13,15 @@ export interface TimestampFields {
 }
 
 // Slot position types for React Flow compatibility
-export type SlotPosition = 
-  | 'top-left' 
-  | 'top' 
-  | 'top-right' 
-  | 'right' 
-  | 'bottom-right' 
-  | 'bottom' 
-  | 'bottom-left' 
-  | 'left';
+export type SlotPosition =
+  | "top-left"
+  | "top"
+  | "top-right"
+  | "right"
+  | "bottom-right"
+  | "bottom"
+  | "bottom-left"
+  | "left";
 
 // Slot configuration
 export interface SlotConfig {
@@ -42,16 +42,21 @@ export interface Viewport {
 }
 
 // React Flow node types
-export type NodeType = 'input' | 'output' | 'default' | 'custom';
+export type NodeType = "input" | "output" | "default" | "custom";
 
 // Connection types
-export type ConnectionType = 'default' | 'bezier' | 'smoothstep' | 'step' | 'straight';
+export type ConnectionType =
+  | "default"
+  | "bezier"
+  | "smoothstep"
+  | "step"
+  | "straight";
 
 // Sync status
-export type SyncStatus = 'synced' | 'pending' | 'error';
+export type SyncStatus = "synced" | "pending" | "error";
 
 // Change types for versioning
-export type ChangeType = 'manual' | 'auto' | 'merge';
+export type ChangeType = "manual" | "auto" | "merge";
 
 // Sync types for logging
-export type SyncType = 'create' | 'update' | 'delete';
+export type SyncType = "create" | "update" | "delete";

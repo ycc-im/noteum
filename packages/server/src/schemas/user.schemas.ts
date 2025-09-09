@@ -5,29 +5,42 @@ export const SubscriptionSchema = z.enum(['free', 'pro', 'team', 'enterprise']);
 export const ThemeSchema = z.enum(['light', 'dark', 'system']);
 export const ProfileVisibilitySchema = z.enum(['private', 'public']);
 export const NoteTypeSchema = z.enum(['text', 'markdown', 'code']);
-export const InviteStatusSchema = z.enum(['pending', 'accepted', 'declined', 'expired']);
+export const InviteStatusSchema = z.enum([
+  'pending',
+  'accepted',
+  'declined',
+  'expired',
+]);
 export const InvitePermissionsSchema = z.enum(['read', 'write', 'admin']);
-export const UserActivityActionSchema = z.enum(['login', 'logout', 'create_note', 'update_note', 'delete_note', 'share_note', 'search']);
+export const UserActivityActionSchema = z.enum([
+  'login',
+  'logout',
+  'create_note',
+  'update_note',
+  'delete_note',
+  'share_note',
+  'search',
+]);
 
 // Settings schemas
 export const UserSettingsSchema = z.object({
   theme: ThemeSchema,
   language: z.string().min(2).max(5),
   timezone: z.string(),
-  
+
   // Notification settings
   emailNotifications: z.boolean(),
   pushNotifications: z.boolean(),
-  
+
   // Privacy settings
   profileVisibility: ProfileVisibilitySchema,
   allowCollaboration: z.boolean(),
-  
+
   // Editor settings
   defaultNoteType: NoteTypeSchema,
   autoSave: z.boolean(),
   autoSaveInterval: z.number().int().min(10).max(300), // 10s to 5min
-  
+
   // AI settings
   enableAI: z.boolean(),
   aiModel: z.string().optional(),
@@ -37,18 +50,18 @@ export const UserPreferencesSchema = z.object({
   // Layout preferences
   sidebarCollapsed: z.boolean(),
   gridView: z.boolean(),
-  
+
   // Canvas preferences
   canvasZoom: z.number().min(0.1).max(5.0),
   canvasPosition: z.object({
     x: z.number(),
     y: z.number(),
   }),
-  
+
   // Recent items
   recentNotes: z.array(z.string().uuid()).max(50),
   recentTags: z.array(z.string()).max(20),
-  
+
   // Custom settings
   customFields: z.record(z.string(), z.any()).optional(),
 });
@@ -56,34 +69,38 @@ export const UserPreferencesSchema = z.object({
 // Main User schema
 export const UserSchema = z.object({
   id: z.string().uuid(),
-  username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_-]+$/),
+  username: z
+    .string()
+    .min(3)
+    .max(30)
+    .regex(/^[a-zA-Z0-9_-]+$/),
   email: z.string().email(),
-  
+
   // Logto integration
   logtoId: z.string().optional(),
   externalId: z.string().optional(),
-  
+
   // Profile information
   displayName: z.string().max(100).optional(),
   firstName: z.string().max(50).optional(),
   lastName: z.string().max(50).optional(),
   avatar: z.string().url().optional(),
   bio: z.string().max(500).optional(),
-  
+
   // Settings and preferences
   settings: UserSettingsSchema,
   preferences: UserPreferencesSchema,
-  
+
   // Account status
   isEmailVerified: z.boolean(),
   isActive: z.boolean(),
   lastLoginAt: z.date().optional(),
-  
+
   // Subscription and limits
   subscription: SubscriptionSchema,
   notesLimit: z.number().int(),
   storageLimit: z.number().int(), // in MB
-  
+
   // Timestamps
   createdAt: z.date(),
   updatedAt: z.date(),
@@ -93,7 +110,11 @@ export const UserSchema = z.object({
 
 // Create user input
 export const CreateUserSchema = z.object({
-  username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_-]+$/),
+  username: z
+    .string()
+    .min(3)
+    .max(30)
+    .regex(/^[a-zA-Z0-9_-]+$/),
   email: z.string().email(),
   logtoId: z.string().optional(),
   externalId: z.string().optional(),
@@ -110,7 +131,12 @@ export const CreateUserSchema = z.object({
 // Update user input
 export const UpdateUserSchema = z.object({
   id: z.string().uuid(),
-  username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_-]+$/).optional(),
+  username: z
+    .string()
+    .min(3)
+    .max(30)
+    .regex(/^[a-zA-Z0-9_-]+$/)
+    .optional(),
   email: z.string().email().optional(),
   displayName: z.string().max(100).optional(),
   firstName: z.string().max(50).optional(),
@@ -168,7 +194,12 @@ export const RecordUserActivitySchema = z.object({
   action: UserActivityActionSchema,
   resourceId: z.string().uuid().optional(),
   metadata: z.record(z.string(), z.any()).optional(),
-  ipAddress: z.string().regex(/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/).optional(),
+  ipAddress: z
+    .string()
+    .regex(
+      /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
+    )
+    .optional(),
   userAgent: z.string().optional(),
 });
 
@@ -231,10 +262,15 @@ export const UpdateSubscriptionSchema = z.object({
 
 // Bulk operations schemas
 export const BulkUpdateSettingsSchema = z.object({
-  updates: z.array(z.object({
-    userId: z.string().uuid(),
-    settings: UserSettingsSchema.partial(),
-  })).min(1).max(100),
+  updates: z
+    .array(
+      z.object({
+        userId: z.string().uuid(),
+        settings: UserSettingsSchema.partial(),
+      }),
+    )
+    .min(1)
+    .max(100),
 });
 
 // Response schemas
@@ -334,7 +370,9 @@ export const ConfirmPasswordResetSchema = z.object({
 export type CreateUserInput = z.infer<typeof CreateUserSchema>;
 export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
 export type UpdateUserSettingsInput = z.infer<typeof UpdateUserSettingsSchema>;
-export type UpdateUserPreferencesInput = z.infer<typeof UpdateUserPreferencesSchema>;
+export type UpdateUserPreferencesInput = z.infer<
+  typeof UpdateUserPreferencesSchema
+>;
 export type RecordUserActivityInput = z.infer<typeof RecordUserActivitySchema>;
 export type SearchUsersInput = z.infer<typeof SearchUsersSchema>;
 export type ListUsersInput = z.infer<typeof ListUsersSchema>;

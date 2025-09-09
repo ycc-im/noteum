@@ -96,15 +96,18 @@ Noteum是一个以AI为驱动的个人笔记应用，采用monorepo架构，支�
 ## Constraints & Assumptions
 
 ### 技术约束
+
 - 必须使用指定的技术栈（React Flow, TanStack, gRPC, NestJS, PostgreSQL）
 - 需要支持Apache 2.0开源许可证
 - 需要兼容主流操作系统（Windows, macOS, Linux）
 
 ### 时间约束
+
 - 项目初始化应在合理时间内完成
 - 需要为后续功能开发预留时间
 
 ### 资源约束
+
 - 开发资源有限，需要最大化代码复用
 - 需要考虑部署成本
 
@@ -119,6 +122,7 @@ Noteum是一个以AI为驱动的个人笔记应用，采用monorepo架构，支�
 ## Dependencies
 
 ### 外部依赖
+
 - React Flow库
 - TanStack全家桶
 - gRPC工具链
@@ -128,6 +132,7 @@ Noteum是一个以AI为驱动的个人笔记应用，采用monorepo架构，支�
 - Docker和Docker Compose
 
 ### 内部依赖
+
 - 团队对相关技术栈的熟悉程度
 - 设计资源支持
 - 测试环境准备

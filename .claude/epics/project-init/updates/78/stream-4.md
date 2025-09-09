@@ -10,12 +10,15 @@ status: completed
 # Stream 4: React Flow Integration
 
 ## Scope
+
 Integrate the React Flow library into a dedicated component within the `packages/web` application. This will set up the basic canvas and nodes for the workflow-based note editing interface.
 
 ## Files
+
 - packages/web/src/components/NoteWorkflow.tsx
 
 ## Progress
+
 - ✅ 安装React Flow依赖到packages/web
 - ✅ 创建NoteWorkflow.tsx组件文件
 - ✅ 实现基本的React Flow画布和节点，包括：
@@ -27,6 +30,7 @@ Integrate the React Flow library into a dedicated component within the `packages
 - ✅ 提交代码变更到git (commit: 0831e43)
 
 ## Implementation Details
+
 - 使用ReactFlow库创建工作流可视化界面
 - 实现了4个基本节点类型：input、default、output
 - 添加了MiniMap、Controls和Background组件增强用户体验

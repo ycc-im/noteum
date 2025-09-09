@@ -64,7 +64,7 @@ export const userRouter = router({
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      
+
       return user;
     }),
 
@@ -80,7 +80,7 @@ export const userRouter = router({
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      
+
       return user;
     }),
 
@@ -96,7 +96,7 @@ export const userRouter = router({
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      
+
       return user;
     }),
 
@@ -110,10 +110,12 @@ export const userRouter = router({
 
   // List users
   list: publicProcedure
-    .input(z.object({ 
-      limit: z.number().min(1).max(100).optional(),
-      offset: z.number().min(0).optional(),
-    }))
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).optional(),
+        offset: z.number().min(0).optional(),
+      }),
+    )
     .query(async ({ input }) => {
       // Mock implementation
       const users = [
@@ -132,7 +134,7 @@ export const userRouter = router({
           updatedAt: new Date().toISOString(),
         },
       ];
-      
+
       return {
         users,
         total: users.length,
@@ -143,13 +145,18 @@ export const userRouter = router({
 
   // Authenticate user
   authenticate: publicProcedure
-    .input(z.object({
-      email: z.string().email(),
-      password: z.string().min(6),
-    }))
+    .input(
+      z.object({
+        email: z.string().email(),
+        password: z.string().min(6),
+      }),
+    )
     .mutation(async ({ input }) => {
       // Mock implementation
-      if (input.email === 'admin@example.com' && input.password === 'password') {
+      if (
+        input.email === 'admin@example.com' &&
+        input.password === 'password'
+      ) {
         return {
           success: true,
           user: {
@@ -162,7 +169,7 @@ export const userRouter = router({
           token: 'mock_jwt_token_123',
         };
       }
-      
+
       throw new TRPCError({
         code: 'UNAUTHORIZED',
         message: 'Invalid credentials',
@@ -185,7 +192,7 @@ export const noteRouter = router({
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      
+
       return note;
     }),
 
@@ -202,7 +209,7 @@ export const noteRouter = router({
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      
+
       return note;
     }),
 
@@ -219,7 +226,7 @@ export const noteRouter = router({
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      
+
       return note;
     }),
 
@@ -233,11 +240,13 @@ export const noteRouter = router({
 
   // List notes for user
   listByUser: publicProcedure
-    .input(z.object({
-      userId: z.string(),
-      limit: z.number().min(1).max(100).optional(),
-      offset: z.number().min(0).optional(),
-    }))
+    .input(
+      z.object({
+        userId: z.string(),
+        limit: z.number().min(1).max(100).optional(),
+        offset: z.number().min(0).optional(),
+      }),
+    )
     .query(async ({ input }) => {
       // Mock implementation
       const notes = [
@@ -251,14 +260,14 @@ export const noteRouter = router({
         },
         {
           id: 'note_2',
-          title: 'Second Note', 
+          title: 'Second Note',
           content: 'Content of the second note.',
           userId: input.userId,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
       ];
-      
+
       return {
         notes,
         total: notes.length,
@@ -269,12 +278,14 @@ export const noteRouter = router({
 
   // Search notes
   search: publicProcedure
-    .input(z.object({
-      query: z.string().min(1),
-      userId: z.string().optional(),
-      limit: z.number().min(1).max(100).optional(),
-      offset: z.number().min(0).optional(),
-    }))
+    .input(
+      z.object({
+        query: z.string().min(1),
+        userId: z.string().optional(),
+        limit: z.number().min(1).max(100).optional(),
+        offset: z.number().min(0).optional(),
+      }),
+    )
     .query(async ({ input }) => {
       // Mock implementation
       const notes = [
@@ -287,7 +298,7 @@ export const noteRouter = router({
           updatedAt: new Date().toISOString(),
         },
       ];
-      
+
       return {
         notes,
         total: notes.length,
@@ -302,14 +313,13 @@ export const noteRouter = router({
 export const appRouter = router({
   user: userRouter,
   note: noteRouter,
-  
+
   // Health check
-  health: publicProcedure
-    .query(() => ({
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-      version: '1.0.0',
-    })),
+  health: publicProcedure.query(() => ({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+  })),
 });
 
 export type AppRouter = typeof appRouter;

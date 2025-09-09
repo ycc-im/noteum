@@ -17,15 +17,15 @@ function HomePage() {
           className="h-[40vmin] pointer-events-none animate-[spin_20s_linear_infinite]"
           alt="logo"
         />
-        
+
         <h1 className="text-4xl font-bold mb-4">欢迎来到 Noteum</h1>
-        
+
         {isLoading ? (
           <p className="text-xl mb-8">加载中...</p>
         ) : isAuthenticated ? (
           <div className="mb-8">
             <p className="text-xl mb-4">您已成功登录！</p>
-            <Link 
+            <Link
               to="/dashboard"
               className="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
             >
@@ -51,7 +51,7 @@ function HomePage() {
             </div>
           </div>
         )}
-        
+
         <div className="flex flex-col gap-2 text-base">
           <a
             className="text-[#61dafb] hover:underline"

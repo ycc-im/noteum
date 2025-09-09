@@ -19,24 +19,24 @@ export class LoggingInterceptor implements NestInterceptor {
     const controller = context.getClass().name;
 
     this.logger.log(
-      `Incoming gRPC call: ${controller}.${handler} - Data: ${JSON.stringify(request)}`
+      `Incoming gRPC call: ${controller}.${handler} - Data: ${JSON.stringify(request)}`,
     );
 
     return next.handle().pipe(
       tap((response) => {
         const duration = Date.now() - now;
         this.logger.log(
-          `Outgoing gRPC response: ${controller}.${handler} - Duration: ${duration}ms - Response: ${JSON.stringify(response)}`
+          `Outgoing gRPC response: ${controller}.${handler} - Duration: ${duration}ms - Response: ${JSON.stringify(response)}`,
         );
       }),
       catchError((error) => {
         const duration = Date.now() - now;
         this.logger.error(
           `gRPC call failed: ${controller}.${handler} - Duration: ${duration}ms - Error: ${error.message}`,
-          error.stack
+          error.stack,
         );
         throw error;
-      })
+      }),
     );
   }
 }

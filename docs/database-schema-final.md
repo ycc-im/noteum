@@ -4,7 +4,7 @@
 
 ✅ **PostgreSQL版本控制**: 组合方案（主表 + 历史表 + AI向量）  
 ✅ **Slots系统**: JSON字段方案（简洁、高效、React Flow友好）  
-✅ **Tags系统**: 独立表（灵活搜索和管理）  
+✅ **Tags系统**: 独立表（灵活搜索和管理）
 
 ## 完整数据库Schema
 
@@ -28,17 +28,17 @@ CREATE TABLE users (
 CREATE TABLE notes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  
+
   -- 基本信息
   title TEXT NOT NULL,
   content TEXT,
   content_vector vector(1536), -- OpenAI embedding维度
-  
+
   -- React Flow 兼容字段
   node_type VARCHAR(50) DEFAULT 'default', -- 'input', 'output', 'default', 'custom'
   position_x FLOAT DEFAULT 0,
   position_y FLOAT DEFAULT 0,
-  
+
   -- Slots系统（JSON格式）
   slots JSONB DEFAULT '{
     "top-left": {"enabled": true, "label": null, "data": {}, "maxConnections": 1},
@@ -50,13 +50,13 @@ CREATE TABLE notes (
     "bottom-left": {"enabled": true, "label": null, "data": {}, "maxConnections": 1},
     "left": {"enabled": true, "label": null, "data": {}, "maxConnections": 1}
   }',
-  
+
   -- 元数据和样式
   metadata JSONB DEFAULT '{}', -- 自定义属性、样式、React Flow props等
-  
+
   -- 版本控制
   current_version INTEGER DEFAULT 1,
-  
+
   -- 时间戳
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -67,7 +67,7 @@ CREATE TABLE note_versions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
   version_number INTEGER NOT NULL,
-  
+
   -- 版本化的内容
   title TEXT NOT NULL,
   content TEXT,
@@ -76,16 +76,16 @@ CREATE TABLE note_versions (
   position_y FLOAT,
   slots JSONB,
   metadata JSONB DEFAULT '{}',
-  
+
   -- 变更信息
   change_summary JSONB DEFAULT '{}', -- 描述具体变更 {"type": "content", "changes": [...]}
   change_reason TEXT, -- 版本创建原因
   change_type VARCHAR(20) DEFAULT 'manual', -- 'manual', 'auto', 'merge'
-  
+
   -- 创建信息
   created_by UUID NOT NULL REFERENCES users(id),
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(note_id, version_number)
 );
 
@@ -99,7 +99,7 @@ CREATE TABLE tags (
   metadata JSONB DEFAULT '{}', -- 图标、分类等
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   UNIQUE(user_id, name)
 );
 
@@ -108,32 +108,32 @@ CREATE TABLE note_tags (
   note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
   tag_id UUID NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   PRIMARY KEY (note_id, tag_id)
 );
 
 -- 6. 笔记连接表（简化版 - 直接使用slot位置名）
 CREATE TABLE note_connections (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  
+
   -- React Flow Edge 兼容字段
   source_note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
   target_note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
   source_slot VARCHAR(20) NOT NULL, -- 'top-left', 'top', etc.
   target_slot VARCHAR(20) NOT NULL,
-  
+
   -- 连接属性
   connection_type VARCHAR(50) DEFAULT 'default',
   label TEXT,
   metadata JSONB DEFAULT '{}', -- 样式、动画、React Flow edge props等
-  
+
   -- 权重和优先级
   weight FLOAT DEFAULT 1.0,
   priority INTEGER DEFAULT 0,
   is_active BOOLEAN DEFAULT TRUE,
-  
+
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  
+
   -- 防止重复连接
   UNIQUE(source_note_id, source_slot, target_note_id, target_slot)
 );
@@ -144,14 +144,14 @@ CREATE TABLE workflows (
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   name VARCHAR(255) NOT NULL,
   description TEXT,
-  
+
   -- 工作流视图设置
   viewport JSONB DEFAULT '{"x": 0, "y": 0, "zoom": 1}', -- React Flow viewport
   settings JSONB DEFAULT '{}', -- 网格、背景等设置
-  
+
   is_template BOOLEAN DEFAULT FALSE,
   is_shared BOOLEAN DEFAULT FALSE,
-  
+
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -162,7 +162,7 @@ CREATE TABLE workflow_notes (
   note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
   added_at TIMESTAMPTZ DEFAULT NOW(),
   display_order INTEGER, -- 在工作流中的显示顺序
-  
+
   PRIMARY KEY (workflow_id, note_id)
 );
 
@@ -203,7 +203,7 @@ export interface DatabaseNote {
   title: string;
   content?: string;
   content_vector?: number[];
-  node_type: 'input' | 'output' | 'default' | 'custom';
+  node_type: "input" | "output" | "default" | "custom";
   position_x: number;
   position_y: number;
   slots: {
@@ -215,10 +215,15 @@ export interface DatabaseNote {
   updated_at: string;
 }
 
-export type SlotPosition = 
-  | 'top-left' | 'top' | 'top-right'
-  | 'right' | 'bottom-right' | 'bottom' 
-  | 'bottom-left' | 'left';
+export type SlotPosition =
+  | "top-left"
+  | "top"
+  | "top-right"
+  | "right"
+  | "bottom-right"
+  | "bottom"
+  | "bottom-left"
+  | "left";
 
 export interface SlotConfig {
   enabled: boolean;
@@ -251,13 +256,15 @@ export function convertNoteToReactFlowNode(note: DatabaseNote): ReactFlowNode {
       title: note.title,
       content: note.content,
       slots: note.slots,
-      ...note.metadata
+      ...note.metadata,
     },
-    position: { x: note.position_x, y: note.position_y }
+    position: { x: note.position_x, y: note.position_y },
   };
 }
 
-export function convertConnectionToReactFlowEdge(conn: DatabaseConnection): ReactFlowEdge {
+export function convertConnectionToReactFlowEdge(
+  conn: DatabaseConnection,
+): ReactFlowEdge {
   return {
     id: conn.id,
     source: conn.source_note_id,
@@ -265,7 +272,7 @@ export function convertConnectionToReactFlowEdge(conn: DatabaseConnection): Reac
     sourceHandle: conn.source_slot,
     targetHandle: conn.target_slot,
     label: conn.label,
-    data: conn.metadata
+    data: conn.metadata,
   };
 }
 ```
@@ -274,12 +281,12 @@ export function convertConnectionToReactFlowEdge(conn: DatabaseConnection): Reac
 
 ```sql
 -- 插入示例用户
-INSERT INTO users (id, email, name) VALUES 
+INSERT INTO users (id, email, name) VALUES
 ('550e8400-e29b-41d4-a716-446655440001', 'user@example.com', 'Test User');
 
 -- 插入示例笔记
-INSERT INTO notes (id, user_id, title, content, position_x, position_y, slots) VALUES 
-('550e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440001', 
+INSERT INTO notes (id, user_id, title, content, position_x, position_y, slots) VALUES
+('550e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440001',
  'Start Note', 'This is the starting point', 250, 25,
  '{
    "top-left": {"enabled": false, "label": null, "data": {}, "maxConnections": 1},
@@ -294,6 +301,7 @@ INSERT INTO notes (id, user_id, title, content, position_x, position_y, slots) V
 ```
 
 这个schema设计满足了所有需求：
+
 - ✅ React Flow完全兼容
 - ✅ JSON slots简洁高效
 - ✅ 版本控制系统完备

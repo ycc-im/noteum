@@ -10,9 +10,13 @@ import {
 } from '../common/interfaces/note.interface';
 
 export class NotesRepository implements INotesRepository {
-  
   // Basic CRUD operations
-  async create(noteData: Omit<Note, 'id' | 'createdAt' | 'updatedAt' | 'version' | 'isLatest'>): Promise<Note> {
+  async create(
+    noteData: Omit<
+      Note,
+      'id' | 'createdAt' | 'updatedAt' | 'version' | 'isLatest'
+    >,
+  ): Promise<Note> {
     // TODO: Implement database creation logic with pgvector
     const now = new Date();
     const note: Note = {
@@ -27,13 +31,13 @@ export class NotesRepository implements INotesRepository {
       createdAt: now,
       updatedAt: now,
     };
-    
+
     // In real implementation:
     // 1. Insert into notes table
     // 2. Generate and store embedding if content provided
     // 3. Create initial version record
     // 4. Update user statistics
-    
+
     return note;
   }
 
@@ -50,18 +54,18 @@ export class NotesRepository implements INotesRepository {
       limit?: number;
       status?: Note['status'];
       type?: Note['type'];
-    }
+    },
   ): Promise<PaginatedResult<Note>> {
     // TODO: Implement database query with filtering and pagination
     const page = options?.page || 1;
     const limit = options?.limit || 10;
-    
+
     // In real implementation:
     // 1. Build WHERE clause with filters
     // 2. Add LIMIT/OFFSET for pagination
     // 3. Count total matching records
     // 4. Execute query and map results
-    
+
     return {
       items: [],
       total: 0,
@@ -72,7 +76,10 @@ export class NotesRepository implements INotesRepository {
     };
   }
 
-  async update(id: string, updateData: Partial<Omit<Note, 'id' | 'createdAt' | 'version'>>): Promise<Note | null> {
+  async update(
+    id: string,
+    updateData: Partial<Omit<Note, 'id' | 'createdAt' | 'version'>>,
+  ): Promise<Note | null> {
     // TODO: Implement database update
     // In real implementation:
     // 1. Check if note exists and user has permission
@@ -80,7 +87,7 @@ export class NotesRepository implements INotesRepository {
     // 3. Update embedding if content changed
     // 4. Update main record
     // 5. Update user statistics if needed
-    
+
     return null;
   }
 
@@ -91,7 +98,7 @@ export class NotesRepository implements INotesRepository {
     // 2. Remove from public indexes
     // 3. Update user statistics
     // 4. Clean up connections
-    
+
     return false;
   }
 
@@ -103,18 +110,18 @@ export class NotesRepository implements INotesRepository {
       limit?: number;
       threshold?: number;
       filters?: Record<string, any>;
-    }
+    },
   ): Promise<SearchResult[]> {
     // TODO: Implement pgvector semantic search
     const limit = options?.limit || 10;
     const threshold = options?.threshold || 0.7;
-    
+
     // In real implementation:
     // 1. Generate embedding for text query (if string)
     // 2. Use pgvector cosine similarity: embedding <=> $1
     // 3. Apply filters and threshold
     // 4. Return results with scores
-    
+
     return [];
   }
 
@@ -124,7 +131,7 @@ export class NotesRepository implements INotesRepository {
       userId?: string;
       limit?: number;
       filters?: Record<string, any>;
-    }
+    },
   ): Promise<SearchResult[]> {
     // TODO: Implement PostgreSQL full-text search
     // In real implementation: Use tsvector and tsquery for text search
@@ -132,7 +139,10 @@ export class NotesRepository implements INotesRepository {
   }
 
   // Version management
-  async createVersion(noteId: string, versionData: Omit<NoteVersion, 'id' | 'createdAt'>): Promise<NoteVersion> {
+  async createVersion(
+    noteId: string,
+    versionData: Omit<NoteVersion, 'id' | 'createdAt'>,
+  ): Promise<NoteVersion> {
     // TODO: Implement version creation
     const now = new Date();
     const version: NoteVersion = {
@@ -140,12 +150,12 @@ export class NotesRepository implements INotesRepository {
       ...versionData,
       createdAt: now,
     };
-    
+
     // In real implementation:
     // 1. Insert into note_versions table
     // 2. Update version_history array in main note
     // 3. Increment version number
-    
+
     return version;
   }
 
@@ -155,7 +165,10 @@ export class NotesRepository implements INotesRepository {
     return [];
   }
 
-  async getVersion(noteId: string, version: number): Promise<NoteVersion | null> {
+  async getVersion(
+    noteId: string,
+    version: number,
+  ): Promise<NoteVersion | null> {
     // TODO: Implement specific version retrieval
     return null;
   }
@@ -167,24 +180,32 @@ export class NotesRepository implements INotesRepository {
     // 2. Create new version with current state
     // 3. Update main record with version data
     // 4. Regenerate embedding if needed
-    
+
     return null;
   }
 
   // Position and React Flow operations
-  async updatePosition(id: string, position: { x: number; y: number }): Promise<Note | null> {
+  async updatePosition(
+    id: string,
+    position: { x: number; y: number },
+  ): Promise<Note | null> {
     // TODO: Implement position update
     // In real implementation: UPDATE notes SET position = $1 WHERE id = $2
     return null;
   }
 
-  async updateSize(id: string, size: { width: number; height: number }): Promise<Note | null> {
+  async updateSize(
+    id: string,
+    size: { width: number; height: number },
+  ): Promise<Note | null> {
     // TODO: Implement size update
     return null;
   }
 
   // Connection management
-  async createConnection(connection: Omit<NoteConnection, 'id' | 'createdAt'>): Promise<NoteConnection> {
+  async createConnection(
+    connection: Omit<NoteConnection, 'id' | 'createdAt'>,
+  ): Promise<NoteConnection> {
     // TODO: Implement connection creation
     const now = new Date();
     const noteConnection: NoteConnection = {
@@ -192,12 +213,12 @@ export class NotesRepository implements INotesRepository {
       ...connection,
       createdAt: now,
     };
-    
+
     // In real implementation:
     // 1. Insert into note_connections table
     // 2. Update connections arrays in both notes
     // 3. Validate connection doesn't create cycles (for parent-child)
-    
+
     return noteConnection;
   }
 
@@ -212,24 +233,31 @@ export class NotesRepository implements INotesRepository {
   }
 
   // Bulk operations
-  async bulkCreate(notes: Omit<Note, 'id' | 'createdAt' | 'updatedAt' | 'version' | 'isLatest'>[]): Promise<BulkOperationResult> {
+  async bulkCreate(
+    notes: Omit<
+      Note,
+      'id' | 'createdAt' | 'updatedAt' | 'version' | 'isLatest'
+    >[],
+  ): Promise<BulkOperationResult> {
     // TODO: Implement bulk creation with transaction
     const result: BulkOperationResult = {
       successful: [],
       failed: [],
       total: notes.length,
     };
-    
+
     // In real implementation:
     // 1. Start transaction
     // 2. Process each note creation
     // 3. Generate embeddings in batch
     // 4. Commit or rollback
-    
+
     return result;
   }
 
-  async bulkUpdate(updates: { id: string; data: Partial<Note> }[]): Promise<BulkOperationResult> {
+  async bulkUpdate(
+    updates: { id: string; data: Partial<Note> }[],
+  ): Promise<BulkOperationResult> {
     // TODO: Implement bulk update
     return {
       successful: [],
@@ -273,7 +301,9 @@ export class NotesRepository implements INotesRepository {
   }
 
   // Activity tracking
-  async recordActivity(activity: Omit<NoteActivity, 'id' | 'timestamp'>): Promise<NoteActivity> {
+  async recordActivity(
+    activity: Omit<NoteActivity, 'id' | 'timestamp'>,
+  ): Promise<NoteActivity> {
     // TODO: Implement activity recording
     const now = new Date();
     const noteActivity: NoteActivity = {
@@ -281,7 +311,7 @@ export class NotesRepository implements INotesRepository {
       ...activity,
       timestamp: now,
     };
-    
+
     // In real implementation: INSERT INTO note_activities
     return noteActivity;
   }
@@ -292,17 +322,24 @@ export class NotesRepository implements INotesRepository {
   }
 
   // Export/Import
-  async exportNotes(userId: string, format: 'json' | 'markdown' | 'csv'): Promise<string> {
+  async exportNotes(
+    userId: string,
+    format: 'json' | 'markdown' | 'csv',
+  ): Promise<string> {
     // TODO: Implement export functionality
     // In real implementation:
     // 1. Query all user notes
     // 2. Format according to requested type
     // 3. Include connections and metadata
-    
+
     return '';
   }
 
-  async importNotes(userId: string, data: string, format: 'json' | 'markdown'): Promise<BulkOperationResult> {
+  async importNotes(
+    userId: string,
+    data: string,
+    format: 'json' | 'markdown',
+  ): Promise<BulkOperationResult> {
     // TODO: Implement import functionality
     return {
       successful: [],

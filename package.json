@@ -6,10 +6,16 @@
   "scripts": {
     "dev": "pnpm --filter \"./packages/*\" --parallel dev",
     "start": "pnpm --filter \"./packages/*\" --parallel dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:tauri": "pnpm --filter @noteum/tauri dev",
     "build": "pnpm --filter \"./packages/*\" --parallel build",
+    "build:web": "pnpm --filter web build",
+    "build:tauri": "pnpm --filter @noteum/tauri build",
+    "build:desktop": "pnpm build:web && pnpm build:tauri",
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .",
-    "typecheck": "pnpm --filter \"./packages/*\" --parallel typecheck"
+    "typecheck": "pnpm --filter \"./packages/*\" --parallel typecheck",
+    "test": "pnpm --filter \"./packages/*\" --parallel test"
   },
   "keywords": [
     "ai",

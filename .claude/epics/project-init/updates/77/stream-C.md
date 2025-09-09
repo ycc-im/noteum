@@ -9,13 +9,16 @@ status: completed
 # Stream C: Shared Package Setup
 
 ## Scope
+
 Set up the `shared` package with initial utilities, types, and configurations that will be used across other packages.
 
 ## Files
+
 - `packages/shared/src/`
 - `packages/shared/tsconfig.json`
 
 ## Progress
+
 - Starting implementation
 - Created `src` directory, `index.ts`, and `tsconfig.json` for the shared package.
 - Committed changes to `epic/project-init` branch.

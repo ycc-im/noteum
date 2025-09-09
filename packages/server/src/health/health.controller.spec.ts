@@ -47,7 +47,9 @@ describe('HealthController', () => {
         details: {},
       };
 
-      jest.spyOn(healthCheckService, 'check').mockResolvedValue(mockHealthResult);
+      jest
+        .spyOn(healthCheckService, 'check')
+        .mockResolvedValue(mockHealthResult);
 
       const result = await controller.check();
       expect(result).toEqual(mockHealthResult);

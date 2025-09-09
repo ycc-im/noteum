@@ -1,8 +1,8 @@
 ---
 name: project-init
-status: backlog
+status: in-progress
 created: 2025-09-03T21:33:20Z
-progress: 0%
+progress: 29%
 prd: .claude/prds/project-init.md
 github: https://github.com/ycc-im/noteum/issues/76
 ---

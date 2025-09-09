@@ -96,8 +96,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build all packages
-        run: pnpm build
+      - name: Build web package first
+        run: pnpm --filter web build
+        
+      - name: Build remaining packages
+        run: pnpm --filter "!web" build
 
       - name: Check build outputs
         run: |

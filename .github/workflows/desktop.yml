@@ -99,7 +99,7 @@ jobs:
 
       # Build web package first (required for Tauri)
       - name: Build web package
-        run: pnpm --filter @noteum/web build
+        run: pnpm --filter web build
 
       # Verify Tauri configuration exists
       - name: Check Tauri configuration

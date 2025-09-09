@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noteum Desktop</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 600px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        input {
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            margin-right: 1rem;
+            width: 200px;
+        }
+        
+        button {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            min-height: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗒️ Noteum Desktop</h1>
+        <p>Welcome to your note-taking companion built with Tauri v2!</p>
+        
+        <div class="demo-section">
+            <h2>Demo: Rust Backend Communication</h2>
+            <input type="text" id="nameInput" placeholder="Enter your name..." value="Tauri">
+            <button onclick="greet()">Greet from Rust</button>
+            <div id="greetResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Import the Tauri API
+        const { invoke } = window.__TAURI__.core;
+
+        async function greet() {
+            const name = document.getElementById('nameInput').value;
+            try {
+                const result = await invoke('greet', { name });
+                document.getElementById('greetResult').textContent = result;
+            } catch (error) {
+                document.getElementById('greetResult').textContent = 'Error: ' + error;
+            }
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const appInfo = await invoke('get_app_info');
+                console.log('App Info:', appInfo);
+            } catch (error) {
+                console.error('Failed to get app info:', error);
+            }
+        });
+    </script>
+</body>
+</html>

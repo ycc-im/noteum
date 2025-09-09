@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "identifier": "com.noteum.app",
   "build": {
-    "frontendDist": "../../.tanstack/start/build/client-dist",
+    "frontendDist": "../web/.tanstack/start/build/client-dist",
     "devUrl": "http://localhost:3000"
   },
   "app": {

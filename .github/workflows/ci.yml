@@ -98,7 +98,7 @@ jobs:
 
       - name: Build web package first
         run: pnpm --filter web build
-        
+
       - name: Build remaining packages
         run: pnpm --filter "!web" build
 

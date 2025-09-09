@@ -96,18 +96,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build web package first
-        run: pnpm --filter web build
-
-      - name: Debug web build output paths
+      - name: Build packages (excluding Tauri)
         run: |
-          echo "Checking web build output locations:"
-          find . -name "client-dist" -type d 2>/dev/null || echo "No client-dist found"
-          find . -name ".tanstack" -type d 2>/dev/null || echo "No .tanstack found"
-          ls -la packages/web/ || echo "packages/web not found"
-
-      - name: Build remaining packages (exclude Tauri)
-        run: pnpm --filter "!web && !@noteum/tauri" build
+          echo "Building packages in order..."
+          pnpm --filter web build
+          pnpm --filter @noteum/shared build
+          pnpm --filter @noteum/server build
+          echo "✅ All non-Tauri packages built successfully"
 
       - name: Check build outputs
         run: |

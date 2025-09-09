@@ -1,7 +1,7 @@
 // Tauri API bindings and utilities for the desktop app
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { appWindow } from "@tauri-apps/api/window";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 export interface AppConfig {
   theme: string;
@@ -42,15 +42,15 @@ export class TauriAPI {
 
   // Window management helpers
   static async minimizeWindow(): Promise<void> {
-    return await appWindow.minimize();
+    return await getCurrentWindow().minimize();
   }
 
   static async maximizeWindow(): Promise<void> {
-    return await appWindow.maximize();
+    return await getCurrentWindow().maximize();
   }
 
   static async closeWindow(): Promise<void> {
-    return await appWindow.close();
+    return await getCurrentWindow().close();
   }
 
   // Event listeners

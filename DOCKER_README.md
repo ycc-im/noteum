@@ -29,15 +29,18 @@ docker-compose -f docker-compose.quick-start.yml logs -f server
 ## 功能状态
 
 ✅ **完全可用**:
+
 - PostgreSQL + pgvector 数据库
 - NestJS 服务器热重载开发
 - pgAdmin 数据库管理界面
 
 ⚠️ **已知问题**:
+
 - Web 服务有运行时依赖问题，但不影响后端开发
 - 服务器可能显示 TypeScript 类型错误（代码库问题，非 Docker 问题）
 
 停止服务：
+
 ```bash
 docker-compose -f docker-compose.quick-start.yml down
 ```

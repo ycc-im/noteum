@@ -13,7 +13,7 @@ export class TrpcContextService {
 
   async createContext(req: any): Promise<Context> {
     const authHeader = req.headers?.authorization;
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return { user: undefined };
     }

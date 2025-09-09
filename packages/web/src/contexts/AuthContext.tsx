@@ -12,9 +12,7 @@ const AuthContext = createContext<{}>({})
 export function AuthProvider({ children }: AuthProviderProps) {
   return (
     <LogtoProvider config={logtoConfig}>
-      <AuthContext.Provider value={{}}>
-        {children}
-      </AuthContext.Provider>
+      <AuthContext.Provider value={{}}>{children}</AuthContext.Provider>
     </LogtoProvider>
   )
 }

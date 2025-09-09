@@ -18,8 +18,18 @@ export default function NoteEditor(props: NoteEditorProps) {
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center space-x-4">
               <button className="text-gray-600 hover:text-gray-900">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
                 </svg>
               </button>
               <input
@@ -82,9 +92,7 @@ export default function NoteEditor(props: NoteEditorProps) {
               <div className="mb-6 h-40 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
                 <div className="text-center">
                   <div className="text-gray-400 text-lg mb-2">🔄</div>
-                  <p className="text-gray-500 text-sm">
-                    工作流编辑器
-                  </p>
+                  <p className="text-gray-500 text-sm">工作流编辑器</p>
                   <p className="text-gray-400 text-xs mt-1">
                     这里将集成 React Flow 来实现可视化的笔记编辑流程
                   </p>
@@ -95,12 +103,22 @@ export default function NoteEditor(props: NoteEditorProps) {
               <div className="border border-gray-200 rounded-lg">
                 <div className="border-b border-gray-200 px-4 py-2">
                   <div className="flex items-center space-x-4 text-sm">
-                    <button className="font-medium text-gray-700 hover:text-gray-900">粗体</button>
-                    <button className="font-medium text-gray-700 hover:text-gray-900">斜体</button>
-                    <button className="font-medium text-gray-700 hover:text-gray-900">标题</button>
+                    <button className="font-medium text-gray-700 hover:text-gray-900">
+                      粗体
+                    </button>
+                    <button className="font-medium text-gray-700 hover:text-gray-900">
+                      斜体
+                    </button>
+                    <button className="font-medium text-gray-700 hover:text-gray-900">
+                      标题
+                    </button>
                     <div className="border-l border-gray-300 h-4"></div>
-                    <button className="font-medium text-gray-700 hover:text-gray-900">列表</button>
-                    <button className="font-medium text-gray-700 hover:text-gray-900">引用</button>
+                    <button className="font-medium text-gray-700 hover:text-gray-900">
+                      列表
+                    </button>
+                    <button className="font-medium text-gray-700 hover:text-gray-900">
+                      引用
+                    </button>
                   </div>
                 </div>
                 <textarea
@@ -128,7 +146,9 @@ export default function NoteEditor(props: NoteEditorProps) {
           <div className="lg:col-span-3 border-l border-gray-200 bg-gray-50">
             <div className="p-4 space-y-4">
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">笔记属性</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">
+                  笔记属性
+                </h3>
                 <div className="space-y-2 text-sm">
                   <div>
                     <label className="block text-gray-600">标签</label>
@@ -150,7 +170,9 @@ export default function NoteEditor(props: NoteEditorProps) {
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">相关笔记</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">
+                  相关笔记
+                </h3>
                 <div className="space-y-2">
                   <div className="px-3 py-2 bg-white rounded border text-sm">
                     <div className="font-medium text-gray-900">项目规划</div>
@@ -167,7 +189,9 @@ export default function NoteEditor(props: NoteEditorProps) {
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">统计信息</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">
+                  统计信息
+                </h3>
                 <div className="text-sm text-gray-600 space-y-1">
                   <div>字数: {content.length}</div>
                   <div>创建时间: 刚刚</div>

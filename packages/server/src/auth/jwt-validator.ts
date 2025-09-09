@@ -14,7 +14,10 @@ export interface AuthInfo {
 }
 
 export class AuthorizationError extends Error {
-  constructor(message: string, public status: number = 401) {
+  constructor(
+    message: string,
+    public status: number = 401,
+  ) {
     super(message);
     this.name = 'AuthorizationError';
   }
@@ -30,7 +33,7 @@ export class JwtValidator {
     if (!endpoint) {
       throw new Error('Logto endpoint not configured');
     }
-    
+
     // Construct JWKS URI and issuer from endpoint
     const jwksUri = new URL('/oidc/jwks', endpoint);
     this.issuer = `${endpoint}/oidc`;
@@ -55,7 +58,11 @@ export class JwtValidator {
 
   createAuthInfo(payload: JWTPayload): AuthInfo {
     const scopes = (payload.scope as string)?.split(' ') ?? [];
-    const audience = Array.isArray(payload.aud) ? payload.aud : payload.aud ? [payload.aud] : [];
+    const audience = Array.isArray(payload.aud)
+      ? payload.aud
+      : payload.aud
+        ? [payload.aud]
+        : [];
 
     return {
       sub: payload.sub!,
@@ -74,7 +81,7 @@ export class JwtValidator {
     if (!payload.sub) {
       throw new AuthorizationError('Token missing subject claim');
     }
-    
+
     // Add additional verification logic here based on your permission model
     // For example, checking required scopes or audience claims
   }

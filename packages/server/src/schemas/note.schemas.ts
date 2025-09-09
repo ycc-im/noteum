@@ -12,14 +12,26 @@ export const SizeSchema = z.object({
 });
 
 // Note type enum
-export const NoteTypeSchema = z.enum(['text', 'markdown', 'code', 'image', 'link', 'canvas']);
+export const NoteTypeSchema = z.enum([
+  'text',
+  'markdown',
+  'code',
+  'image',
+  'link',
+  'canvas',
+]);
 
 // Note status and permissions
 export const NoteStatusSchema = z.enum(['draft', 'published', 'archived']);
 export const NotePermissionsSchema = z.enum(['private', 'shared', 'public']);
 
 // Connection type enum
-export const ConnectionTypeSchema = z.enum(['reference', 'parent-child', 'related', 'custom']);
+export const ConnectionTypeSchema = z.enum([
+  'reference',
+  'parent-child',
+  'related',
+  'custom',
+]);
 
 // Main Note schema (for validation of full note objects)
 export const NoteSchema = z.object({
@@ -27,35 +39,35 @@ export const NoteSchema = z.object({
   title: z.string().min(1).max(500),
   content: z.string(),
   userId: z.string().uuid(),
-  
+
   // React Flow compatibility
   type: NoteTypeSchema,
   position: PositionSchema.optional(),
   size: SizeSchema.optional(),
   style: z.record(z.string(), z.any()).optional(),
-  
+
   // Content and metadata
   tags: z.array(z.string()).default([]),
   embedding: z.array(z.number()).optional(),
   metadata: z.record(z.string(), z.any()).optional(),
   slots: z.record(z.string(), z.any()).optional(),
-  
+
   // Hierarchy and connections
   parentId: z.string().uuid().optional(),
   children: z.array(z.string().uuid()).default([]),
   connections: z.array(z.string().uuid()).default([]),
-  
+
   // Version control
   version: z.number().int().positive(),
   versionHistory: z.array(z.string().uuid()).default([]),
   isLatest: z.boolean(),
-  
+
   // Collaboration and status
   isPublic: z.boolean(),
   permissions: NotePermissionsSchema,
   collaborators: z.array(z.string().uuid()).default([]),
   status: NoteStatusSchema,
-  
+
   // Timestamps
   createdAt: z.date(),
   updatedAt: z.date(),
@@ -127,26 +139,30 @@ export const SemanticSearchSchema = z.object({
   userId: z.string().uuid().optional(),
   limit: z.number().int().min(1).max(50).default(10),
   threshold: z.number().min(0).max(1).default(0.7),
-  filters: z.object({
-    type: NoteTypeSchema.optional(),
-    status: NoteStatusSchema.optional(),
-    tags: z.array(z.string()).optional(),
-    dateFrom: z.date().optional(),
-    dateTo: z.date().optional(),
-  }).optional(),
+  filters: z
+    .object({
+      type: NoteTypeSchema.optional(),
+      status: NoteStatusSchema.optional(),
+      tags: z.array(z.string()).optional(),
+      dateFrom: z.date().optional(),
+      dateTo: z.date().optional(),
+    })
+    .optional(),
 });
 
 export const FullTextSearchSchema = z.object({
   query: z.string().min(1).max(1000),
   userId: z.string().uuid().optional(),
   limit: z.number().int().min(1).max(50).default(10),
-  filters: z.object({
-    type: NoteTypeSchema.optional(),
-    status: NoteStatusSchema.optional(),
-    tags: z.array(z.string()).optional(),
-    dateFrom: z.date().optional(),
-    dateTo: z.date().optional(),
-  }).optional(),
+  filters: z
+    .object({
+      type: NoteTypeSchema.optional(),
+      status: NoteStatusSchema.optional(),
+      tags: z.array(z.string()).optional(),
+      dateFrom: z.date().optional(),
+      dateTo: z.date().optional(),
+    })
+    .optional(),
 });
 
 // Vector search with embedding array
@@ -155,11 +171,13 @@ export const VectorSearchSchema = z.object({
   userId: z.string().uuid().optional(),
   limit: z.number().int().min(1).max(50).default(10),
   threshold: z.number().min(0).max(1).default(0.7),
-  filters: z.object({
-    type: NoteTypeSchema.optional(),
-    status: NoteStatusSchema.optional(),
-    tags: z.array(z.string()).optional(),
-  }).optional(),
+  filters: z
+    .object({
+      type: NoteTypeSchema.optional(),
+      status: NoteStatusSchema.optional(),
+      tags: z.array(z.string()).optional(),
+    })
+    .optional(),
 });
 
 // Version management schemas
@@ -220,10 +238,15 @@ export const BulkCreateNotesSchema = z.object({
 });
 
 export const BulkUpdateNotesSchema = z.object({
-  updates: z.array(z.object({
-    id: z.string().uuid(),
-    data: UpdateNoteSchema.omit({ id: true }),
-  })).min(1).max(100),
+  updates: z
+    .array(
+      z.object({
+        id: z.string().uuid(),
+        data: UpdateNoteSchema.omit({ id: true }),
+      }),
+    )
+    .min(1)
+    .max(100),
 });
 
 export const BulkDeleteNotesSchema = z.object({
@@ -270,24 +293,28 @@ export const GetActivitySchema = z.object({
 export const ExportNotesSchema = z.object({
   userId: z.string().uuid(),
   format: z.enum(['json', 'markdown', 'csv']),
-  filters: z.object({
-    status: NoteStatusSchema.optional(),
-    type: NoteTypeSchema.optional(),
-    tags: z.array(z.string()).optional(),
-    dateFrom: z.date().optional(),
-    dateTo: z.date().optional(),
-  }).optional(),
+  filters: z
+    .object({
+      status: NoteStatusSchema.optional(),
+      type: NoteTypeSchema.optional(),
+      tags: z.array(z.string()).optional(),
+      dateFrom: z.date().optional(),
+      dateTo: z.date().optional(),
+    })
+    .optional(),
 });
 
 export const ImportNotesSchema = z.object({
   userId: z.string().uuid(),
   data: z.string().min(1),
   format: z.enum(['json', 'markdown']),
-  options: z.object({
-    overwrite: z.boolean().default(false),
-    preserveIds: z.boolean().default(false),
-    defaultStatus: NoteStatusSchema.default('draft'),
-  }).optional(),
+  options: z
+    .object({
+      overwrite: z.boolean().default(false),
+      preserveIds: z.boolean().default(false),
+      defaultStatus: NoteStatusSchema.default('draft'),
+    })
+    .optional(),
 });
 
 // Response schemas
@@ -315,10 +342,12 @@ export const SearchResultsResponseSchema = z.object({
 
 export const BulkOperationResultSchema = z.object({
   successful: z.array(z.string().uuid()),
-  failed: z.array(z.object({
-    id: z.string().uuid(),
-    error: z.string(),
-  })),
+  failed: z.array(
+    z.object({
+      id: z.string().uuid(),
+      error: z.string(),
+    }),
+  ),
   total: z.number().int(),
 });
 

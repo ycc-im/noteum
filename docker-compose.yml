@@ -2,7 +2,6 @@
 # Full-stack development environment with PostgreSQL, pgAdmin, Web, and Server services
 # Use docker-compose.override.yml for development-specific configurations
 
-
 services:
   # PostgreSQL Database
   postgres:
@@ -34,7 +33,7 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@noteum.dev
       PGADMIN_DEFAULT_PASSWORD: admin123
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_SERVER_MODE: "False"
     ports:
       - "8080:80"
     volumes:
@@ -101,7 +100,13 @@ services:
       server:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "node", "-e", "http.get('http://localhost:3000/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"]
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "http.get('http://localhost:3000/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3

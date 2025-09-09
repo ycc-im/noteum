@@ -3,36 +3,36 @@
  * Includes notes, versions, connections, and workflow types
  */
 
-import { 
-  Vector, 
-  TimestampFields, 
-  SlotsConfig, 
-  NodeType, 
-  ConnectionType, 
-  ChangeType 
-} from './database';
+import {
+  Vector,
+  TimestampFields,
+  SlotsConfig,
+  NodeType,
+  ConnectionType,
+  ChangeType,
+} from "./database";
 
 // Base note interface
 export interface Note extends TimestampFields {
   id: string;
   user_id: string;
-  
+
   // Basic information
   title: string;
   content: string | null;
   content_vector: Vector | null;
-  
+
   // React Flow compatibility
   node_type: NodeType;
   position_x: number;
   position_y: number;
-  
+
   // Slots system for connections
   slots: SlotsConfig;
-  
+
   // Metadata and styling
   metadata: Record<string, any>;
-  
+
   // Version control
   current_version: number;
 }
@@ -42,7 +42,7 @@ export interface NoteVersion {
   id: string;
   note_id: string;
   version_number: number;
-  
+
   // Versioned content
   title: string;
   content: string | null;
@@ -51,32 +51,32 @@ export interface NoteVersion {
   position_y: number | null;
   slots: SlotsConfig | null;
   metadata: Record<string, any>;
-  
+
   // Change information
   change_summary: Record<string, any>;
   change_reason: string | null;
   change_type: ChangeType;
-  
+
   // Creation info
   created_by: string;
   created_at: string;
 }
 
 // Note connections (React Flow Edge compatible)
-export interface NoteConnection extends Omit<TimestampFields, 'updated_at'> {
+export interface NoteConnection extends Omit<TimestampFields, "updated_at"> {
   id: string;
-  
+
   // React Flow Edge compatibility
   source_note_id: string;
   target_note_id: string;
   source_slot: string;
   target_slot: string;
-  
+
   // Connection properties
   connection_type: ConnectionType;
   label: string | null;
   metadata: Record<string, any>;
-  
+
   // Weight and priority
   weight: number;
   priority: number;
@@ -106,7 +106,7 @@ export interface Workflow extends TimestampFields {
   user_id: string;
   name: string;
   description: string | null;
-  
+
   // View settings
   viewport: {
     x: number;
@@ -114,7 +114,7 @@ export interface Workflow extends TimestampFields {
     zoom: number;
   };
   settings: Record<string, any>;
-  
+
   is_template: boolean;
   is_shared: boolean;
 }

@@ -9,7 +9,6 @@ import {
 } from '../common/interfaces/user.interface';
 
 export class UsersRepository implements IUsersRepository {
-  
   // Default settings for new users
   private getDefaultSettings(): UserSettings {
     return {
@@ -26,7 +25,7 @@ export class UsersRepository implements IUsersRepository {
       enableAI: false,
     };
   }
-  
+
   // Default preferences for new users
   private getDefaultPreferences(): UserPreferences {
     return {
@@ -40,10 +39,15 @@ export class UsersRepository implements IUsersRepository {
   }
 
   // Basic CRUD operations
-  async create(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'settings' | 'preferences'> & {
-    settings?: Partial<UserSettings>;
-    preferences?: Partial<UserPreferences>;
-  }): Promise<User> {
+  async create(
+    userData: Omit<
+      User,
+      'id' | 'createdAt' | 'updatedAt' | 'settings' | 'preferences'
+    > & {
+      settings?: Partial<UserSettings>;
+      preferences?: Partial<UserPreferences>;
+    },
+  ): Promise<User> {
     // TODO: Implement database creation logic
     const now = new Date();
     const user: User = {
@@ -61,29 +65,33 @@ export class UsersRepository implements IUsersRepository {
       isActive: userData.isActive ?? true,
       lastLoginAt: userData.lastLoginAt,
       subscription: userData.subscription || 'free',
-      notesLimit: userData.notesLimit || this.getNotesLimitForSubscription(userData.subscription || 'free'),
-      storageLimit: userData.storageLimit || this.getStorageLimitForSubscription(userData.subscription || 'free'),
+      notesLimit:
+        userData.notesLimit ||
+        this.getNotesLimitForSubscription(userData.subscription || 'free'),
+      storageLimit:
+        userData.storageLimit ||
+        this.getStorageLimitForSubscription(userData.subscription || 'free'),
       settings: { ...this.getDefaultSettings(), ...userData.settings },
       preferences: { ...this.getDefaultPreferences(), ...userData.preferences },
       createdAt: now,
       updatedAt: now,
     };
-    
+
     // In real implementation:
     // 1. Insert into users table
     // 2. Insert settings and preferences into separate tables
     // 3. Initialize user statistics
     // 4. Send welcome email if email verification needed
-    
+
     return user;
   }
 
   async findById(id: string): Promise<User | null> {
     // TODO: Implement database query
     // In real implementation:
-    // SELECT u.*, s.*, p.* FROM users u 
+    // SELECT u.*, s.*, p.* FROM users u
     // LEFT JOIN user_settings s ON u.id = s.user_id
-    // LEFT JOIN user_preferences p ON u.id = p.user_id 
+    // LEFT JOIN user_preferences p ON u.id = p.user_id
     // WHERE u.id = $1
     return null;
   }
@@ -106,14 +114,17 @@ export class UsersRepository implements IUsersRepository {
     return null;
   }
 
-  async update(id: string, updateData: Partial<Omit<User, 'id' | 'createdAt'>>): Promise<User | null> {
+  async update(
+    id: string,
+    updateData: Partial<Omit<User, 'id' | 'createdAt'>>,
+  ): Promise<User | null> {
     // TODO: Implement user update
     // In real implementation:
     // 1. Update main user record
     // 2. Update settings/preferences if provided
     // 3. Handle subscription changes
     // 4. Update storage/notes limits if subscription changed
-    
+
     return null;
   }
 
@@ -124,18 +135,24 @@ export class UsersRepository implements IUsersRepository {
     // 2. Anonymize or remove personal data
     // 3. Archive user's notes
     // 4. Clean up collaborations
-    
+
     return false;
   }
 
   // Settings management
-  async updateSettings(userId: string, settings: Partial<UserSettings>): Promise<User | null> {
+  async updateSettings(
+    userId: string,
+    settings: Partial<UserSettings>,
+  ): Promise<User | null> {
     // TODO: Implement settings update
     // In real implementation: UPDATE user_settings SET ... WHERE user_id = $1
     return null;
   }
 
-  async updatePreferences(userId: string, preferences: Partial<UserPreferences>): Promise<User | null> {
+  async updatePreferences(
+    userId: string,
+    preferences: Partial<UserPreferences>,
+  ): Promise<User | null> {
     // TODO: Implement preferences update
     // In real implementation: UPDATE user_preferences SET ... WHERE user_id = $1
     return null;
@@ -154,7 +171,9 @@ export class UsersRepository implements IUsersRepository {
   }
 
   // Activity tracking
-  async recordActivity(activity: Omit<UserActivity, 'id' | 'timestamp'>): Promise<UserActivity> {
+  async recordActivity(
+    activity: Omit<UserActivity, 'id' | 'timestamp'>,
+  ): Promise<UserActivity> {
     // TODO: Implement activity recording
     const now = new Date();
     const userActivity: UserActivity = {
@@ -162,16 +181,19 @@ export class UsersRepository implements IUsersRepository {
       ...activity,
       timestamp: now,
     };
-    
+
     // In real implementation: INSERT INTO user_activities
     return userActivity;
   }
 
-  async getActivity(userId: string, options?: {
-    limit?: number;
-    action?: UserActivity['action'];
-    since?: Date;
-  }): Promise<UserActivity[]> {
+  async getActivity(
+    userId: string,
+    options?: {
+      limit?: number;
+      action?: UserActivity['action'];
+      since?: Date;
+    },
+  ): Promise<UserActivity[]> {
     // TODO: Implement activity retrieval
     // In real implementation:
     // SELECT * FROM user_activities WHERE user_id = $1
@@ -202,7 +224,9 @@ export class UsersRepository implements IUsersRepository {
   }
 
   // Collaboration
-  async createInvite(invite: Omit<CollaborationInvite, 'id' | 'createdAt'>): Promise<CollaborationInvite> {
+  async createInvite(
+    invite: Omit<CollaborationInvite, 'id' | 'createdAt'>,
+  ): Promise<CollaborationInvite> {
     // TODO: Implement invite creation
     const now = new Date();
     const collaborationInvite: CollaborationInvite = {
@@ -210,33 +234,42 @@ export class UsersRepository implements IUsersRepository {
       ...invite,
       createdAt: now,
     };
-    
+
     // In real implementation: INSERT INTO collaboration_invites
     return collaborationInvite;
   }
 
-  async getInvites(userId: string, status?: CollaborationInvite['status']): Promise<CollaborationInvite[]> {
+  async getInvites(
+    userId: string,
+    status?: CollaborationInvite['status'],
+  ): Promise<CollaborationInvite[]> {
     // TODO: Implement invite retrieval
     // In real implementation:
-    // SELECT * FROM collaboration_invites 
+    // SELECT * FROM collaboration_invites
     // WHERE (from_user_id = $1 OR to_user_id = $1)
     // [AND status = $2]
     return [];
   }
 
-  async updateInviteStatus(inviteId: string, status: CollaborationInvite['status']): Promise<CollaborationInvite | null> {
+  async updateInviteStatus(
+    inviteId: string,
+    status: CollaborationInvite['status'],
+  ): Promise<CollaborationInvite | null> {
     // TODO: Implement invite status update
     return null;
   }
 
   // Search and discovery
-  async searchUsers(query: string, options?: {
-    limit?: number;
-    excludeUserIds?: string[];
-  }): Promise<User[]> {
+  async searchUsers(
+    query: string,
+    options?: {
+      limit?: number;
+      excludeUserIds?: string[];
+    },
+  ): Promise<User[]> {
     // TODO: Implement user search
     // In real implementation:
-    // SELECT * FROM users WHERE 
+    // SELECT * FROM users WHERE
     // (username ILIKE $1 OR display_name ILIKE $1 OR email ILIKE $1)
     // AND profile_visibility = 'public'
     // AND id NOT IN ($2, $3, ...)
@@ -257,25 +290,32 @@ export class UsersRepository implements IUsersRepository {
     };
   }
 
-  async updateSubscription(userId: string, subscription: User['subscription']): Promise<User | null> {
+  async updateSubscription(
+    userId: string,
+    subscription: User['subscription'],
+  ): Promise<User | null> {
     // TODO: Implement subscription update
     // In real implementation:
     // 1. Update subscription
     // 2. Update limits based on new subscription
     // 3. Record billing event
     // 4. Send notification email
-    
+
     return null;
   }
 
   // Bulk operations
-  async bulkUpdateSettings(updates: { userId: string; settings: Partial<UserSettings> }[]): Promise<void> {
+  async bulkUpdateSettings(
+    updates: { userId: string; settings: Partial<UserSettings> }[],
+  ): Promise<void> {
     // TODO: Implement bulk settings update
     // In real implementation: Use transaction to update multiple users' settings
   }
 
   // Helper methods
-  private getNotesLimitForSubscription(subscription: User['subscription']): number {
+  private getNotesLimitForSubscription(
+    subscription: User['subscription'],
+  ): number {
     const limits = {
       free: 100,
       pro: 10000,
@@ -285,11 +325,13 @@ export class UsersRepository implements IUsersRepository {
     return limits[subscription];
   }
 
-  private getStorageLimitForSubscription(subscription: User['subscription']): number {
+  private getStorageLimitForSubscription(
+    subscription: User['subscription'],
+  ): number {
     const limits = {
       free: 100, // 100MB
       pro: 10000, // 10GB
-      team: 100000, // 100GB  
+      team: 100000, // 100GB
       enterprise: -1, // unlimited
     };
     return limits[subscription];

@@ -9,9 +9,11 @@ status: completed
 # Stream B: Directory and Package Scaffolding
 
 ## Scope
+
 Create the directory structure for all packages (`shared`, `web`, `tauri`, `server`) and initialize a basic `package.json` file in each.
 
 ## Files
+
 - `packages/`
 - `packages/shared/package.json`
 - `packages/web/package.json`
@@ -19,6 +21,7 @@ Create the directory structure for all packages (`shared`, `web`, `tauri`, `serv
 - `packages/server/package.json`
 
 ## Progress
+
 - Starting implementation
 - Created directory structure for all packages.
 - Initialized `package.json` for each package.

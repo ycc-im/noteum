@@ -3,7 +3,7 @@ import ProtectedRoute from '../components/ProtectedRoute'
 import Dashboard from '../pages/Dashboard'
 
 export const Route = createFileRoute('/dashboard')({
-  component: DashboardPage
+  component: DashboardPage,
 })
 
 function DashboardPage() {

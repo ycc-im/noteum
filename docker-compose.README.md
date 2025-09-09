@@ -11,6 +11,7 @@ This directory contains Docker Compose configurations for running the Noteum pro
 ## Services
 
 ### PostgreSQL Database (`postgres`)
+
 - **Port**: 5432
 - **Database**: noteum
 - **User**: noteum_user
@@ -18,17 +19,20 @@ This directory contains Docker Compose configurations for running the Noteum pro
 - **Health Check**: Built-in PostgreSQL readiness check
 
 ### pgAdmin (`pgadmin`)
+
 - **Port**: 8080
 - **Email**: admin@noteum.dev
 - **Password**: admin123
 - **Access**: http://localhost:8080
 
 ### Server (`server`) - NestJS API
+
 - **Port**: 3001 (HTTP), 5001 (gRPC)
 - **Framework**: NestJS with Fastify
 - **Health Check**: http://localhost:3001/health
 
 ### Web (`web`) - TanStack Start React App
+
 - **Port**: 3000
 - **Framework**: TanStack Start (React)
 - **Health Check**: http://localhost:3000/api/health
@@ -36,6 +40,7 @@ This directory contains Docker Compose configurations for running the Noteum pro
 ## Usage
 
 ### Development Environment (Default)
+
 ```bash
 # Start all services in development mode with hot reloading
 docker-compose up
@@ -51,6 +56,7 @@ docker-compose down
 ```
 
 ### Production Environment
+
 ```bash
 # Start in production mode
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
@@ -60,6 +66,7 @@ docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
 ```
 
 ### Individual Services
+
 ```bash
 # Start only database services
 docker-compose up postgres pgadmin
@@ -74,6 +81,7 @@ docker-compose up --build server
 ## Environment Variables
 
 ### Server Environment Variables
+
 - `NODE_ENV`: Environment (development/production)
 - `PORT`: Server port (default: 3001)
 - `DATABASE_URL`: PostgreSQL connection string
@@ -82,6 +90,7 @@ docker-compose up --build server
 - `LOG_LEVEL`: Logging level (debug/info/warn/error)
 
 ### Web Environment Variables
+
 - `NODE_ENV`: Environment (development/production)
 - `PORT`: Web server port (default: 3000)
 - `API_URL`: Backend API URL (default: http://server:3001)
@@ -89,11 +98,13 @@ docker-compose up --build server
 ## Development Features
 
 ### Hot Reloading
+
 - **Server**: Source code changes automatically restart the NestJS server
 - **Web**: Vite development server with HMR (Hot Module Replacement)
 - **Shared**: Changes in shared package affect both server and web
 
 ### Volume Mounts (Development Only)
+
 - Source code directories are mounted for real-time updates
 - Configuration files (tsconfig.json, package.json, etc.)
 - Node modules are excluded to prevent conflicts
@@ -101,6 +112,7 @@ docker-compose up --build server
 ## Database Access
 
 ### Direct PostgreSQL Connection
+
 - **Host**: localhost
 - **Port**: 5432
 - **Database**: noteum
@@ -108,6 +120,7 @@ docker-compose up --build server
 - **Password**: noteum_password
 
 ### pgAdmin Web Interface
+
 1. Open http://localhost:8080
 2. Login with admin@noteum.dev / admin123
 3. Add server connection:
@@ -120,11 +133,13 @@ docker-compose up --build server
 ## Health Checks and Monitoring
 
 All services include health checks:
+
 - **PostgreSQL**: `pg_isready` command
 - **Server**: HTTP GET /health endpoint
 - **Web**: HTTP GET /api/health endpoint
 
 Check service health:
+
 ```bash
 # View service status
 docker-compose ps
@@ -137,18 +152,22 @@ docker-compose exec web curl http://localhost:3000/api/health
 ## Troubleshooting
 
 ### Port Conflicts
+
 If ports are already in use, modify the port mappings in docker-compose.yml:
+
 ```yaml
 ports:
-  - "3001:3001"  # Change first port (host) to available port
+  - "3001:3001" # Change first port (host) to available port
 ```
 
 ### Database Connection Issues
+
 1. Ensure PostgreSQL is healthy: `docker-compose ps postgres`
 2. Check logs: `docker-compose logs postgres`
 3. Verify connection from server: `docker-compose exec server curl postgres:5432`
 
 ### Build Issues
+
 ```bash
 # Clean rebuild all services
 docker-compose build --no-cache
@@ -159,7 +178,9 @@ docker system prune
 ```
 
 ### Missing Dockerfiles
+
 If server Dockerfile doesn't exist yet:
+
 1. The configuration assumes it will be at `packages/server/Dockerfile`
 2. Temporarily comment out the server service until the Dockerfile is ready
 3. Or create a basic development Dockerfile
@@ -167,6 +188,7 @@ If server Dockerfile doesn't exist yet:
 ## Network Configuration
 
 All services communicate through the `noteum-network` bridge network:
+
 - Services can reach each other using container names as hostnames
 - External access only through exposed ports
 - Isolated from other Docker networks

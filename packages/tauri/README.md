@@ -7,21 +7,24 @@ Noteum 桌面应用程序，基于 Tauri 构建，支持 Windows、macOS 和 Lin
 ### 开发环境
 
 - **Node.js**: v18 或更高版本
-- **pnpm**: v8 或更高版本  
+- **pnpm**: v8 或更高版本
 - **Rust**: 1.75 或更高版本
 - **Tauri CLI**: 自动通过 package.json 安装
 
 ### 平台特定要求
 
 #### Windows
+
 - Visual Studio Build Tools 2019 或更高版本
 - WebView2 运行时 (通常已预装在 Windows 10/11)
 
 #### macOS
+
 - Xcode Command Line Tools
 - macOS 10.15 (Catalina) 或更高版本
 
 #### Linux (Ubuntu/Debian)
+
 ```bash
 sudo apt-get update
 sudo apt-get install -y \
@@ -37,11 +40,13 @@ sudo apt-get install -y \
 ### 开发模式
 
 1. 安装依赖：
+
 ```bash
 pnpm install
 ```
 
 2. 启动开发服务器：
+
 ```bash
 pnpm dev
 ```
@@ -51,6 +56,7 @@ pnpm dev
 ### 构建生产版本
 
 #### 使用 npm 脚本
+
 ```bash
 # 构建桌面应用
 pnpm build
@@ -62,6 +68,7 @@ cd ../web && pnpm build
 #### 使用构建脚本
 
 **Linux/macOS:**
+
 ```bash
 # 基本构建
 ./scripts/build.sh
@@ -77,6 +84,7 @@ cd ../web && pnpm build
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 # 基本构建
 .\scripts\build-windows.ps1
@@ -114,6 +122,7 @@ packages/tauri/
 ### Tauri 配置 (tauri.conf.json)
 
 主要配置项：
+
 - `build.devPath`: 开发模式下的前端路径 (http://localhost:3000)
 - `build.distDir`: 生产构建时的前端目录 (../web/dist)
 - `package`: 应用包信息
@@ -123,6 +132,7 @@ packages/tauri/
 ### API 权限
 
 当前启用的 API 权限：
+
 - **File System**: 文件读写操作
 - **Dialog**: 文件对话框
 - **Window**: 窗口管理
@@ -133,6 +143,7 @@ packages/tauri/
 ### 添加新的 Tauri 命令
 
 1. 在 `src-tauri/src/main.rs` 中定义命令：
+
 ```rust
 #[tauri::command]
 async fn my_command(param: String) -> Result<String, String> {
@@ -141,6 +152,7 @@ async fn my_command(param: String) -> Result<String, String> {
 ```
 
 2. 注册命令：
+
 ```rust
 .invoke_handler(tauri::generate_handler![
     // ... 其他命令
@@ -149,6 +161,7 @@ async fn my_command(param: String) -> Result<String, String> {
 ```
 
 3. 在 `src/main.ts` 中添加 TypeScript 封装：
+
 ```typescript
 static async myCommand(param: string): Promise<string> {
   return await invoke('my_command', { param });
@@ -158,33 +171,39 @@ static async myCommand(param: string): Promise<string> {
 ### 调试
 
 #### Rust 后端调试
+
 ```bash
 # 查看 Rust 日志
 RUST_LOG=debug pnpm dev
 ```
 
 #### 前端调试
+
 - 开发模式下自动打开 Chrome DevTools
 - 生产模式下可通过菜单 -> View -> Toggle Developer Tools
 
 ## 构建产物
 
 ### 开发构建
+
 - 位置: `src-tauri/target/debug/`
 - 文件: 可执行文件 (未优化)
 
 ### 发布构建
+
 - **Windows**: `src-tauri/target/release/bundle/msi/Noteum_*.msi`
-- **macOS**: `src-tauri/target/release/bundle/dmg/Noteum_*.dmg`  
+- **macOS**: `src-tauri/target/release/bundle/dmg/Noteum_*.dmg`
 - **Linux**: `src-tauri/target/release/bundle/deb/noteum_*.deb` 或 `*.AppImage`
 
 ## CI/CD
 
 GitHub Actions 自动构建配置：
+
 - **构建流水线**: `.github/workflows/build.yml`
 - **发布流水线**: `.github/workflows/release.yml`
 
 支持的平台：
+
 - Windows (x86_64)
 - macOS (x86_64, Apple Silicon)
 - Linux (x86_64)

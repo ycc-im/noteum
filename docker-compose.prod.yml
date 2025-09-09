@@ -1,7 +1,6 @@
 # Docker Compose configuration for production environment
 # Use this file with: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
 
-
 services:
   # Server Production Configuration
   server:

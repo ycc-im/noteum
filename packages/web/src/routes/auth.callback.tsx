@@ -3,7 +3,7 @@ import { useHandleSignInCallback } from '@logto/react'
 import { useEffect } from 'react'
 
 export const Route = createFileRoute('/auth/callback')({
-  component: AuthCallbackPage
+  component: AuthCallbackPage,
 })
 
 /**
@@ -12,18 +12,18 @@ export const Route = createFileRoute('/auth/callback')({
  */
 function AuthCallbackPage() {
   const navigate = useNavigate()
-  
+
   // Use the correct Logto hook for handling sign-in callback
   const { isLoading } = useHandleSignInCallback(() => {
     console.log('Logto 登录回调处理完成')
-    
+
     let redirectTo = '/' // default redirect to home
-    
+
     // Extract redirect destination from URL state parameter (safe for SSR)
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search)
       const state = urlParams.get('state')
-      
+
       if (state) {
         try {
           const stateData = JSON.parse(state)
@@ -35,9 +35,9 @@ function AuthCallbackPage() {
         }
       }
     }
-    
+
     console.log('准备跳转到:', redirectTo)
-    
+
     // Navigate to the intended destination
     setTimeout(() => {
       navigate({ to: redirectTo, replace: true })
@@ -50,7 +50,9 @@ function AuthCallbackPage() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <h2 className="mt-4 text-xl font-semibold text-gray-900">处理登录结果</h2>
+          <h2 className="mt-4 text-xl font-semibold text-gray-900">
+            处理登录结果
+          </h2>
           <p className="mt-2 text-gray-600">请稍候，正在验证您的身份...</p>
         </div>
       </div>

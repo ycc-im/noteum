@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a Claude Code PM (Project Management) system that provides workflow tools for shipping better software using spec-driven development, GitHub issues, Git worktrees, and multiple AI agents running in parallel.
 
 Key features:
+
 - Spec-driven development with traceability from PRD to production
 - Parallel execution with multiple agents working simultaneously
 - GitHub integration using issues as the source of truth
@@ -37,6 +38,7 @@ Key features:
 ## Key Commands
 
 ### Project Management
+
 - `/pm:prd-new feature-name` - Create new Product Requirements Document
 - `/pm:prd-parse feature-name` - Convert PRD to implementation epic
 - `/pm:epic-oneshot feature-name` - Decompose and sync epic in one command
@@ -45,11 +47,13 @@ Key features:
 - `/pm:next` - Show next priority task
 
 ### Context Management
+
 - `/context:create` - Create initial project context documentation
 - `/context:prime` - Load context into current conversation
 - `/context:update` - Update existing context with recent changes
 
 ### Testing
+
 - `/testing:prime` - Configure testing setup
 - `/testing:run` - Execute tests with intelligent analysis
 
@@ -65,6 +69,7 @@ Key features:
 ## Parallel Execution System
 
 Issues are not atomic - they split into multiple parallel work streams:
+
 - Agent 1: Database tables and migrations
 - Agent 2: Service layer and business logic
 - Agent 3: API endpoints and middleware
@@ -72,6 +77,7 @@ Issues are not atomic - they split into multiple parallel work streams:
 - Agent 5: Test suites and documentation
 
 All agents run simultaneously in the same worktree, coordinated through:
+
 - File-level parallelism (no conflicts when working on different files)
 - Explicit coordination when same files are needed
 - Progress tracking through stream-specific files
@@ -80,6 +86,7 @@ All agents run simultaneously in the same worktree, coordinated through:
 ## Agent Coordination
 
 Use specialized agents for heavy work:
+
 - `code-analyzer`: Hunt bugs across multiple files
 - `file-analyzer`: Read and summarize verbose files
 - `test-runner`: Execute tests without polluting main context
@@ -96,6 +103,7 @@ Use specialized agents for heavy work:
 ## Common Development Tasks
 
 1. To start a new feature:
+
    ```
    /pm:prd-new your-feature-name
    /pm:prd-parse your-feature-name
@@ -104,12 +112,14 @@ Use specialized agents for heavy work:
    ```
 
 2. To run tests:
+
    ```
    /testing:prime
    /testing:run
    ```
 
 3. To manage context:
+
    ```
    /context:create
    /context:prime

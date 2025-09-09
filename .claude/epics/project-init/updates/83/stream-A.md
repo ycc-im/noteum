@@ -9,9 +9,11 @@ status: in_progress
 # Stream A: Tauri 核心配置与集成
 
 ## Scope
+
 设置 Tauri 项目配置，集成前端应用，配置桌面应用功能
 
 ## Files
+
 - packages/tauri/tauri.conf.json
 - packages/tauri/src-tauri/Cargo.toml
 - packages/tauri/src-tauri/src/main.rs
@@ -19,4 +21,5 @@ status: in_progress
 - packages/tauri/package.json
 
 ## Progress
+
 - Starting implementation

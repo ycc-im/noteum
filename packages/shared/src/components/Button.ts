@@ -9,11 +9,11 @@ export interface ButtonProps {
   /**
    * 按钮变体
    */
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  variant?: "primary" | "secondary" | "outline" | "ghost";
   /**
    * 按钮大小
    */
-  size?: 'small' | 'medium' | 'large';
+  size?: "small" | "medium" | "large";
   /**
    * 是否禁用
    */
@@ -29,7 +29,7 @@ export interface ButtonProps {
   /**
    * 按钮类型
    */
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
 }
 
 /**
@@ -37,74 +37,74 @@ export interface ButtonProps {
  */
 export function getButtonClasses(props: ButtonProps): string {
   const baseClasses = [
-    'inline-flex',
-    'items-center',
-    'justify-center',
-    'rounded-md',
-    'font-medium',
-    'transition-colors',
-    'focus:outline-none',
-    'focus:ring-2',
-    'focus:ring-offset-2',
-    'disabled:opacity-50',
-    'disabled:cursor-not-allowed'
+    "inline-flex",
+    "items-center",
+    "justify-center",
+    "rounded-md",
+    "font-medium",
+    "transition-colors",
+    "focus:outline-none",
+    "focus:ring-2",
+    "focus:ring-offset-2",
+    "disabled:opacity-50",
+    "disabled:cursor-not-allowed",
   ];
 
   // 根据变体添加样式
   switch (props.variant) {
-    case 'primary':
+    case "primary":
       baseClasses.push(
-        'bg-blue-600',
-        'text-white',
-        'hover:bg-blue-700',
-        'focus:ring-blue-500'
+        "bg-blue-600",
+        "text-white",
+        "hover:bg-blue-700",
+        "focus:ring-blue-500",
       );
       break;
-    case 'secondary':
+    case "secondary":
       baseClasses.push(
-        'bg-gray-200',
-        'text-gray-900',
-        'hover:bg-gray-300',
-        'focus:ring-gray-500'
+        "bg-gray-200",
+        "text-gray-900",
+        "hover:bg-gray-300",
+        "focus:ring-gray-500",
       );
       break;
-    case 'outline':
+    case "outline":
       baseClasses.push(
-        'border',
-        'border-gray-300',
-        'bg-white',
-        'text-gray-700',
-        'hover:bg-gray-50',
-        'focus:ring-blue-500'
+        "border",
+        "border-gray-300",
+        "bg-white",
+        "text-gray-700",
+        "hover:bg-gray-50",
+        "focus:ring-blue-500",
       );
       break;
-    case 'ghost':
+    case "ghost":
       baseClasses.push(
-        'bg-transparent',
-        'text-gray-700',
-        'hover:bg-gray-100',
-        'focus:ring-gray-500'
+        "bg-transparent",
+        "text-gray-700",
+        "hover:bg-gray-100",
+        "focus:ring-gray-500",
       );
       break;
     default:
       baseClasses.push(
-        'bg-blue-600',
-        'text-white',
-        'hover:bg-blue-700',
-        'focus:ring-blue-500'
+        "bg-blue-600",
+        "text-white",
+        "hover:bg-blue-700",
+        "focus:ring-blue-500",
       );
   }
 
   // 根据大小添加样式
   switch (props.size) {
-    case 'small':
-      baseClasses.push('px-2.5', 'py-1.5', 'text-sm');
+    case "small":
+      baseClasses.push("px-2.5", "py-1.5", "text-sm");
       break;
-    case 'large':
-      baseClasses.push('px-6', 'py-3', 'text-lg');
+    case "large":
+      baseClasses.push("px-6", "py-3", "text-lg");
       break;
     default:
-      baseClasses.push('px-4', 'py-2', 'text-base');
+      baseClasses.push("px-4", "py-2", "text-base");
   }
 
   // 添加自定义类名
@@ -112,7 +112,7 @@ export function getButtonClasses(props: ButtonProps): string {
     baseClasses.push(props.className);
   }
 
-  return baseClasses.join(' ');
+  return baseClasses.join(" ");
 }
 
 /**
@@ -120,10 +120,10 @@ export function getButtonClasses(props: ButtonProps): string {
  */
 export function getButtonAttributes(props: ButtonProps): Record<string, any> {
   return {
-    type: props.type || 'button',
+    type: props.type || "button",
     disabled: props.disabled || false,
     className: getButtonClasses(props),
-    onClick: props.onClick
+    onClick: props.onClick,
   };
 }
 
@@ -135,6 +135,6 @@ export function createButtonConfig(props: ButtonProps) {
   return {
     props,
     classes: getButtonClasses(props),
-    attributes: getButtonAttributes(props)
+    attributes: getButtonAttributes(props),
   };
 }

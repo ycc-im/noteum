@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run linting to check formatting
+echo "🎨 Running Prettier formatting check..."
+if ! pnpm lint; then
+  echo "📝 Formatting issues found. Auto-fixing with Prettier..."
+  npx prettier --write .
+  
+  echo "🔍 Re-running lint check after auto-fix..."
+  if ! pnpm lint; then
+    echo "❌ Formatting issues still exist after auto-fix. Please review and fix manually."
+    exit 1
+  else
+    echo "✅ Formatting issues have been auto-fixed. Please add the changes and commit again."
+    git add .
+    echo "ℹ️  Files have been auto-formatted and staged. You can now commit again."
+    exit 1
+  fi
+fi
+
+echo "✅ All files are properly formatted!"

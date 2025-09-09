@@ -15,7 +15,8 @@
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .",
     "typecheck": "pnpm --filter \"./packages/*\" --parallel typecheck",
-    "test": "pnpm --filter \"./packages/*\" --parallel test"
+    "test": "pnpm --filter \"./packages/*\" --parallel test",
+    "prepare": "husky"
   },
   "keywords": [
     "ai",
@@ -28,6 +29,7 @@
   "author": "",
   "license": "Apache-2.0",
   "devDependencies": {
+    "husky": "^9.1.7",
     "prettier": "^3.0.0",
     "typescript": "^5.0.0"
   },

@@ -35,6 +35,27 @@ async fn save_app_config(config: AppConfig) -> Result<(), String> {
     Ok(())
 }
 
+// Custom command to greet from Rust
+#[tauri::command]
+fn greet(name: &str) -> String {
+    format!("Hello, {}! You've been greeted from Rust and Tauri v2!", name)
+}
+
+// Custom command to get app info
+#[tauri::command]
+async fn get_app_info() -> Result<serde_json::Value, String> {
+    let info = serde_json::json!({
+        "name": env!("CARGO_PKG_NAME"),
+        "version": env!("CARGO_PKG_VERSION"),
+        "description": env!("CARGO_PKG_DESCRIPTION"),
+        "authors": env!("CARGO_PKG_AUTHORS").split(':').collect::<Vec<_>>(),
+        "tauri_version": "2.0",
+        "platform": std::env::consts::OS,
+        "architecture": std::env::consts::ARCH,
+    });
+    Ok(info)
+}
+
 // Tauri command for file operations
 #[tauri::command]
 async fn save_note(content: String, path: Option<String>) -> Result<String, String> {
@@ -55,42 +76,39 @@ async fn load_note(path: String) -> Result<String, String> {
     println!("Loading note from: {}", path);
     
     // Return dummy content for now
-    Ok("# Sample Note\n\nThis is a sample note loaded from the desktop app.".to_string())
+    Ok("# Sample Note\n\nThis is a sample note loaded from the Tauri v2 desktop app.".to_string())
 }
 
-// System info command
-#[tauri::command]
-async fn get_system_info() -> Result<serde_json::Value, String> {
-    let info = serde_json::json!({
-        "platform": std::env::consts::OS,
-        "architecture": std::env::consts::ARCH,
-        "version": env!("CARGO_PKG_VERSION")
-    });
-    
-    Ok(info)
-}
-
-fn main() {
+fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_window_state::Builder::default().build())
         .setup(|app| {
             // App setup logic here
-            let window = app.get_window("main").unwrap();
+            let window = app.get_webview_window("main").unwrap();
             
             #[cfg(debug_assertions)]
             {
                 window.open_devtools();
             }
             
-            println!("Noteum desktop app starting...");
+            println!("Noteum Tauri v2 desktop app starting...");
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            greet,
+            get_app_info,
             get_app_config,
             save_app_config,
             save_note,
-            load_note,
-            get_system_info
+            load_note
         ])
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .expect("error while running Tauri application");
+}
+
+fn main() {
+    run();
 }

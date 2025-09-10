@@ -87,7 +87,7 @@ fn run() {
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .setup(|app| {
             // App setup logic here
-            let window = app.get_window("main").unwrap();
+            let window = app.get_webview_window("main").unwrap();
             
             #[cfg(debug_assertions)]
             {

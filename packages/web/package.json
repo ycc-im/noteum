@@ -21,6 +21,7 @@
     "@tanstack/react-router-ssr-query": "^1.131.7",
     "@tanstack/react-start": "^1.131.7",
     "@tanstack/router-plugin": "^1.121.2",
+    "dexie": "^3.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "reactflow": "^11.11.4",

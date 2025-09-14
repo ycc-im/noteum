@@ -8,6 +8,7 @@ import {
   NoteActivity,
   INotesRepository,
 } from '../common/interfaces/note.interface';
+import { generateUlid } from '@noteum/shared';
 
 export class NotesRepository implements INotesRepository {
   // Basic CRUD operations
@@ -20,7 +21,7 @@ export class NotesRepository implements INotesRepository {
     // TODO: Implement database creation logic with pgvector
     const now = new Date();
     const note: Note = {
-      id: `note_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: generateUlid(),
       ...noteData,
       version: 1,
       isLatest: true,
@@ -146,7 +147,7 @@ export class NotesRepository implements INotesRepository {
     // TODO: Implement version creation
     const now = new Date();
     const version: NoteVersion = {
-      id: `version_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: generateUlid(),
       ...versionData,
       createdAt: now,
     };
@@ -209,7 +210,7 @@ export class NotesRepository implements INotesRepository {
     // TODO: Implement connection creation
     const now = new Date();
     const noteConnection: NoteConnection = {
-      id: `conn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: generateUlid(),
       ...connection,
       createdAt: now,
     };
@@ -307,7 +308,7 @@ export class NotesRepository implements INotesRepository {
     // TODO: Implement activity recording
     const now = new Date();
     const noteActivity: NoteActivity = {
-      id: `activity_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: generateUlid(),
       ...activity,
       timestamp: now,
     };

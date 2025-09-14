@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ulidSchema, ulidArraySchema } from '@noteum/shared';
 
 // Enum schemas
 export const SubscriptionSchema = z.enum(['free', 'pro', 'team', 'enterprise']);
@@ -59,7 +60,7 @@ export const UserPreferencesSchema = z.object({
   }),
 
   // Recent items
-  recentNotes: z.array(z.string().uuid()).max(50),
+  recentNotes: ulidArraySchema.max(50),
   recentTags: z.array(z.string()).max(20),
 
   // Custom settings
@@ -68,7 +69,7 @@ export const UserPreferencesSchema = z.object({
 
 // Main User schema
 export const UserSchema = z.object({
-  id: z.string().uuid(),
+  id: ulidSchema,
   username: z
     .string()
     .min(3)
@@ -130,7 +131,7 @@ export const CreateUserSchema = z.object({
 
 // Update user input
 export const UpdateUserSchema = z.object({
-  id: z.string().uuid(),
+  id: ulidSchema,
   username: z
     .string()
     .min(3)
@@ -149,7 +150,7 @@ export const UpdateUserSchema = z.object({
 
 // Query schemas
 export const GetUserByIdSchema = z.object({
-  id: z.string().uuid(),
+  id: ulidSchema,
 });
 
 export const GetUserByLogtoIdSchema = z.object({
@@ -165,34 +166,34 @@ export const GetUserByEmailSchema = z.object({
 });
 
 export const DeleteUserSchema = z.object({
-  id: z.string().uuid(),
+  id: ulidSchema,
 });
 
 // Settings management schemas
 export const UpdateUserSettingsSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   settings: UserSettingsSchema.partial(),
 });
 
 export const UpdateUserPreferencesSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   preferences: UserPreferencesSchema.partial(),
 });
 
 // Authentication schemas
 export const VerifyEmailSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
 });
 
 export const UpdateLastLoginSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
 });
 
 // Activity tracking schemas
 export const RecordUserActivitySchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   action: UserActivityActionSchema,
-  resourceId: z.string().uuid().optional(),
+  resourceId: ulidSchema.optional(),
   metadata: z.record(z.string(), z.any()).optional(),
   ipAddress: z
     .string()
@@ -204,7 +205,7 @@ export const RecordUserActivitySchema = z.object({
 });
 
 export const GetUserActivitySchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   limit: z.number().int().min(1).max(100).default(50),
   action: UserActivityActionSchema.optional(),
   since: z.date().optional(),
@@ -212,30 +213,30 @@ export const GetUserActivitySchema = z.object({
 
 // Statistics schemas
 export const GetUserStatsSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
 });
 
 export const UpdateStorageUsageSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   sizeChange: z.number(), // Can be positive or negative
 });
 
 // Collaboration schemas
 export const CreateInviteSchema = z.object({
-  fromUserId: z.string().uuid(),
-  toUserId: z.string().uuid(),
-  noteId: z.string().uuid(),
+  fromUserId: ulidSchema,
+  toUserId: ulidSchema,
+  noteId: ulidSchema,
   permissions: InvitePermissionsSchema,
   expiresAt: z.date(),
 });
 
 export const GetInvitesSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   status: InviteStatusSchema.optional(),
 });
 
 export const UpdateInviteStatusSchema = z.object({
-  inviteId: z.string().uuid(),
+  inviteId: ulidSchema,
   status: InviteStatusSchema,
 });
 
@@ -243,7 +244,7 @@ export const UpdateInviteStatusSchema = z.object({
 export const SearchUsersSchema = z.object({
   query: z.string().min(1).max(100),
   limit: z.number().int().min(1).max(50).default(10),
-  excludeUserIds: z.array(z.string().uuid()).optional(),
+  excludeUserIds: ulidArraySchema.optional(),
 });
 
 // Admin operations schemas
@@ -256,7 +257,7 @@ export const ListUsersSchema = z.object({
 });
 
 export const UpdateSubscriptionSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   subscription: SubscriptionSchema,
 });
 
@@ -265,7 +266,7 @@ export const BulkUpdateSettingsSchema = z.object({
   updates: z
     .array(
       z.object({
-        userId: z.string().uuid(),
+        userId: ulidSchema,
         settings: UserSettingsSchema.partial(),
       }),
     )
@@ -286,10 +287,10 @@ export const UserStatsSchema = z.object({
 });
 
 export const UserActivitySchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string().uuid(),
+  id: ulidSchema,
+  userId: ulidSchema,
   action: UserActivityActionSchema,
-  resourceId: z.string().uuid().optional(),
+  resourceId: ulidSchema.optional(),
   metadata: z.record(z.string(), z.any()).optional(),
   ipAddress: z.string().optional(),
   userAgent: z.string().optional(),
@@ -297,10 +298,10 @@ export const UserActivitySchema = z.object({
 });
 
 export const CollaborationInviteSchema = z.object({
-  id: z.string().uuid(),
-  fromUserId: z.string().uuid(),
-  toUserId: z.string().uuid(),
-  noteId: z.string().uuid(),
+  id: ulidSchema,
+  fromUserId: ulidSchema,
+  toUserId: ulidSchema,
+  noteId: ulidSchema,
   permissions: InvitePermissionsSchema,
   status: InviteStatusSchema,
   createdAt: z.date(),
@@ -333,18 +334,18 @@ export const RefreshTokenSchema = z.object({
 });
 
 export const LogoutSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   sessionId: z.string().optional(),
 });
 
 // Profile management schemas
 export const UploadAvatarSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   file: z.any(), // File will be validated by middleware
 });
 
 export const UpdateProfileSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   displayName: z.string().max(100).optional(),
   firstName: z.string().max(50).optional(),
   lastName: z.string().max(50).optional(),
@@ -352,7 +353,7 @@ export const UpdateProfileSchema = z.object({
 });
 
 export const ChangePasswordSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   currentPassword: z.string().min(6),
   newPassword: z.string().min(6).max(128),
 });

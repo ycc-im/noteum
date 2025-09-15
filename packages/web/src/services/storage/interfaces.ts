@@ -1,0 +1,294 @@
+/**
+ * Storage service interfaces for Noteum application
+ * 
+ * This module defines comprehensive interfaces for local storage services
+ * including IndexedDB (via Dexie.js) and localStorage fallback mechanisms.
+ * 
+ * @fileoverview Storage interfaces for local data persistence
+ * @module storage/interfaces
+ */
+
+// Base storage configuration
+export interface StorageConfig {
+  /** Database name for IndexedDB */
+  databaseName: string;
+  /** Database version for schema migrations */
+  version: number;
+  /** Enable debug mode for storage operations */
+  debug: boolean;
+  /** Maximum size limit in MB */
+  maxSizeLimit: number;
+  /** Enable automatic data compression */
+  enableCompression: boolean;
+  /** Fallback to localStorage when IndexedDB unavailable */
+  fallbackToLocalStorage: boolean;
+}
+
+// Storage operation result types
+export interface StorageResult<T = any> {
+  /** Operation success status */
+  success: boolean;
+  /** Data payload */
+  data?: T;
+  /** Error information if operation failed */
+  error?: StorageError;
+  /** Operation metadata */
+  metadata?: StorageMetadata;
+}
+
+export interface StorageError {
+  /** Error code */
+  code: string;
+  /** Human-readable error message */
+  message: string;
+  /** Original error object */
+  originalError?: Error;
+  /** Error context information */
+  context?: Record<string, any>;
+}
+
+export interface StorageMetadata {
+  /** Operation timestamp */
+  timestamp: Date;
+  /** Time taken for operation (ms) */
+  duration?: number;
+  /** Storage type used (indexeddb/localstorage) */
+  storageType: 'indexeddb' | 'localstorage';
+  /** Data size in bytes */
+  dataSize?: number;
+}
+
+export interface StorageUsage {
+  /** Current storage size in bytes */
+  used: number;
+  /** Total available storage in bytes */
+  available: number;
+  /** Storage usage percentage (0-100) */
+  percentage: number;
+  /** Number of stored items */
+  itemCount: number;
+}
+
+// Generic storage operations interface
+export interface IStorageAdapter<T = any> {
+  /** Initialize storage adapter */
+  initialize(): Promise<StorageResult<void>>;
+  
+  /** Check if storage is available and ready */
+  isReady(): Promise<boolean>;
+  
+  /** Store data with key */
+  set(key: string, value: T): Promise<StorageResult<void>>;
+  
+  /** Retrieve data by key */
+  get(key: string): Promise<StorageResult<T>>;
+  
+  /** Remove data by key */
+  remove(key: string): Promise<StorageResult<void>>;
+  
+  /** Clear all data */
+  clear(): Promise<StorageResult<void>>;
+  
+  /** Get all keys */
+  keys(): Promise<StorageResult<string[]>>;
+  
+  /** Check if key exists */
+  has(key: string): Promise<StorageResult<boolean>>;
+  
+  /** Get storage usage statistics */
+  getUsage(): Promise<StorageResult<StorageUsage>>;
+  
+  /** Cleanup expired or old data */
+  cleanup(): Promise<StorageResult<void>>;
+  
+  /** Close storage connection */
+  close(): Promise<StorageResult<void>>;
+}
+
+// Specific storage implementations
+export interface IndexedDBConfig extends StorageConfig {
+  /** Object store configurations */
+  stores: IndexedDBStoreConfig[];
+  /** Enable transaction logging */
+  enableTransactionLogging?: boolean;
+  /** Auto-increment key configuration */
+  autoIncrement?: boolean;
+}
+
+export interface IndexedDBStoreConfig {
+  /** Store name */
+  name: string;
+  /** Primary key path */
+  keyPath?: string;
+  /** Enable auto increment for keys */
+  autoIncrement?: boolean;
+  /** Index configurations */
+  indexes?: IndexedDBIndexConfig[];
+}
+
+export interface IndexedDBIndexConfig {
+  /** Index name */
+  name: string;
+  /** Key path for index */
+  keyPath: string | string[];
+  /** Unique constraint */
+  unique?: boolean;
+  /** Multi-entry index */
+  multiEntry?: boolean;
+}
+
+// Advanced storage operations
+export interface IAdvancedStorageAdapter<T = any> extends IStorageAdapter<T> {
+  /** Batch operations */
+  batch(operations: StorageBatchOperation[]): Promise<StorageResult<void>>;
+  
+  /** Query with filters */
+  query(filter: StorageQuery): Promise<StorageResult<T[]>>;
+  
+  /** Watch for changes */
+  watch(key: string, callback: StorageChangeCallback<T>): Promise<StorageResult<() => void>>;
+  
+  /** Import/export data */
+  export(): Promise<StorageResult<StorageExportData>>;
+  import(data: StorageExportData): Promise<StorageResult<void>>;
+  
+  /** Transaction support */
+  transaction<R>(callback: (adapter: IStorageAdapter<T>) => Promise<R>): Promise<StorageResult<R>>;
+}
+
+export interface StorageBatchOperation {
+  /** Operation type */
+  type: 'set' | 'remove' | 'clear';
+  /** Key for the operation */
+  key?: string;
+  /** Value for set operations */
+  value?: any;
+}
+
+export interface StorageQuery {
+  /** Key pattern or exact key */
+  key?: string | RegExp;
+  /** Value filters */
+  where?: Record<string, any>;
+  /** Sort configuration */
+  orderBy?: string;
+  /** Limit results */
+  limit?: number;
+  /** Skip results */
+  offset?: number;
+}
+
+export interface StorageExportData {
+  /** Export timestamp */
+  timestamp: Date;
+  /** Storage version */
+  version: string;
+  /** Exported data */
+  data: Record<string, any>;
+  /** Metadata */
+  metadata: Record<string, any>;
+}
+
+export type StorageChangeCallback<T> = (change: StorageChange<T>) => void;
+
+export interface StorageChange<T> {
+  /** Changed key */
+  key: string;
+  /** Change type */
+  type: 'added' | 'updated' | 'removed';
+  /** Old value */
+  oldValue?: T;
+  /** New value */
+  newValue?: T;
+  /** Change timestamp */
+  timestamp: Date;
+}
+
+// Storage factory and manager interfaces
+export interface IStorageManager {
+  /** Get storage adapter by name */
+  getAdapter(name: string): Promise<IStorageAdapter>;
+  
+  /** Register new adapter */
+  registerAdapter(name: string, adapter: IStorageAdapter): Promise<void>;
+  
+  /** Remove adapter */
+  removeAdapter(name: string): Promise<void>;
+  
+  /** List available adapters */
+  listAdapters(): string[];
+  
+  /** Initialize all adapters */
+  initialize(): Promise<void>;
+  
+  /** Cleanup and close all adapters */
+  cleanup(): Promise<void>;
+}
+
+export interface IStorageFactory {
+  /** Create IndexedDB adapter */
+  createIndexedDBAdapter(config: IndexedDBConfig): IAdvancedStorageAdapter;
+  
+  /** Create localStorage adapter */
+  createLocalStorageAdapter(config: StorageConfig): IStorageAdapter;
+  
+  /** Create memory adapter for testing */
+  createMemoryAdapter(config?: Partial<StorageConfig>): IStorageAdapter;
+  
+  /** Create adapter with automatic fallback */
+  createAdapterWithFallback(config: StorageConfig): IAdvancedStorageAdapter;
+}
+
+// =================== Core StorageService Interface ===================
+
+/**
+ * Core StorageService interface as specified in Task 102
+ * This is the main interface that applications should use for storage operations
+ */
+export interface StorageService {
+  // Basic CRUD operations
+  get<T>(key: string): Promise<T | null>;
+  set<T>(key: string, value: T): Promise<void>;
+  remove(key: string): Promise<void>;
+  clear(): Promise<void>;
+  
+  // Batch operations
+  getBatch<T>(keys: string[]): Promise<Record<string, T>>;
+  setBatch<T>(data: Record<string, T>): Promise<void>;
+  
+  // Advanced functionality
+  exists(key: string): Promise<boolean>;
+  keys(): Promise<string[]>;
+  size(): Promise<number>;
+  
+  // Event listening
+  onChange(callback: (event: StorageChangeEvent) => void): () => void;
+}
+
+/**
+ * Enhanced StorageChangeEvent interface for event system
+ * Extends the basic StorageChange with additional metadata
+ */
+export interface StorageChangeEvent<T = any> extends StorageChange<T> {
+  /** Type of change operation, extended to include 'cleared' */
+  type: 'added' | 'updated' | 'removed' | 'cleared';
+  /** Source of the change */
+  source: 'user' | 'system' | 'sync' | 'batch';
+  /** Additional metadata */
+  metadata?: {
+    /** Storage adapter that triggered the change */
+    adapter: 'indexeddb' | 'localstorage' | 'memory';
+    /** Transaction ID if part of a transaction */
+    transactionId?: string;
+    /** Operation duration in milliseconds */
+    duration?: number;
+    /** Size of the changed data in bytes */
+    dataSize?: number;
+    /** Batch operation identifier if part of batch */
+    batchId?: string;
+  };
+}
+
+// Type exports for convenience
+export type StorageAdapter<T = any> = IStorageAdapter<T>;
+export type AdvancedStorageAdapter<T = any> = IAdvancedStorageAdapter<T>;

@@ -48,7 +48,6 @@ const defaultProps: Partial<NodeProps<CustomNodeData>> = {
   id: 'test-node',
   selected: false,
   type: 'customNode',
-  position: { x: 0, y: 0 },
   dragging: false,
   isConnectable: true,
   zIndex: 1,

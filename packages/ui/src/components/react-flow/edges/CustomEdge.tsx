@@ -1,4 +1,3 @@
-import React from 'react'
 import { EdgeProps, getSmoothStepPath, EdgeLabelRenderer } from 'reactflow'
 
 export interface CustomEdgeData {
@@ -103,7 +102,7 @@ export function CustomEdge({
         </EdgeLabelRenderer>
       )}
 
-      <style jsx>{`
+      <style>{`
         .animated {
           stroke-dasharray: 5;
           animation: dashdraw 0.5s linear infinite;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Handle, Position, NodeProps } from 'reactflow'
 
 export interface AINodeData {

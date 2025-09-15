@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 import {
   ReactFlow,
-  ReactFlowProvider,
   Node,
   Edge,
   Controls,
@@ -58,7 +57,7 @@ export function FlowCanvas({
   showBackground = true,
   backgroundVariant = BackgroundVariant.Dots,
 }: FlowCanvasProps) {
-  const [nodes, setNodes, onNodesStateChange] = useNodesState(initialNodes)
+  const [nodes, , onNodesStateChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesStateChange] = useEdgesState(initialEdges)
 
   // 处理节点变化

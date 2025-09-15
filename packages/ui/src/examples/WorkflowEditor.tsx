@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { Node, Edge } from 'reactflow'
 import { FlowCanvas } from '../components/react-flow/FlowCanvas'
 

@@ -49,7 +49,6 @@ const defaultProps: Partial<NodeProps<AINodeData>> = {
   id: 'test-ai-node',
   selected: false,
   type: 'aiNode',
-  position: { x: 0, y: 0 },
   dragging: false,
   isConnectable: true,
   zIndex: 1,

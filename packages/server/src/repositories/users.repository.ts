@@ -7,6 +7,7 @@ import {
   CollaborationInvite,
   IUsersRepository,
 } from '../common/interfaces/user.interface';
+import { generateUlid } from '@noteum/shared';
 
 export class UsersRepository implements IUsersRepository {
   // Default settings for new users
@@ -51,7 +52,7 @@ export class UsersRepository implements IUsersRepository {
     // TODO: Implement database creation logic
     const now = new Date();
     const user: User = {
-      id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: generateUlid(),
       username: userData.username,
       email: userData.email,
       logtoId: userData.logtoId,
@@ -177,7 +178,7 @@ export class UsersRepository implements IUsersRepository {
     // TODO: Implement activity recording
     const now = new Date();
     const userActivity: UserActivity = {
-      id: `activity_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: generateUlid(),
       ...activity,
       timestamp: now,
     };
@@ -230,7 +231,7 @@ export class UsersRepository implements IUsersRepository {
     // TODO: Implement invite creation
     const now = new Date();
     const collaborationInvite: CollaborationInvite = {
-      id: `invite_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: generateUlid(),
       ...invite,
       createdAt: now,
     };

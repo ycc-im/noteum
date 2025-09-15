@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ulidSchema, ulidArraySchema } from '@noteum/shared';
 
 // Base schemas for common types
 export const PositionSchema = z.object({
@@ -35,10 +36,10 @@ export const ConnectionTypeSchema = z.enum([
 
 // Main Note schema (for validation of full note objects)
 export const NoteSchema = z.object({
-  id: z.string().uuid(),
+  id: ulidSchema,
   title: z.string().min(1).max(500),
   content: z.string(),
-  userId: z.string().uuid(),
+  userId: ulidSchema,
 
   // React Flow compatibility
   type: NoteTypeSchema,
@@ -53,19 +54,19 @@ export const NoteSchema = z.object({
   slots: z.record(z.string(), z.any()).optional(),
 
   // Hierarchy and connections
-  parentId: z.string().uuid().optional(),
-  children: z.array(z.string().uuid()).default([]),
-  connections: z.array(z.string().uuid()).default([]),
+  parentId: ulidSchema.optional(),
+  children: ulidArraySchema.default([]),
+  connections: ulidArraySchema.default([]),
 
   // Version control
   version: z.number().int().positive(),
-  versionHistory: z.array(z.string().uuid()).default([]),
+  versionHistory: ulidArraySchema.default([]),
   isLatest: z.boolean(),
 
   // Collaboration and status
   isPublic: z.boolean(),
   permissions: NotePermissionsSchema,
-  collaborators: z.array(z.string().uuid()).default([]),
+  collaborators: ulidArraySchema.default([]),
   status: NoteStatusSchema,
 
   // Timestamps
@@ -80,7 +81,7 @@ export const NoteSchema = z.object({
 export const CreateNoteSchema = z.object({
   title: z.string().min(1).max(500),
   content: z.string(),
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   type: NoteTypeSchema.default('text'),
   position: PositionSchema.optional(),
   size: SizeSchema.optional(),
@@ -88,16 +89,16 @@ export const CreateNoteSchema = z.object({
   tags: z.array(z.string()).max(20).default([]),
   metadata: z.record(z.string(), z.any()).optional(),
   slots: z.record(z.string(), z.any()).optional(),
-  parentId: z.string().uuid().optional(),
+  parentId: ulidSchema.optional(),
   isPublic: z.boolean().default(false),
   permissions: NotePermissionsSchema.default('private'),
-  collaborators: z.array(z.string().uuid()).max(50).default([]),
+  collaborators: ulidArraySchema.max(50).default([]),
   status: NoteStatusSchema.default('draft'),
 });
 
 // Update note input
 export const UpdateNoteSchema = z.object({
-  id: z.string().uuid(),
+  id: ulidSchema,
   title: z.string().min(1).max(500).optional(),
   content: z.string().optional(),
   type: NoteTypeSchema.optional(),
@@ -107,20 +108,20 @@ export const UpdateNoteSchema = z.object({
   tags: z.array(z.string()).max(20).optional(),
   metadata: z.record(z.string(), z.any()).optional(),
   slots: z.record(z.string(), z.any()).optional(),
-  parentId: z.string().uuid().optional(),
+  parentId: ulidSchema.optional(),
   isPublic: z.boolean().optional(),
   permissions: NotePermissionsSchema.optional(),
-  collaborators: z.array(z.string().uuid()).max(50).optional(),
+  collaborators: ulidArraySchema.max(50).optional(),
   status: NoteStatusSchema.optional(),
 });
 
 // Query schemas
 export const GetNoteByIdSchema = z.object({
-  id: z.string().uuid(),
+  id: ulidSchema,
 });
 
 export const GetNotesByUserSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   page: z.number().int().min(1).default(1),
   limit: z.number().int().min(1).max(100).default(10),
   status: NoteStatusSchema.optional(),
@@ -130,13 +131,13 @@ export const GetNotesByUserSchema = z.object({
 });
 
 export const DeleteNoteSchema = z.object({
-  id: z.string().uuid(),
+  id: ulidSchema,
 });
 
 // Search schemas
 export const SemanticSearchSchema = z.object({
   query: z.string().min(1).max(1000),
-  userId: z.string().uuid().optional(),
+  userId: ulidSchema.optional(),
   limit: z.number().int().min(1).max(50).default(10),
   threshold: z.number().min(0).max(1).default(0.7),
   filters: z
@@ -152,7 +153,7 @@ export const SemanticSearchSchema = z.object({
 
 export const FullTextSearchSchema = z.object({
   query: z.string().min(1).max(1000),
-  userId: z.string().uuid().optional(),
+  userId: ulidSchema.optional(),
   limit: z.number().int().min(1).max(50).default(10),
   filters: z
     .object({
@@ -168,7 +169,7 @@ export const FullTextSearchSchema = z.object({
 // Vector search with embedding array
 export const VectorSearchSchema = z.object({
   embedding: z.array(z.number()).length(1536), // OpenAI embedding dimension
-  userId: z.string().uuid().optional(),
+  userId: ulidSchema.optional(),
   limit: z.number().int().min(1).max(50).default(10),
   threshold: z.number().min(0).max(1).default(0.7),
   filters: z
@@ -182,54 +183,54 @@ export const VectorSearchSchema = z.object({
 
 // Version management schemas
 export const CreateVersionSchema = z.object({
-  noteId: z.string().uuid(),
+  noteId: ulidSchema,
   version: z.number().int().positive(),
   title: z.string().min(1).max(500),
   content: z.string(),
   metadata: z.record(z.string(), z.any()).optional(),
-  createdBy: z.string().uuid(),
+  createdBy: ulidSchema,
 });
 
 export const GetVersionsSchema = z.object({
-  noteId: z.string().uuid(),
+  noteId: ulidSchema,
 });
 
 export const GetVersionSchema = z.object({
-  noteId: z.string().uuid(),
+  noteId: ulidSchema,
   version: z.number().int().positive(),
 });
 
 export const RevertToVersionSchema = z.object({
-  noteId: z.string().uuid(),
+  noteId: ulidSchema,
   version: z.number().int().positive(),
 });
 
 // Position and React Flow schemas
 export const UpdatePositionSchema = z.object({
-  id: z.string().uuid(),
+  id: ulidSchema,
   position: PositionSchema,
 });
 
 export const UpdateSizeSchema = z.object({
-  id: z.string().uuid(),
+  id: ulidSchema,
   size: SizeSchema,
 });
 
 // Connection schemas
 export const CreateConnectionSchema = z.object({
-  sourceId: z.string().uuid(),
-  targetId: z.string().uuid(),
+  sourceId: ulidSchema,
+  targetId: ulidSchema,
   type: ConnectionTypeSchema,
   label: z.string().max(100).optional(),
   metadata: z.record(z.string(), z.any()).optional(),
 });
 
 export const GetConnectionsSchema = z.object({
-  noteId: z.string().uuid(),
+  noteId: ulidSchema,
 });
 
 export const DeleteConnectionSchema = z.object({
-  connectionId: z.string().uuid(),
+  connectionId: ulidSchema,
 });
 
 // Bulk operation schemas
@@ -241,7 +242,7 @@ export const BulkUpdateNotesSchema = z.object({
   updates: z
     .array(
       z.object({
-        id: z.string().uuid(),
+        id: ulidSchema,
         data: UpdateNoteSchema.omit({ id: true }),
       }),
     )
@@ -250,48 +251,48 @@ export const BulkUpdateNotesSchema = z.object({
 });
 
 export const BulkDeleteNotesSchema = z.object({
-  ids: z.array(z.string().uuid()).min(1).max(100),
+  ids: ulidArraySchema.min(1).max(100),
 });
 
 // Advanced query schemas
 export const GetNotesByTagsSchema = z.object({
   tags: z.array(z.string()).min(1).max(10),
-  userId: z.string().uuid().optional(),
+  userId: ulidSchema.optional(),
   limit: z.number().int().min(1).max(100).default(10),
 });
 
 export const GetRecentNotesSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   limit: z.number().int().min(1).max(50).default(10),
 });
 
 export const GetPopularNotesSchema = z.object({
-  userId: z.string().uuid().optional(),
+  userId: ulidSchema.optional(),
   limit: z.number().int().min(1).max(50).default(10),
   timeframe: z.enum(['day', 'week', 'month', 'year']).default('week'),
 });
 
 export const GetSimilarNotesSchema = z.object({
-  noteId: z.string().uuid(),
+  noteId: ulidSchema,
   limit: z.number().int().min(1).max(20).default(5),
 });
 
 // Activity tracking schemas
 export const RecordActivitySchema = z.object({
-  noteId: z.string().uuid(),
-  userId: z.string().uuid(),
+  noteId: ulidSchema,
+  userId: ulidSchema,
   action: z.enum(['created', 'updated', 'viewed', 'shared', 'deleted']),
   metadata: z.record(z.string(), z.any()).optional(),
 });
 
 export const GetActivitySchema = z.object({
-  noteId: z.string().uuid(),
+  noteId: ulidSchema,
   limit: z.number().int().min(1).max(100).default(50),
 });
 
 // Export/Import schemas
 export const ExportNotesSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   format: z.enum(['json', 'markdown', 'csv']),
   filters: z
     .object({
@@ -305,7 +306,7 @@ export const ExportNotesSchema = z.object({
 });
 
 export const ImportNotesSchema = z.object({
-  userId: z.string().uuid(),
+  userId: ulidSchema,
   data: z.string().min(1),
   format: z.enum(['json', 'markdown']),
   options: z
@@ -341,10 +342,10 @@ export const SearchResultsResponseSchema = z.object({
 });
 
 export const BulkOperationResultSchema = z.object({
-  successful: z.array(z.string().uuid()),
+  successful: ulidArraySchema,
   failed: z.array(
     z.object({
-      id: z.string().uuid(),
+      id: ulidSchema,
       error: z.string(),
     }),
   ),

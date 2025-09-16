@@ -25,6 +25,9 @@ import { NoteumDB, getDatabase, type DatabaseOptions } from './database';
 import { TableNames } from './schema';
 import { StorageCache } from './cache';
 import { StorageUtils } from './utils';
+import { StorageEventManager, globalStorageEventManager } from './event-manager';
+import { StorageObserverManager, globalStorageObserverManager } from './observer-pattern';
+import { StorageEventUtils } from './event-builder';
 
 /**
  * DexieStorageAdapter configuration
@@ -50,6 +53,22 @@ export interface DexieAdapterConfig extends TypedStorageConfig {
     /** Enable transaction optimization */
     optimizeTransactions: boolean;
   };
+  /** Event system configuration */
+  eventConfig?: {
+    /** Use global event manager or create dedicated instance */
+    useGlobalEventManager: boolean;
+    /** Maximum number of event listeners */
+    maxListeners: number;
+    /** Enable event logging */
+    enableLogging: boolean;
+  };
+  /** Observer pattern configuration */
+  observerConfig?: {
+    /** Use global observer manager or create dedicated instance */
+    useGlobalObserverManager: boolean;
+    /** Enable automatic observer notifications */
+    enableAutoNotification: boolean;
+  };
 }
 
 /**
@@ -70,6 +89,10 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
   private changeListeners: Set<StorageChangeCallback> = new Set();
   private eventDebounceMap: Map<string, NodeJS.Timeout> = new Map();
   private initialized = false;
+  
+  // Enhanced event and observer system
+  private eventManager: StorageEventManager;
+  private observerManager: StorageObserverManager;
 
   constructor(config: Partial<DexieAdapterConfig> = {}) {
     // Set default configuration
@@ -95,6 +118,15 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
         eventDebounceMs: 100,
         optimizeTransactions: true,
       },
+      eventConfig: {
+        useGlobalEventManager: true,
+        maxListeners: 50,
+        enableLogging: false,
+      },
+      observerConfig: {
+        useGlobalObserverManager: true,
+        enableAutoNotification: true,
+      },
       ...config,
     };
 
@@ -103,6 +135,19 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
     
     // Initialize cache
     this.cache = new StorageCache(this.config.cacheConfig);
+    
+    // Initialize event system
+    this.eventManager = this.config.eventConfig.useGlobalEventManager
+      ? globalStorageEventManager
+      : new StorageEventManager({
+          maxListeners: this.config.eventConfig.maxListeners,
+          enableLogging: this.config.eventConfig.enableLogging,
+        });
+    
+    // Initialize observer system
+    this.observerManager = this.config.observerConfig.useGlobalObserverManager
+      ? globalStorageObserverManager
+      : new StorageObserverManager();
   }
 
   /**
@@ -482,6 +527,16 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
     }
 
     const timeout = setTimeout(() => {
+      // Create event using the event builder for consistency
+      const storageEvent = type === 'added' 
+        ? StorageEventUtils.dataAdded(key, newValue, 'indexeddb')
+        : type === 'updated'
+        ? StorageEventUtils.dataUpdated(key, oldValue, newValue, 'indexeddb')
+        : type === 'removed'
+        ? StorageEventUtils.dataRemoved(key, oldValue, 'indexeddb')
+        : StorageEventUtils.storageCleared('indexeddb');
+
+      // Legacy event for backward compatibility
       const event: StorageChangeEvent<T> = {
         key,
         type,
@@ -496,6 +551,7 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
         },
       };
 
+      // Emit to legacy change listeners
       this.changeListeners.forEach((callback) => {
         try {
           callback(event);
@@ -505,6 +561,21 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
           }
         }
       });
+
+      // Emit to new event system
+      this.eventManager.emit(storageEvent);
+
+      // Notify observers if auto-notification is enabled
+      if (this.config.observerConfig.enableAutoNotification) {
+        this.observerManager.notifyDataChange(
+          type,
+          key,
+          oldValue,
+          newValue,
+          'indexeddb',
+          storageEvent.metadata
+        );
+      }
 
       this.eventDebounceMap.delete(debounceKey);
     }, this.config.performanceOptions.eventDebounceMs);
@@ -848,6 +919,72 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
     }
   }
 
+  // =================== Enhanced Event System API ===================
+
+  /**
+   * Get the event manager instance
+   */
+  getEventManager(): StorageEventManager {
+    return this.eventManager;
+  }
+
+  /**
+   * Get the observer manager instance
+   */
+  getObserverManager(): StorageObserverManager {
+    return this.observerManager;
+  }
+
+  /**
+   * Add an event listener using the new event system
+   */
+  addEventListener<T extends import('./events').StorageEventType>(
+    eventType: T,
+    listener: import('./events').TypedStorageEventListener<T>,
+    options?: import('./events').EventListenerOptions
+  ): () => void {
+    return this.eventManager.on(eventType, listener, options);
+  }
+
+  /**
+   * Register a storage observer
+   */
+  registerObserver(
+    observer: import('./observer-pattern').StorageObserver,
+    options?: import('./observer-pattern').ObserverOptions
+  ): () => void {
+    return this.observerManager.register(observer, options);
+  }
+
+  /**
+   * Manually trigger observer notifications (useful for testing)
+   */
+  notifyObservers(
+    type: 'added' | 'updated' | 'deleted' | 'cleared',
+    key: string,
+    oldValue?: any,
+    newValue?: any
+  ): void {
+    this.observerManager.notifyDataChange(type, key, oldValue, newValue, 'indexeddb');
+  }
+
+  /**
+   * Get event system statistics
+   */
+  getEventStats() {
+    return {
+      eventManager: this.eventManager.getStats(),
+      observerManager: this.observerManager.getStats(),
+    };
+  }
+
+  /**
+   * Flush all batched notifications
+   */
+  flushBatchedNotifications(): void {
+    this.observerManager.flushBatchedNotifications();
+  }
+
   /**
    * Close the storage adapter
    */
@@ -859,6 +996,16 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
 
       // Clear listeners
       this.changeListeners.clear();
+
+      // Clean up event system (only if not using global instances)
+      if (!this.config.eventConfig.useGlobalEventManager) {
+        this.eventManager.destroy();
+      }
+
+      // Clean up observer system (only if not using global instances)
+      if (!this.config.observerConfig.useGlobalObserverManager) {
+        this.observerManager.destroy();
+      }
 
       // Close cache
       if (this.config.cacheConfig.enabled) {

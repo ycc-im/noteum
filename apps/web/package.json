@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "@logto/react": "^4.0.9",
-    "@noteum/shared": "workspace:../packages/shared",
-    "@noteum/ui": "workspace:../packages/ui",
+    "@noteum/shared": "workspace:*",
+    "@noteum/ui": "workspace:*",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-devtools": "^0.2.2",
     "@tanstack/react-router": "^1.130.2",

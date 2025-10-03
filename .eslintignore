@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+.output/
+.tanstack/
+packages/*/dist
+packages/*/build
+apps/*/dist
+apps/*/build
+apps/*/src-tauri/target
+
+# Generated files
+.next/
+.nuxt/
+.nitro/
+**/routeTree.gen.ts
+
+# Configuration files
+*.config.js
+*.config.ts
+vite.config.*
+rollup.config.*
+webpack.config.*
+next.config.*
+
+# Lockfiles
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+coverage/
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp

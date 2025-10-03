@@ -21,7 +21,8 @@
     /* Path mapping */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@noteum/shared/*": ["../packages/shared/src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

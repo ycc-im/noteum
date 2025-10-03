@@ -1,11 +1,32 @@
-# dependencies (bun install)
+# dependencies (pnpm install)
 node_modules
 
-# output
+# output and build artifacts
 out
 dist
+build
 *.tgz
 storybook-static
+
+# application-specific build output
+apps/*/dist/
+apps/*/build/
+apps/*/.next/
+apps/*/.nitro/
+apps/*/.output/
+apps/*/out/
+
+# desktop application builds
+apps/desktop/src-tauri/target/
+apps/desktop/src-tauri/release/
+
+# web application builds
+apps/web/.nitro/
+apps/web/.output/
+
+# package builds
+packages/*/dist/
+packages/*/build/
 
 # code coverage
 coverage
@@ -23,14 +44,15 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .env.production
 .env.local
 
-
 # caches
 .eslintcache
 .cache
 *.tsbuildinfo
 
-# IntelliJ based IDEs
+# IDE files
 .idea
+.vscode/settings.json
+.vscode/launch.json
 
 # Finder (MacOS) folder config
 .DS_Store

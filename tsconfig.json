@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022"],
+    "skipLibCheck": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@noteum/shared/*": ["packages/shared/src/*"],
+      "@noteum/ui/*": ["packages/ui/src/*"]
+    }
+  },
+  "references": [
+    { "path": "./apps/web" },
+    { "path": "./apps/desktop" },
+    { "path": "./apps/server" },
+    { "path": "./packages/shared" },
+    { "path": "./packages/ui" }
+  ],
+  "files": [],
+  "include": []
+}

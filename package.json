@@ -4,18 +4,18 @@
   "private": true,
   "description": "AI-powered note-taking application with web and desktop clients",
   "scripts": {
-    "dev": "pnpm --filter \"./packages/*\" --parallel dev",
-    "start": "pnpm --filter \"./packages/*\" --parallel dev",
+    "dev": "pnpm --filter \"./apps/*\" --filter \"./packages/*\" --parallel dev",
+    "start": "pnpm --filter \"./apps/*\" --filter \"./packages/*\" --parallel dev",
     "dev:web": "pnpm --filter web dev",
-    "dev:tauri": "pnpm --filter @noteum/tauri dev",
-    "build": "pnpm --filter \"./packages/*\" --parallel build",
+    "dev:desktop": "pnpm --filter @noteum/tauri dev",
+    "build": "pnpm --filter \"./apps/*\" --filter \"./packages/*\" --parallel build",
     "build:web": "pnpm --filter web build",
     "build:tauri": "pnpm --filter @noteum/tauri build",
-    "build:desktop": "pnpm build:web && pnpm build:tauri",
+    "build:desktop:full": "pnpm build:web && pnpm build:tauri",
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .",
-    "typecheck": "pnpm --filter \"./packages/*\" --parallel typecheck",
-    "test": "pnpm --filter \"./packages/*\" --parallel test"
+    "typecheck": "pnpm --filter \"./apps/*\" --filter \"./packages/*\" --parallel typecheck",
+    "test": "pnpm --filter \"./apps/*\" --filter \"./packages/*\" --parallel test"
   },
   "keywords": [
     "ai",

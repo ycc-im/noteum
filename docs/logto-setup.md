@@ -102,7 +102,7 @@
 
 配置完成后，需要在项目中设置以下环境变量：
 
-### 前端环境变量 (packages/web/.env)：
+### 前端环境变量 (apps/web/.env)：
 
 ```env
 # Logto Web 应用配置
@@ -112,7 +112,7 @@ VITE_LOGTO_REDIRECT_URI=http://localhost:3000/callback
 VITE_LOGTO_POST_LOGOUT_REDIRECT_URI=http://localhost:3000
 ```
 
-### 后端环境变量 (packages/server/.env)：
+### 后端环境变量 (apps/server/.env)：
 
 ```env
 # Logto API 资源配置
@@ -125,14 +125,14 @@ LOGTO_JWKS_URI=https://auth.xiajia.im/oidc/jwks
 
 ### 1. 测试 Web 应用认证：
 
-1. 启动前端开发服务器：`cd packages/web && pnpm dev`
+1. 启动前端开发服务器：`cd apps/web && pnpm dev`
 2. 访问 `http://localhost:3000`
 3. 点击登录按钮，应该跳转到 Logto 登录页面
 4. 登录成功后应该重定向回应用
 
 ### 2. 测试 API 保护：
 
-1. 启动后端服务器：`cd packages/server && pnpm dev`
+1. 启动后端服务器：`cd apps/server && pnpm dev`
 2. 尝试访问受保护的 API 端点
 3. 应该返回 401 未授权错误（没有 token 时）
 4. 使用有效的访问令牌应该能正常访问

@@ -2,11 +2,6 @@
 node_modules/
 **/node_modules/
 
-# Lockfiles (auto-generated)
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
 # Build outputs
 dist/
 build/
@@ -22,30 +17,44 @@ apps/*/src-tauri/target
 .next/
 .nuxt/
 .nitro/
+**/routeTree.gen.ts
+
+# Configuration files
+*.config.js
+*.config.ts
+vite.config.*
+rollup.config.*
+webpack.config.*
+next.config.*
+
+# Lockfiles
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # Logs
 *.log
 logs/
 
-# IDE
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db
-
 # Test coverage
 coverage/
+
+# Cache
+.cache/
+.parcel-cache/
 
 # Environment files
 .env
 .env.local
 .env.production
 
-# Cache
-.cache/
-.parcel-cache/
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
 
 # Temporary files
 *.tmp

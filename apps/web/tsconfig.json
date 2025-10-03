@@ -29,7 +29,9 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@noteum/shared/*": ["../packages/shared/src/*"],
+      "@noteum/ui/*": ["../packages/ui/src/*"]
     }
   }
 }

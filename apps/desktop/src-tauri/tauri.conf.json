@@ -29,7 +29,7 @@
       },
       "fs": {
         "all": false,
-        "readTextFile": true,
+        "readFile": true,
         "writeFile": true,
         "readDir": true,
         "createDir": true,

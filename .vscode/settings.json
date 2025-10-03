@@ -1,0 +1,63 @@
+{
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.suggest.autoImports": true,
+  "typescript.workspaceSymbols.scope": "allOpenProjects",
+  "eslint.workingDirectories": ["packages/*", "apps/*"],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "search.exclude": {
+    "**/node_modules": true,
+    "packages/*/dist": true,
+    "packages/*/build": true,
+    "apps/*/dist": true,
+    "apps/*/build": true,
+    "apps/*/src-tauri/target": true,
+    "**/routeTree.gen.ts": true,
+    "**/.next": true,
+    "**/.nuxt": true,
+    "**/.output": true,
+    "**/coverage": true,
+    "**/.cache": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules": true,
+    "packages/*/dist": true,
+    "packages/*/build": true,
+    "apps/*/dist": true,
+    "apps/*/build": true,
+    "apps/*/src-tauri/target": true,
+    "**/routeTree.gen.ts": true,
+    "**/.next": true,
+    "**/.output": true,
+    "**/coverage": true,
+    "**/.cache": true
+  },
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "prettier.requireConfig": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

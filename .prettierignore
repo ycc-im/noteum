@@ -12,6 +12,11 @@ dist/
 build/
 .output/
 .tanstack/
+packages/*/dist
+packages/*/build
+apps/*/dist
+apps/*/build
+apps/*/src-tauri/target
 
 # Generated files
 .next/

@@ -7,26 +7,12 @@ dist
 build
 *.tgz
 storybook-static
-
-# application-specific build output
-apps/*/dist/
-apps/*/build/
-apps/*/.next/
-apps/*/.nitro/
-apps/*/.output/
-apps/*/out/
+.output
+.nitro
 
 # desktop application builds
-apps/desktop/src-tauri/target/
-apps/desktop/src-tauri/release/
-
-# web application builds
-apps/web/.nitro/
-apps/web/.output/
-
-# package builds
-packages/*/dist/
-packages/*/build/
+src-tauri/target/
+src-tauri/release/
 
 # code coverage
 coverage

@@ -1,0 +1,30 @@
+import { defineConfig } from 'vite'
+import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+import viteReact from '@vitejs/plugin-react'
+import viteTsConfigPaths from 'vite-tsconfig-paths'
+import tailwindcss from '@tailwindcss/vite'
+
+const config = defineConfig({
+  server: {
+    port: 3000,
+    strictPort: true,
+  },
+  plugins: [
+    // this is the plugin that enables path aliases
+    viteTsConfigPaths({
+      projects: ['./tsconfig.json'],
+    }),
+    tailwindcss(),
+    tanstackStart({
+      customViteReactPlugin: true,
+    }),
+    viteReact(),
+  ],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['src/test-setup.ts'],
+  },
+})
+
+export default config

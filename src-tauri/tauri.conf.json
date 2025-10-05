@@ -36,35 +36,13 @@
     ]
   },
   "plugins": {
-    "fs": {
-      "all": true,
-      "readFile": true,
-      "writeFile": true,
-      "readDir": true,
-      "createDir": true,
-      "removeFile": true,
-      "removeDir": true,
-      "exists": true
-    },
+    "fs": {},
     "shell": {
-      "all": false,
       "open": true
     },
     "dialog": {
-      "all": false,
       "open": true,
       "save": true
-    },
-    "window": {
-      "all": false,
-      "close": true,
-      "hide": true,
-      "show": true,
-      "maximize": true,
-      "minimize": true,
-      "unmaximize": true,
-      "unminimize": true,
-      "startDragging": true
     }
   }
 }

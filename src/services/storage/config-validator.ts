@@ -9,7 +9,7 @@
  */
 
 import type { ConfigValidationResult, ConfigValidator } from './config-watcher';
-import type { TypedStorageConfig } from './interfaces';
+import type { StorageConfig } from './interfaces';
 
 /**
  * Validation rule types

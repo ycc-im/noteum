@@ -20,6 +20,8 @@ export interface TokenRecord {
   expiredAt?: Date;
   /** Token creation timestamp */
   createdAt: Date;
+  /** Last update timestamp */
+  updatedAt: Date;
   /** Token type (access, refresh, etc.) */
   type?: string;
   /** Associated user ID */
@@ -34,6 +36,8 @@ export interface PreferenceRecord {
   key: string;
   /** Preference value (can be any serializable type) */
   value: any;
+  /** Creation timestamp */
+  createdAt: Date;
   /** Last update timestamp */
   updatedAt: Date;
   /** Associated user ID */
@@ -52,6 +56,8 @@ export interface SettingRecord {
   key: string;
   /** Setting value (can be any serializable type) */
   value: any;
+  /** Creation timestamp */
+  createdAt: Date;
   /** Last update timestamp */
   updatedAt: Date;
   /** Setting scope (global, user, session) */
@@ -72,6 +78,8 @@ export interface CacheRecord {
   value: any;
   /** Cache expiration timestamp */
   expiredAt?: Date;
+  /** Creation timestamp */
+  createdAt: Date;
   /** Cache creation/update timestamp */
   updatedAt: Date;
   /** Cache entry size in bytes */
@@ -92,6 +100,8 @@ export interface MetaRecord {
   key: string;
   /** Metadata value */
   value: any;
+  /** Creation timestamp */
+  createdAt: Date;
   /** Last update timestamp */
   updatedAt: Date;
   /** Metadata type */

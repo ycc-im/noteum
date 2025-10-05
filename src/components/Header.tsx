@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { useLogto } from '@logto/react'
 
 export default function Header() {
-  const { isAuthenticated, isLoading, signOut, getIdTokenClaims } = useLogto()
+  const { isAuthenticated, isLoading, signOut } = useLogto()
 
   const handleSignOut = async () => {
     await signOut(`${window.location.origin}`)
@@ -41,6 +41,7 @@ export default function Header() {
         ) : (
           <Link
             to="/login"
+            search={{ redirect: undefined }}
             className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
           >
             登录

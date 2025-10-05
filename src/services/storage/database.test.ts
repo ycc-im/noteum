@@ -71,6 +71,7 @@ describe('NoteumDB Database', () => {
         key: 'test_token',
         value: 'token_value_123',
         createdAt: new Date(),
+        updatedAt: new Date(),
         type: 'access',
         userId: 'user_123',
       };
@@ -101,6 +102,7 @@ describe('NoteumDB Database', () => {
         key: 'expired_token',
         value: 'expired_value',
         createdAt: new Date(),
+        updatedAt: new Date(),
         expiredAt: new Date(Date.now() - 1000), // 1秒前过期
       };
 
@@ -108,6 +110,7 @@ describe('NoteumDB Database', () => {
         key: 'valid_token',
         value: 'valid_value',
         createdAt: new Date(),
+        updatedAt: new Date(),
         expiredAt: new Date(Date.now() + 1000), // 1秒后过期
       };
 
@@ -132,6 +135,7 @@ describe('NoteumDB Database', () => {
       const preference: PreferenceRecord = {
         key: 'theme',
         value: { mode: 'dark', color: 'blue' },
+        createdAt: new Date(),
         updatedAt: new Date(),
         userId: 'user_123',
         category: 'ui',
@@ -164,6 +168,7 @@ describe('NoteumDB Database', () => {
         {
           key: 'pref1',
           value: 'value1',
+          createdAt: new Date(),
           updatedAt: new Date(),
           userId: 'user_1',
           category: 'ui',
@@ -171,6 +176,7 @@ describe('NoteumDB Database', () => {
         {
           key: 'pref2',
           value: 'value2',
+          createdAt: new Date(),
           updatedAt: new Date(),
           userId: 'user_2',
           category: 'ui',
@@ -178,6 +184,7 @@ describe('NoteumDB Database', () => {
         {
           key: 'pref3',
           value: 'value3',
+          createdAt: new Date(),
           updatedAt: new Date(),
           userId: 'user_1',
           category: 'app',
@@ -236,6 +243,7 @@ describe('NoteumDB Database', () => {
         key: 'expired_token',
         value: 'expired_value',
         createdAt: new Date(),
+        updatedAt: new Date(),
         expiredAt: new Date(Date.now() - 1000),
       };
 
@@ -243,6 +251,7 @@ describe('NoteumDB Database', () => {
         key: 'valid_token',
         value: 'valid_value',
         createdAt: new Date(),
+        updatedAt: new Date(),
         expiredAt: new Date(Date.now() + 60000),
       };
 
@@ -263,6 +272,7 @@ describe('NoteumDB Database', () => {
         key: 'expired_token',
         value: 'expired_value',
         createdAt: new Date(),
+        updatedAt: new Date(),
         expiredAt: new Date(Date.now() - 1000),
       };
 

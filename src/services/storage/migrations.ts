@@ -417,6 +417,7 @@ export class DatabaseMigrator {
     await this.db.metadata.put({
       key: 'db_version',
       value: version,
+      createdAt: new Date(),
       updatedAt: new Date(),
       type: 'system',
     });

@@ -24,7 +24,7 @@ export default function ProtectedRoute({
       const currentPath = window.location.pathname + window.location.search
       navigate({
         to: '/login',
-        search: currentPath !== '/' ? { redirect: currentPath } : undefined,
+        search: currentPath !== '/' ? { redirect: currentPath } : {},
       })
     }
   }, [isLoading, isAuthenticated, navigate])

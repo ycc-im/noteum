@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useLogto } from '@logto/react'
 import { useNavigate, useSearch } from '@tanstack/react-router'
-
-interface LoginProps {}
 
 interface SearchParams {
   redirect?: string
@@ -12,7 +10,7 @@ interface SearchParams {
  * Login page component - redirects to Logto for authentication
  * Supports redirect parameter to specify where to go after login
  */
-export default function Login(props: LoginProps) {
+export default function Login() {
   const { signIn, isAuthenticated, isLoading } = useLogto()
   const navigate = useNavigate()
   const search = useSearch({ from: '/login' }) as SearchParams
@@ -28,11 +26,8 @@ export default function Login(props: LoginProps) {
     // If not loading and not authenticated, initiate sign in
     if (!isLoading && !isAuthenticated && typeof window !== 'undefined') {
       const redirectUri = `${window.location.origin}/auth/callback`
-      const state = search.redirect
-        ? JSON.stringify({ redirect: search.redirect })
-        : undefined
 
-      signIn(redirectUri, state)
+      signIn(redirectUri)
     }
   }, [isAuthenticated, isLoading, signIn, navigate, search.redirect])
 
@@ -65,10 +60,7 @@ export default function Login(props: LoginProps) {
             onClick={() => {
               if (typeof window !== 'undefined') {
                 const redirectUri = `${window.location.origin}/auth/callback`
-                const state = search.redirect
-                  ? JSON.stringify({ redirect: search.redirect })
-                  : undefined
-                signIn(redirectUri, state)
+                signIn(redirectUri)
               }
             }}
             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

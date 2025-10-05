@@ -1,12 +1,4 @@
-import React from 'react'
-
-interface DashboardProps {}
-
-/**
- * Dashboard page component - placeholder implementation
- * This will display user's notes, recent activity, and quick actions
- */
-export default function Dashboard(props: DashboardProps) {
+export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">

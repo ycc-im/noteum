@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import {
   ReactFlow,
   MiniMap,
@@ -11,9 +11,7 @@ import {
   Edge,
   BackgroundVariant,
   Node,
-  NodeTypes,
 } from 'reactflow'
-import 'reactflow/dist/style.css'
 
 // Define initial nodes for the workflow
 const initialNodes: Node[] = [
@@ -50,7 +48,7 @@ const initialEdges: Edge[] = [
 ]
 
 export default function NoteWorkflow() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
+  const [nodes, , onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
   const onConnect = useCallback(

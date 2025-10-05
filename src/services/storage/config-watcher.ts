@@ -9,7 +9,7 @@
  */
 
 import type { StorageAdapterType } from './types';
-import type { TypedStorageConfig } from './interfaces';
+import type { StorageConfig } from './interfaces';
 
 /**
  * Configuration change types

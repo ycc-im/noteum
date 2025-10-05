@@ -355,6 +355,7 @@ export class NoteumDB extends Dexie {
       await this.metadata.put({
         key,
         value,
+        createdAt: new Date(),
         updatedAt: new Date(),
         type: 'system',
       });

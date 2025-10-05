@@ -38,12 +38,14 @@ function HomePage() {
             <div className="flex gap-4 justify-center">
               <Link
                 to="/login"
+                search={{}}
                 className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
               >
                 立即登录
               </Link>
               <Link
                 to="/login"
+                search={{}}
                 className="px-6 py-3 border-2 border-white text-white rounded-lg hover:bg-white hover:text-[#282c34] transition-colors"
               >
                 注册账户

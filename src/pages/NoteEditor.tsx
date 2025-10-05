@@ -1,12 +1,10 @@
-import React, { useState } from 'react'
-
-interface NoteEditorProps {}
+import { useState } from 'react'
 
 /**
  * Note Editor page component - placeholder implementation
  * This will be the main editor interface with workflow-based editing capabilities
  */
-export default function NoteEditor(props: NoteEditorProps) {
+export default function NoteEditor() {
   const [title, setTitle] = useState('未命名笔记')
   const [content, setContent] = useState('')
 

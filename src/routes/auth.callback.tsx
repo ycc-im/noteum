@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useHandleSignInCallback } from '@logto/react'
-import { useEffect } from 'react'
 
 export const Route = createFileRoute('/auth/callback')({
   component: AuthCallbackPage,

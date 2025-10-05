@@ -19,7 +19,7 @@ import type {
   StorageExportData,
   StorageUsage,
   StorageChangeCallback,
-  TypedStorageConfig
+  StorageConfig
 } from './interfaces';
 import { NoteumDB, getDatabase, type DatabaseOptions } from './database';
 import { TableNames } from './schema';
@@ -32,7 +32,7 @@ import { StorageEventUtils } from './event-builder';
 /**
  * DexieStorageAdapter configuration
  */
-export interface DexieAdapterConfig extends TypedStorageConfig {
+export interface DexieAdapterConfig extends StorageConfig {
   /** Database options */
   databaseOptions?: DatabaseOptions;
   /** Cache configuration */

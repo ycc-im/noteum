@@ -3,8 +3,8 @@
  * Configure fake IndexedDB for testing
  */
 
-import FDBFactory from 'fake-indexeddb/lib/FDBFactory';
-import FDBKeyRange from 'fake-indexeddb/lib/FDBKeyRange';
+import FDBFactory from 'fake-indexeddb/FDBFactory';
+import FDBKeyRange from 'fake-indexeddb/FDBKeyRange';
 
 // Set up fake IndexedDB globals
 Object.defineProperty(globalThis, 'indexedDB', {

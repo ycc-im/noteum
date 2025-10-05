@@ -17,8 +17,8 @@ apps/*/.output/
 apps/*/out/
 
 # desktop application builds
-apps/desktop/src-tauri/target/
-apps/desktop/src-tauri/release/
+src-tauri/target/
+src-tauri/release/
 
 # web application builds
 apps/web/.nitro/

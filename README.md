@@ -1,6 +1,6 @@
 # Noteum - AI-Powered Note-Taking Application
 
-Noteum is a modern, AI-powered note-taking application featuring a workflow-based interface. It's built as a monorepo with a NestJS backend, a web client, and a Tauri-based desktop client, all managed with pnpm workspaces.
+Noteum is a modern, AI-powered note-taking application featuring a workflow-based interface and local-first storage. Built with React, Tauri, and IndexedDB for optimal performance and offline capabilities.
 
 ## Quick Start
 
@@ -8,6 +8,7 @@ Noteum is a modern, AI-powered note-taking application featuring a workflow-base
 
 - Node.js (v18 or higher)
 - pnpm
+- Rust (for Tauri desktop builds)
 
 ### Installation
 
@@ -25,71 +26,62 @@ Noteum is a modern, AI-powered note-taking application featuring a workflow-base
 
 ### Running in Development Mode
 
-To start all applications in development mode, run the following command from the root of the monorepo:
-
+**Web Application:**
 ```bash
 pnpm dev
 ```
+Access the web client at `http://localhost:3000`.
 
-This will start all applications in parallel. You can then access the web client at `http://localhost:3000`.
-
-### Running Specific Applications
-
-You can also start individual applications:
-
+**Desktop Application:**
 ```bash
-# Start web application only
-pnpm dev:web
-
-# Start desktop application only
-pnpm dev:desktop
+pnpm dev:tauri
 ```
 
 ## Project Structure
 
-This project is a monorepo managed by pnpm workspaces with the following structure:
+This project uses a simplified single-application architecture:
 
 ```
 noteum/
-├── apps/                    # Applications
-│   ├── web/                # React-based web client
-│   ├── server/             # NestJS-based backend server
-│   └── desktop/            # Tauri-based desktop application
-├── packages/               # Shared packages
-│   ├── shared/            # Shared code, types, and utilities
-│   └── ui/                # UI component library
-├── docs/                  # Documentation
-└── database/              # Database configuration and migrations
+├── src/                    # Application source code
+│   ├── components/         # React components
+│   ├── services/           # Business logic and storage
+│   │   ├── storage/        # IndexedDB storage services
+│   │   ├── types/          # TypeScript type definitions
+│   │   └── auth/           # Authentication services
+│   ├── pages/              # Application pages
+│   ├── contexts/           # React context providers
+│   ├── routes/             # TanStack Router routes
+│   ├── hooks/              # Custom React hooks
+│   └── utils/              # Utility functions
+├── src-tauri/              # Tauri desktop configuration
+└── dist/                   # Build output
 ```
 
-### Applications (`apps/`)
+### Key Features
 
-- **`apps/web`**: The React-based web client built with Vite and TanStack Router
-- **`apps/server`**: The NestJS-based backend server with FastAPI and tRPC support
-- **`apps/desktop`**: The Tauri-based desktop application for cross-platform support
-
-### Shared Packages (`packages/`)
-
-- **`packages/shared`**: Shared code, types, utilities, and business logic used across applications
-- **`packages/ui`**: Reusable UI component library
+- **Local-First Storage**: Uses IndexedDB for fast, offline-capable data storage
+- **Cross-Platform**: Web and desktop (via Tauri) applications
+- **AI-Powered Workflows**: ReactFlow-based visual note organization
+- **Type-Safe**: Full TypeScript support throughout
+- **Modern Stack**: React 19, Vite, TailwindCSS, Dexie
 
 ## Available Scripts
 
-The following scripts can be run from the root of the monorepo:
-
 ### Development Commands
-- `pnpm dev`: Starts all applications in development mode
-- `pnpm dev:web`: Starts only the web application
-- `pnpm dev:desktop`: Starts only the desktop application
+- `pnpm dev`: Starts the web application in development mode
+- `pnpm dev:tauri`: Starts the desktop application in development mode
 
 ### Build Commands
-- `pnpm build`: Builds all applications for production
-- `pnpm build:web`: Builds only the web application
-- `pnpm build:tauri`: Builds only the desktop application
-- `pnpm build:desktop:full`: Builds web then desktop application
+- `pnpm build`: Builds the web application for production
+- `pnpm build:tauri`: Builds the desktop application for production
 
 ### Quality Assurance
-- `pnpm lint`: Checks code formatting with Prettier
-- `pnpm lint:fix`: Fixes code formatting issues automatically
-- `pnpm typecheck`: Runs TypeScript type checking for all packages
-- `pnpm test`: Runs test suites for all packages
+- `pnpm lint`: Checks code formatting with ESLint
+- `pnpm format`: Fixes code formatting with Prettier
+- `pnpm typecheck`: Runs TypeScript type checking
+- `pnpm test`: Runs test suites with Vitest
+
+### Storybook
+- `pnpm storybook`: Starts Storybook for component development
+- `pnpm build-storybook`: Builds Storybook for deployment

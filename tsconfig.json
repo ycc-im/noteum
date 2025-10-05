@@ -1,24 +1,42 @@
 {
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src-tauri/**/*.ts",
+    "eslint.config.js",
+    "prettier.config.js",
+    "vite.config.js"
+  ],
+
   "compilerOptions": {
     "target": "ES2022",
+    "jsx": "react-jsx",
     "module": "ESNext",
-    "lib": ["ES2022"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client", "node"],
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": false,
+    "noEmit": true,
+
+    /* Linting */
     "skipLibCheck": true,
     "strict": true,
-    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@noteum/shared/*": ["packages/shared/src/*"],
-      "@noteum/ui/*": ["packages/ui/src/*"]
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/services/*": ["./src/services/*"],
+      "@/pages/*": ["./src/pages/*"],
+      "@/contexts/*": ["./src/contexts/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/hooks/*": ["./src/hooks/*"]
     }
-  },
-  "references": [
-    { "path": "./apps/web" },
-    { "path": "./apps/desktop" },
-    { "path": "./apps/server" },
-    { "path": "./packages/shared" },
-    { "path": "./packages/ui" }
-  ],
-  "files": [],
-  "include": []
+  }
 }

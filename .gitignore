@@ -20,14 +20,6 @@ apps/*/out/
 src-tauri/target/
 src-tauri/release/
 
-# web application builds
-apps/web/.nitro/
-apps/web/.output/
-
-# package builds
-packages/*/dist/
-packages/*/build/
-
 # code coverage
 coverage
 *.lcov

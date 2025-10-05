@@ -74,7 +74,6 @@ fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_shell::init())
-        .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             // App setup logic here
             let window = app.get_webview_window("main").unwrap();

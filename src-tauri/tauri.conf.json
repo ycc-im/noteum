@@ -37,12 +37,6 @@
   },
   "plugins": {
     "fs": {},
-    "shell": {
-      "open": true
-    },
-    "dialog": {
-      "open": true,
-      "save": true
-    }
+    "shell": {}
   }
 }

@@ -79,38 +79,64 @@
 
 - **资源标识符**: `{记录实际的资源标识符}`
 
-### 3. 桌面应用（预留，未来实现）
+### 3. 桌面应用（Native Application - Tauri）
 
-当 Tauri 桌面应用准备就绪时，需要创建：
+Tauri 桌面应用需要创建原生应用配置：
 
 #### 创建步骤：
 
 1. 选择 **"Native Application"**
 2. 填写应用信息：
    - **应用名称**: `Noteum Desktop`
-   - **描述**: `Noteum 桌面应用认证`
+   - **描述**: `Noteum Tauri 桌面应用认证`
 
 #### 配置设置：
 
 - **允许的回调 URL**:
   ```
-  noteum://auth/callback       # 自定义协议
-  http://localhost:8080/callback  # 备用本地回调
+  noteum://auth/callback           # Tauri 生产环境（自定义协议）
+  http://localhost:3000/auth/callback  # Tauri 开发环境（devPath）
   ```
+
+- **登出重定向 URL**:
+  ```
+  noteum://                       # Tauri 生产环境
+  http://localhost:3000           # Tauri 开发环境
+  ```
+
+#### 重要说明：
+
+Tauri 应用有两种运行模式：
+- **开发模式**: 使用 `http://localhost:3000`，回调到 Web URL
+- **生产模式**: 使用 `custom-protocol`，回调到自定义协议 `noteum://`
+
+项目代码已实现自动检测环境并选择正确的回调 URI。
 
 ## 环境变量配置
 
 配置完成后，需要在项目中设置以下环境变量：
 
-### 前端环境变量 (apps/web/.env)：
+### 前端环境变量 (.env.development)：
 
 ```env
-# Logto Web 应用配置
+# Logto 配置
 VITE_LOGTO_ENDPOINT=https://auth.xiajia.im
-VITE_LOGTO_APP_ID={Web SPA 应用的 App ID}
-VITE_LOGTO_REDIRECT_URI=http://localhost:3000/callback
-VITE_LOGTO_POST_LOGOUT_REDIRECT_URI=http://localhost:3000
+VITE_LOGTO_APP_ID={应用的 App ID}
+
+# 可选：如果不设置，代码会自动检测环境
+# VITE_LOGTO_REDIRECT_URI=http://localhost:3000/auth/callback
+# VITE_LOGTO_POST_LOGOUT_REDIRECT_URI=http://localhost:3000
 ```
+
+#### 重要提示：
+
+项目代码已实现智能环境检测，**无需手动设置回调 URI**：
+
+- **Web 开发环境**: 自动使用 `http://localhost:3000/auth/callback`
+- **Tauri 开发环境**: 自动使用 `http://localhost:3000/auth/callback`
+- **Tauri 生产环境**: 自动使用 `noteum://auth/callback`
+
+只有在需要覆盖自动检测时才设置 `VITE_LOGTO_REDIRECT_URI`。
 
 ### 后端环境变量 (apps/server/.env)：
 

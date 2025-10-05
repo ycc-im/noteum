@@ -17,6 +17,8 @@ const config = defineConfig({
     tailwindcss(),
     tanstackStart({
       customViteReactPlugin: true,
+      clientOutDir: '../.output/public',
+      staticOutput: true,
     }),
     viteReact(),
   ],

@@ -72,15 +72,18 @@ async fn get_system_info() -> Result<serde_json::Value, String> {
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             // App setup logic here
-            let window = app.get_window("main").unwrap();
-            
+            let window = app.get_webview_window("main").unwrap();
+
             #[cfg(debug_assertions)]
             {
                 window.open_devtools();
             }
-            
+
             println!("Noteum desktop app starting...");
             Ok(())
         })

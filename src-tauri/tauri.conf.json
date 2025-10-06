@@ -6,7 +6,7 @@
   "build": {
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build",
-    "frontendDist": "../.output/public",
+    "frontendDist": "../dist",
     "devUrl": "http://localhost:3000"
   },
   "app": {
@@ -36,35 +36,7 @@
     ]
   },
   "plugins": {
-    "fs": {
-      "all": true,
-      "readFile": true,
-      "writeFile": true,
-      "readDir": true,
-      "createDir": true,
-      "removeFile": true,
-      "removeDir": true,
-      "exists": true
-    },
-    "shell": {
-      "all": false,
-      "open": true
-    },
-    "dialog": {
-      "all": false,
-      "open": true,
-      "save": true
-    },
-    "window": {
-      "all": false,
-      "close": true,
-      "hide": true,
-      "show": true,
-      "maximize": true,
-      "minimize": true,
-      "unmaximize": true,
-      "unminimize": true,
-      "startDragging": true
-    }
+    "fs": {},
+    "shell": {}
   }
 }

@@ -1,54 +1,45 @@
-import fs from 'node:fs'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { createServerFn } from '@tanstack/react-start'
 
-const filePath = 'todos.json'
-
-async function readTodos() {
-  return JSON.parse(
-    await fs.promises.readFile(filePath, 'utf-8').catch(() =>
-      JSON.stringify(
-        [
-          { id: 1, name: 'Get groceries' },
-          { id: 2, name: 'Buy a new phone' },
-        ],
-        null,
-        2,
-      ),
-    ),
-  )
-}
-
-const getTodos = createServerFn({
-  method: 'GET',
-}).handler(async () => await readTodos())
-
-const addTodo = createServerFn({ method: 'POST' })
-  .validator((d: string) => d)
-  .handler(async ({ data }) => {
-    const todos = await readTodos()
-    todos.push({ id: todos.length + 1, name: data })
-    await fs.promises.writeFile(filePath, JSON.stringify(todos, null, 2))
-    return todos
-  })
+// 简单的内存 todos 存储（客户端版本）
+const defaultTodos = [
+  { id: 1, name: 'Get groceries' },
+  { id: 2, name: 'Buy a new phone' },
+]
 
 export const Route = createFileRoute('/demo/start/server-funcs')({
   component: Home,
-  loader: async () => await getTodos(),
 })
 
 function Home() {
   const router = useRouter()
-  let todos = Route.useLoaderData()
-
+  const [todos, setTodos] = useState(defaultTodos)
   const [todo, setTodo] = useState('')
 
+  // 使用 localStorage 持久化数据
+  useEffect(() => {
+    const savedTodos = localStorage.getItem('todos')
+    if (savedTodos) {
+      try {
+        setTodos(JSON.parse(savedTodos))
+      } catch (e) {
+        console.error('Failed to parse saved todos:', e)
+      }
+    }
+  }, [])
+
+  const saveTodos = useCallback((newTodos: typeof defaultTodos) => {
+    setTodos(newTodos)
+    localStorage.setItem('todos', JSON.stringify(newTodos))
+  }, [])
+
   const submitTodo = useCallback(async () => {
-    todos = await addTodo({ data: todo })
-    setTodo('')
-    router.invalidate()
-  }, [addTodo, todo])
+    if (todo.trim()) {
+      const newTodos = [...todos, { id: todos.length + 1, name: todo.trim() }]
+      saveTodos(newTodos)
+      setTodo('')
+    }
+  }, [todo, todos, saveTodos])
 
   return (
     <div

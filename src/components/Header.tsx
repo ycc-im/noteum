@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from '@tanstack/react-router'
 import { useLogto } from '@logto/react'
+import { Button } from '@/components/ui/button'
 
 export default function Header() {
   const { isAuthenticated, isLoading, signOut } = useLogto()
@@ -10,42 +11,44 @@ export default function Header() {
   }
 
   return (
-    <header className="p-2 flex gap-2 bg-white text-black justify-between border-b">
+    <header className="p-2 flex gap-2 bg-card text-foreground justify-between border-b">
       <nav className="flex flex-row">
         <div className="px-2 font-bold">
-          <Link to="/">Home</Link>
+          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
         </div>
 
         <div className="px-2 font-bold">
-          <Link to="/demo/start/server-funcs">Start - Server Functions</Link>
+          <Link to="/demo/start/server-funcs" className="hover:text-primary transition-colors">Start - Server Functions</Link>
         </div>
 
         <div className="px-2 font-bold">
-          <Link to="/demo/start/api-request">Start - API Request</Link>
+          <Link to="/demo/start/api-request" className="hover:text-primary transition-colors">Start - API Request</Link>
         </div>
       </nav>
 
       <div className="flex items-center gap-2">
         {isLoading ? (
-          <div className="px-3 py-1 text-sm text-gray-500">加载中...</div>
+          <div className="px-3 py-1 text-sm text-muted-foreground">加载中...</div>
         ) : isAuthenticated ? (
           <div className="flex items-center gap-2">
             <UserInfo />
-            <button
+            <Button
               onClick={handleSignOut}
-              className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200"
+              variant="destructive"
+              size="sm"
             >
               登出
-            </button>
+            </Button>
           </div>
         ) : (
-          <Link
-            to="/login"
-            search={{ redirect: undefined }}
-            className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
-          >
-            登录
-          </Link>
+          <Button asChild size="sm">
+            <Link
+              to="/login"
+              search={{ redirect: undefined }}
+            >
+              登录
+            </Link>
+          </Button>
         )}
       </div>
     </header>
@@ -73,11 +76,11 @@ function UserInfo() {
   }, [getIdTokenClaims])
 
   if (!userInfo) {
-    return <div className="px-2 text-sm text-gray-600">用户</div>
+    return <div className="px-2 text-sm text-muted-foreground">用户</div>
   }
 
   return (
-    <div className="px-2 text-sm text-gray-600">
+    <div className="px-2 text-sm text-muted-foreground">
       欢迎, {userInfo.name || userInfo.email || userInfo.sub}
     </div>
   )

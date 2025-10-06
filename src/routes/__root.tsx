@@ -5,7 +5,7 @@ import { TanstackDevtools } from '@tanstack/react-devtools'
 import Header from '../components/Header'
 import { AuthProvider } from '../contexts/AuthContext'
 
-import appCss from '../styles.css?url'
+import '../styles.css'
 
 export const Route = createRootRoute({
   component: RootComponent,

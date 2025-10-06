@@ -1,8 +1,10 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::Manager;
 use serde::{Deserialize, Serialize};
+
+#[cfg(debug_assertions)]
+use tauri::Manager;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct AppConfig {
@@ -74,12 +76,11 @@ fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_shell::init())
-        .setup(|app| {
+        .setup(|_app| {
             // App setup logic here
-            let window = app.get_webview_window("main").unwrap();
-
             #[cfg(debug_assertions)]
             {
+                let window = _app.get_webview_window("main").unwrap();
                 window.open_devtools();
             }
 

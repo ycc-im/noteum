@@ -33,6 +33,7 @@ Using the test-runner agent ensures:
 
 ### Testing
 
+- Allway use TDD, test first. 
 - Always use the test-runner agent to execute tests.
 - Do not use mock services for anything ever.
 - Do not move on to the next test until the current test is complete.

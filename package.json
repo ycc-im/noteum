@@ -87,6 +87,7 @@
     "@tanstack/eslint-config": "^0.3.0",
     "@tauri-apps/cli": "^2.4.0",
     "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.2.0",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.0.0",

@@ -1,0 +1,258 @@
+name: TDD Pipeline
+
+on:
+  push:
+    branches: [main, develop, epic/base-note]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: TDD Test Suite
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run linting
+        run: pnpm lint
+        continue-on-error: false
+
+      - name: Run type checking
+        run: pnpm typecheck
+        continue-on-error: false
+
+      - name: Run TDD tests with coverage
+        run: pnpm test:tdd -- --coverage --watchAll=false
+        continue-on-error: false
+
+      - name: Run unit tests
+        run: pnpm test:unit
+        continue-on-error: false
+
+      - name: Run integration tests
+        run: pnpm test:integration
+        continue-on-error: false
+
+      - name: Upload coverage to Codecov
+        if: matrix.node-version == '20.x'
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage/lcov.info
+          flags: tdd-tests
+          name: tdd-coverage-${{ matrix.node-version }}
+          fail_ci_if_error: true
+          verbose: true
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        if: matrix.node-version == '20.x'
+        with:
+          name: coverage-${{ matrix.node-version }}
+          path: ./coverage/
+          retention-days: 7
+
+  quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check code formatting
+        run: pnpm format --check
+        continue-on-error: false
+
+      - name: Run comprehensive linting
+        run: pnpm lint --max-warnings=0
+        continue-on-error: false
+
+      - name: Generate coverage report
+        run: pnpm test:coverage
+        continue-on-error: false
+
+      - name: Check coverage thresholds
+        run: |
+          if [ ! -f "coverage/coverage-summary.json" ]; then
+            echo "Coverage report not found"
+            exit 1
+          fi
+
+          # Check coverage thresholds (90% minimum)
+          node -e "
+            const coverage = require('./coverage/coverage-summary.json');
+            const thresholds = { lines: 90, functions: 90, branches: 90, statements: 90 };
+
+            Object.entries(thresholds).forEach(([key, threshold]) => {
+              const actual = coverage.total[key].pct;
+              if (actual < threshold) {
+                console.error(\`Coverage \${key}: \${actual}% (minimum \${threshold}%)\`);
+                process.exit(1);
+              }
+              console.log(\`Coverage \${key}: \${actual}% ✓\`);
+            });
+          "
+
+  performance:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run performance tests
+        run: pnpm test:performance
+        continue-on-error: false
+
+      - name: Upload performance results
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results
+          path: performance-results/
+          retention-days: 7
+
+  security:
+    name: Security Checks
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run security audit
+        run: pnpm audit --audit-level=moderate
+        continue-on-error: false
+
+      - name: Check for vulnerabilities
+        run: npm audit --audit-level=moderate || true
+        continue-on-error: true
+
+  # Summary job to collect results
+  summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [test, quality, performance, security]
+    if: always()
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-artifacts/
+
+      - name: Generate test summary
+        run: |
+          echo "## TDD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Test results
+          echo "### ✅ Test Suite" >> $GITHUB_STEP_SUMMARY
+          echo "- Multi-node version testing: ${{ needs.test.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Code coverage: Generated and uploaded to Codecov" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Quality results
+          echo "### ✅ Code Quality" >> $GITHUB_STEP_SUMMARY
+          echo "- ESLint: ${{ needs.quality.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Prettier: ${{ needs.quality.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Type checking: ${{ needs.quality.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Performance results
+          echo "### ✅ Performance Tests" >> $GITHUB_STEP_SUMMARY
+          echo "- Performance benchmarks: ${{ needs.performance.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Security results
+          echo "### ✅ Security Checks" >> $GITHUB_STEP_SUMMARY
+          echo "- Security audit: ${{ needs.security.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Overall status
+          if [ "${{ needs.test.result }}" = "success" ] && [ "${{ needs.quality.result }}" = "success" ]; then
+            echo "## 🎉 All TDD checks passed!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## ❌ Some checks failed" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+      - name: Set workflow status
+        if: needs.test.result != 'success' || needs.quality.result != 'success'
+        run: |
+          echo "Workflow failed due to test or quality issues"
+          exit 1

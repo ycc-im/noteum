@@ -1,10 +1,10 @@
 /**
  * TokenStorageService - Specialized service for secure token management
- * 
+ *
  * This module provides a comprehensive token storage solution built on top of
  * the existing storage infrastructure. It includes encryption, validation,
  * expiration management, and maintains backward compatibility with localStorage APIs.
- * 
+ *
  * @fileoverview Token storage service implementation
  * @module storage/token-storage
  */
@@ -13,7 +13,10 @@ import type { TokenRecord } from './schema';
 import { TableNames } from './schema';
 import { NoteumDB, getDatabase } from './database';
 import { TokenEncryptionService } from './token-encryption';
-import { TokenValidatorService, type TokenValidationResult } from './token-validator';
+import {
+  TokenValidatorService,
+  type TokenValidationResult,
+} from './token-validator';
 import { DexieStorageAdapter } from './dexie-adapter';
 
 /**
@@ -98,7 +101,7 @@ export interface TokenStorageStats {
 
 /**
  * TokenStorageService - Comprehensive token management service
- * 
+ *
  * Features:
  * - Backward compatible with localStorage token APIs
  * - Enhanced security with encryption and validation
@@ -150,7 +153,9 @@ export class TokenStorageService {
         this.startAutoCleanup();
       }
     } catch (error) {
-      throw new Error(`Failed to initialize TokenStorageService: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to initialize TokenStorageService: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -160,7 +165,9 @@ export class TokenStorageService {
    * Set a token (backward compatible with localStorage API)
    */
   async setToken(key: string, token: string, expiry?: number): Promise<void> {
-    const expiredAt = expiry ? new Date(expiry) : new Date(Date.now() + this.config.defaultExpirationMs);
+    const expiredAt = expiry
+      ? new Date(expiry)
+      : new Date(Date.now() + this.config.defaultExpirationMs);
     return this.setTokenWithMetadata(key, token, { expiredAt });
   }
 
@@ -172,7 +179,7 @@ export class TokenStorageService {
       // Check cache first if enabled
       if (this.config.enableCaching) {
         const cached = this.cache.get(key);
-        if (cached && (Date.now() - cached.timestamp) < this.config.cacheTtlMs) {
+        if (cached && Date.now() - cached.timestamp < this.config.cacheTtlMs) {
           return cached.value;
         }
       }
@@ -200,8 +207,8 @@ export class TokenStorageService {
       }
 
       // Update last used timestamp
-      await this.db.tokens.update(key, { 
-        createdAt: new Date() // Update access time 
+      await this.db.tokens.update(key, {
+        createdAt: new Date(), // Update access time
       });
 
       return token;
@@ -219,7 +226,9 @@ export class TokenStorageService {
       await this.db.tokens.delete(key);
       this.cache.delete(key);
     } catch (error) {
-      throw new Error(`Failed to remove token ${key}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to remove token ${key}: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -231,7 +240,9 @@ export class TokenStorageService {
       await this.db.tokens.clear();
       this.cache.clear();
     } catch (error) {
-      throw new Error(`Failed to clear tokens: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to clear tokens: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -248,9 +259,14 @@ export class TokenStorageService {
     try {
       // Validate token if validation is enabled
       if (this.config.enableValidation) {
-        const validation = await this.validator.validateToken(token, metadata.type);
+        const validation = await this.validator.validateToken(
+          token,
+          metadata.type
+        );
         if (!validation.valid) {
-          throw new Error(`Token validation failed: ${validation.errors.join(', ')}`);
+          throw new Error(
+            `Token validation failed: ${validation.errors.join(', ')}`
+          );
         }
       }
 
@@ -265,7 +281,9 @@ export class TokenStorageService {
         key,
         value: encryptedToken,
         createdAt: new Date(),
-        expiredAt: metadata.expiredAt || new Date(Date.now() + this.config.defaultExpirationMs),
+        expiredAt:
+          metadata.expiredAt ||
+          new Date(Date.now() + this.config.defaultExpirationMs),
         type: metadata.type,
         userId: metadata.userId,
       };
@@ -278,7 +296,9 @@ export class TokenStorageService {
           .count();
 
         if (userTokenCount >= this.config.maxTokensPerUser) {
-          throw new Error(`User ${metadata.userId} has reached maximum token limit (${this.config.maxTokensPerUser})`);
+          throw new Error(
+            `User ${metadata.userId} has reached maximum token limit (${this.config.maxTokensPerUser})`
+          );
         }
       }
 
@@ -290,16 +310,27 @@ export class TokenStorageService {
         this.cache.set(key, { value: token, timestamp: Date.now() });
       }
     } catch (error) {
-      throw new Error(`Failed to set token ${key}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to set token ${key}: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Set a user-specific token
    */
-  async setUserToken(userId: string, tokenType: string, token: string, expiredAt?: Date): Promise<void> {
+  async setUserToken(
+    userId: string,
+    tokenType: string,
+    token: string,
+    expiredAt?: Date
+  ): Promise<void> {
     const key = `${userId}:${tokenType}`;
-    return this.setTokenWithMetadata(key, token, { userId, type: tokenType, expiredAt });
+    return this.setTokenWithMetadata(key, token, {
+      userId,
+      type: tokenType,
+      expiredAt,
+    });
   }
 
   /**
@@ -321,14 +352,17 @@ export class TokenStorageService {
             token = await this.encryption.decryptToken(record.value);
           }
           // Use token type as key instead of full key
-          const tokenKey = record.type || record.key.split(':').pop() || record.key;
+          const tokenKey =
+            record.type || record.key.split(':').pop() || record.key;
           tokens[tokenKey] = token;
         }
       }
 
       return tokens;
     } catch (error) {
-      throw new Error(`Failed to get tokens for user ${userId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get tokens for user ${userId}: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -351,7 +385,10 @@ export class TokenStorageService {
   /**
    * Refresh a token if it needs refreshing
    */
-  async refreshTokenIfNeeded(key: string, refreshThreshold: number = 5 * 60 * 1000): Promise<string | null> {
+  async refreshTokenIfNeeded(
+    key: string,
+    refreshThreshold: number = 5 * 60 * 1000
+  ): Promise<string | null> {
     try {
       const record = await this.db.tokens.get(key);
       if (!record) {
@@ -361,7 +398,9 @@ export class TokenStorageService {
       if (this.validator.needsRefresh(record, refreshThreshold)) {
         // Token needs refresh - this is a placeholder for refresh logic
         // In a real implementation, this would call a refresh endpoint
-        console.warn(`Token ${key} needs refresh but no refresh logic implemented`);
+        console.warn(
+          `Token ${key} needs refresh but no refresh logic implemented`
+        );
         return null;
       }
 
@@ -398,7 +437,9 @@ export class TokenStorageService {
         }
       });
     } catch (error) {
-      throw new Error(`Batch token operations failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Batch token operations failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -407,7 +448,10 @@ export class TokenStorageService {
   /**
    * Validate a token
    */
-  async validateToken(token: string, type?: string): Promise<TokenValidationResult> {
+  async validateToken(
+    token: string,
+    type?: string
+  ): Promise<TokenValidationResult> {
     return this.validator.validateToken(token, type);
   }
 
@@ -481,7 +525,9 @@ export class TokenStorageService {
 
       return stats;
     } catch (error) {
-      throw new Error(`Failed to get storage stats: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get storage stats: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -521,7 +567,9 @@ export class TokenStorageService {
       try {
         const removed = await this.cleanupExpiredTokens();
         if (removed > 0) {
-          console.log(`TokenStorageService: Cleaned up ${removed} expired tokens`);
+          console.log(
+            `TokenStorageService: Cleaned up ${removed} expired tokens`
+          );
         }
       } catch (error) {
         console.error('Automatic token cleanup failed:', error);
@@ -546,7 +594,9 @@ export class TokenStorageService {
     try {
       return await this.db.tokens.orderBy('key').primaryKeys();
     } catch (error) {
-      throw new Error(`Failed to get all token keys: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get all token keys: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -572,7 +622,11 @@ export const defaultTokenStorage = new TokenStorageService();
 /**
  * Convenience functions for backward compatibility
  */
-export async function setToken(key: string, token: string, expiry?: number): Promise<void> {
+export async function setToken(
+  key: string,
+  token: string,
+  expiry?: number
+): Promise<void> {
   return defaultTokenStorage.setToken(key, token, expiry);
 }
 
@@ -588,10 +642,16 @@ export async function clearTokens(): Promise<void> {
   return defaultTokenStorage.clearTokens();
 }
 
-export async function setUserToken(userId: string, tokenType: string, token: string): Promise<void> {
+export async function setUserToken(
+  userId: string,
+  tokenType: string,
+  token: string
+): Promise<void> {
   return defaultTokenStorage.setUserToken(userId, tokenType, token);
 }
 
-export async function getUserTokens(userId: string): Promise<Record<string, string>> {
+export async function getUserTokens(
+  userId: string
+): Promise<Record<string, string>> {
   return defaultTokenStorage.getUserTokens(userId);
 }

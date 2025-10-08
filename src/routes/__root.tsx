@@ -1,15 +1,15 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanstackDevtools } from '@tanstack/react-devtools'
+import { Outlet, createRootRoute } from '@tanstack/react-router';
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
+import { TanstackDevtools } from '@tanstack/react-devtools';
 
-import Header from '../components/Header'
-import { AuthProvider } from '../contexts/AuthContext'
+import Header from '../components/Header';
+import { AuthProvider } from '../contexts/AuthContext';
 
-import '../styles.css'
+import '../styles.css';
 
 export const Route = createRootRoute({
   component: RootComponent,
-})
+});
 
 function RootComponent() {
   return (
@@ -32,5 +32,5 @@ function RootComponent() {
         />
       </div>
     </AuthProvider>
-  )
+  );
 }

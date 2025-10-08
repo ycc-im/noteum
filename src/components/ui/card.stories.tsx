@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   Card,
   CardContent,
@@ -6,7 +6,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from './card'
+} from './card';
 
 const meta = {
   title: 'UI/Card',
@@ -15,10 +15,10 @@ const meta = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof Card>
+} satisfies Meta<typeof Card>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
@@ -28,14 +28,16 @@ export const Default: Story = {
         <CardDescription>Card Description</CardDescription>
       </CardHeader>
       <CardContent>
-        <p>Card content goes here. This is where you can put your main content.</p>
+        <p>
+          Card content goes here. This is where you can put your main content.
+        </p>
       </CardContent>
       <CardFooter>
         <p>Card footer content</p>
       </CardFooter>
     </Card>
   ),
-}
+};
 
 export const WithoutHeader: Story = {
   render: () => (
@@ -45,7 +47,7 @@ export const WithoutHeader: Story = {
       </CardContent>
     </Card>
   ),
-}
+};
 
 export const WithoutFooter: Story = {
   render: () => (
@@ -59,7 +61,7 @@ export const WithoutFooter: Story = {
       </CardContent>
     </Card>
   ),
-}
+};
 
 export const Minimal: Story = {
   render: () => (
@@ -69,16 +71,14 @@ export const Minimal: Story = {
       </CardContent>
     </Card>
   ),
-}
+};
 
 export const WithActions: Story = {
   render: () => (
     <Card className="w-[350px]">
       <CardHeader>
         <CardTitle>Create Project</CardTitle>
-        <CardDescription>
-          Deploy your new project in one-click.
-        </CardDescription>
+        <CardDescription>Deploy your new project in one-click.</CardDescription>
       </CardHeader>
       <CardContent>
         <p>Configure your project settings and deploy to production.</p>
@@ -93,7 +93,7 @@ export const WithActions: Story = {
       </CardFooter>
     </Card>
   ),
-}
+};
 
 export const LongContent: Story = {
   render: () => (
@@ -115,11 +115,11 @@ export const LongContent: Story = {
             nisi ut aliquip ex ea commodo consequat.
           </p>
           <p>
-            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-            dolore eu fugiat nulla pariatur.
+            Duis aute irure dolor in reprehenderit in voluptate velit esse
+            cillum dolore eu fugiat nulla pariatur.
           </p>
         </div>
       </CardContent>
     </Card>
   ),
-}
+};

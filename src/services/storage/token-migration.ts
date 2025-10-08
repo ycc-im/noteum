@@ -1,9 +1,9 @@
 /**
  * Token migration service for migrating localStorage tokens to IndexedDB
- * 
+ *
  * This service handles the migration of existing token data from localStorage
  * to the new IndexedDB-based storage system with enhanced security and features.
- * 
+ *
  * @fileoverview Token storage migration service
  * @module storage/token-migration
  */
@@ -16,7 +16,14 @@ import { StorageService } from './interfaces';
  */
 export interface MigrationStatus {
   /** Current migration phase */
-  phase: 'detecting' | 'backing-up' | 'migrating' | 'validating' | 'cleaning' | 'completed' | 'failed';
+  phase:
+    | 'detecting'
+    | 'backing-up'
+    | 'migrating'
+    | 'validating'
+    | 'cleaning'
+    | 'completed'
+    | 'failed';
   /** Overall progress percentage (0-100) */
   progress: number;
   /** Number of tokens detected for migration */
@@ -124,7 +131,10 @@ export class TokenMigrationService {
   /**
    * Initialize migration service
    */
-  constructor(storageService: StorageService, config?: Partial<MigrationConfig>) {
+  constructor(
+    storageService: StorageService,
+    config?: Partial<MigrationConfig>
+  ) {
     this.storageService = storageService;
     this.config = { ...DEFAULT_MIGRATION_CONFIG, ...config };
     this.status = this.createInitialStatus();
@@ -162,7 +172,7 @@ export class TokenMigrationService {
         if (!key) continue;
 
         // Check if key matches any token patterns
-        const isTokenKey = this.config.tokenKeyPatterns.some(pattern => 
+        const isTokenKey = this.config.tokenKeyPatterns.some(pattern =>
           pattern.test(key)
         );
 
@@ -177,19 +187,23 @@ export class TokenMigrationService {
               isEncrypted: this.detectEncryption(value),
             };
             detectedTokens.push(detectedToken);
-            this.log('info', `Detected token: ${key}`, { token: detectedToken });
+            this.log('info', `Detected token: ${key}`, {
+              token: detectedToken,
+            });
           }
         }
       }
 
-      this.updateStatus({ 
+      this.updateStatus({
         totalTokens: detectedTokens.length,
-        progress: 20 
+        progress: 20,
       });
 
-      this.log('info', `Detection completed. Found ${detectedTokens.length} tokens`);
+      this.log(
+        'info',
+        `Detection completed. Found ${detectedTokens.length} tokens`
+      );
       return detectedTokens;
-
     } catch (error) {
       const errorMessage = `Failed to detect tokens: ${error}`;
       this.log('error', errorMessage, { error });
@@ -205,13 +219,15 @@ export class TokenMigrationService {
   /**
    * Estimate token type based on key pattern
    */
-  private estimateTokenType(key: string): 'access' | 'refresh' | 'api' | 'unknown' {
+  private estimateTokenType(
+    key: string
+  ): 'access' | 'refresh' | 'api' | 'unknown' {
     const lowerKey = key.toLowerCase();
-    
+
     if (lowerKey.includes('access')) return 'access';
     if (lowerKey.includes('refresh')) return 'refresh';
     if (lowerKey.includes('api')) return 'api';
-    
+
     return 'unknown';
   }
 
@@ -222,13 +238,13 @@ export class TokenMigrationService {
     // Simple heuristics for encrypted data detection
     // JWT tokens typically have 3 parts separated by dots
     if (value.split('.').length === 3) return false;
-    
+
     // Base64 encoded data might be encrypted
     if (/^[A-Za-z0-9+/]+=*$/.test(value) && value.length > 50) return true;
-    
+
     // Very long random-looking strings
     if (value.length > 100 && !/\s/.test(value)) return true;
-    
+
     return false;
   }
 
@@ -253,7 +269,10 @@ export class TokenMigrationService {
         }
       }
 
-      this.log('info', `Backup created with ${Object.keys(this.backupData).length} items`);
+      this.log(
+        'info',
+        `Backup created with ${Object.keys(this.backupData).length} items`
+      );
     } catch (error) {
       const errorMessage = `Failed to create backup: ${error}`;
       this.log('error', errorMessage, { error });
@@ -276,13 +295,13 @@ export class TokenMigrationService {
     try {
       // Step 1: Detect existing tokens
       const detectedTokens = await this.detectExistingTokens();
-      
+
       if (detectedTokens.length === 0) {
         this.log('info', 'No tokens found to migrate');
-        this.updateStatus({ 
-          phase: 'completed', 
-          progress: 100, 
-          endTime: new Date() 
+        this.updateStatus({
+          phase: 'completed',
+          progress: 100,
+          endTime: new Date(),
         });
         return this.createMigrationResult(true);
       }
@@ -307,21 +326,20 @@ export class TokenMigrationService {
       }
 
       // Step 6: Complete migration
-      this.updateStatus({ 
-        phase: 'completed', 
-        progress: 100, 
-        endTime: new Date() 
+      this.updateStatus({
+        phase: 'completed',
+        progress: 100,
+        endTime: new Date(),
       });
 
       this.log('info', 'Migration completed successfully');
       return this.createMigrationResult(true);
-
     } catch (error) {
       const errorMessage = `Migration failed: ${error}`;
       this.log('error', errorMessage, { error });
-      this.updateStatus({ 
-        phase: 'failed', 
-        endTime: new Date() 
+      this.updateStatus({
+        phase: 'failed',
+        endTime: new Date(),
       });
       this.status.errors.push(errorMessage);
 
@@ -334,13 +352,16 @@ export class TokenMigrationService {
    */
   private async migrateBatches(detectedTokens: DetectedToken[]): Promise<void> {
     const batches = this.createBatches(detectedTokens, this.config.batchSize);
-    
+
     for (let i = 0; i < batches.length; i++) {
       const batch = batches[i];
-      const batchProgress = 30 + ((i / batches.length) * 40);
-      
+      const batchProgress = 30 + (i / batches.length) * 40;
+
       this.updateStatus({ progress: batchProgress });
-      this.log('info', `Processing batch ${i + 1}/${batches.length} (${batch.length} tokens)`);
+      this.log(
+        'info',
+        `Processing batch ${i + 1}/${batches.length} (${batch.length} tokens)`
+      );
 
       await this.migrateBatch(batch);
     }
@@ -392,16 +413,16 @@ export class TokenMigrationService {
     context: DetectedToken[]
   ): Promise<void> {
     let lastError: Error | null = null;
-    
+
     for (let attempt = 1; attempt <= this.config.maxRetries; attempt++) {
       try {
         await operation();
         return; // Success
       } catch (error) {
         lastError = error as Error;
-        this.log('warn', `Attempt ${attempt} failed: ${error}`, { 
-          attempt, 
-          context: context.map(t => t.key) 
+        this.log('warn', `Attempt ${attempt} failed: ${error}`, {
+          attempt,
+          context: context.map(t => t.key),
         });
 
         if (attempt < this.config.maxRetries) {
@@ -434,19 +455,21 @@ export class TokenMigrationService {
       let validationErrors = 0;
 
       for (const detectedToken of detectedTokens) {
-        const migratedValue = await this.storageService.get<TokenRecord>(detectedToken.key);
-        
+        const migratedValue = await this.storageService.get<TokenRecord>(
+          detectedToken.key
+        );
+
         if (!migratedValue) {
-          this.log('error', `Validation failed: Token not found in IndexedDB`, { 
-            key: detectedToken.key 
+          this.log('error', `Validation failed: Token not found in IndexedDB`, {
+            key: detectedToken.key,
           });
           validationErrors++;
           continue;
         }
 
         if (migratedValue.value !== detectedToken.value) {
-          this.log('error', `Validation failed: Token value mismatch`, { 
-            key: detectedToken.key 
+          this.log('error', `Validation failed: Token value mismatch`, {
+            key: detectedToken.key,
           });
           validationErrors++;
           continue;
@@ -456,10 +479,12 @@ export class TokenMigrationService {
       }
 
       const isValid = validationErrors === 0;
-      this.log('info', `Migration validation ${isValid ? 'passed' : 'failed'}. Errors: ${validationErrors}`);
-      
-      return isValid;
+      this.log(
+        'info',
+        `Migration validation ${isValid ? 'passed' : 'failed'}. Errors: ${validationErrors}`
+      );
 
+      return isValid;
     } catch (error) {
       const errorMessage = `Validation failed: ${error}`;
       this.log('error', errorMessage, { error });
@@ -476,11 +501,16 @@ export class TokenMigrationService {
     try {
       for (const detectedToken of detectedTokens) {
         localStorage.removeItem(detectedToken.key);
-        this.log('info', `Removed token from localStorage: ${detectedToken.key}`);
+        this.log(
+          'info',
+          `Removed token from localStorage: ${detectedToken.key}`
+        );
       }
 
-      this.log('info', `Cleanup completed. Removed ${detectedTokens.length} tokens from localStorage`);
-
+      this.log(
+        'info',
+        `Cleanup completed. Removed ${detectedTokens.length} tokens from localStorage`
+      );
     } catch (error) {
       const errorMessage = `Cleanup failed: ${error}`;
       this.log('error', errorMessage, { error });
@@ -512,8 +542,10 @@ export class TokenMigrationService {
         localStorage.setItem(key, value);
       }
 
-      this.log('info', `Rollback completed. Restored ${Object.keys(this.backupData).length} items`);
-
+      this.log(
+        'info',
+        `Rollback completed. Restored ${Object.keys(this.backupData).length} items`
+      );
     } catch (error) {
       const errorMessage = `Rollback failed: ${error}`;
       this.log('error', errorMessage, { error });
@@ -543,7 +575,11 @@ export class TokenMigrationService {
   /**
    * Log migration progress
    */
-  private log(level: 'info' | 'warn' | 'error', message: string, context?: Record<string, any>): void {
+  private log(
+    level: 'info' | 'warn' | 'error',
+    message: string,
+    context?: Record<string, any>
+  ): void {
     const entry: MigrationLogEntry = {
       timestamp: new Date(),
       level,
@@ -565,8 +601,8 @@ export class TokenMigrationService {
     return {
       success,
       fromVersion: 0, // localStorage version
-      toVersion: 1,   // IndexedDB version
-      duration: this.status.endTime 
+      toVersion: 1, // IndexedDB version
+      duration: this.status.endTime
         ? this.status.endTime.getTime() - this.status.startTime.getTime()
         : 0,
       errors: this.status.errors,
@@ -600,26 +636,33 @@ export class TokenMigrationService {
     };
     recommendations: string[];
   } {
-    const duration = this.status.endTime 
+    const duration = this.status.endTime
       ? this.status.endTime.getTime() - this.status.startTime.getTime()
       : 0;
 
-    const successRate = this.status.totalTokens > 0 
-      ? (this.status.migratedTokens / this.status.totalTokens) * 100 
-      : 100;
+    const successRate =
+      this.status.totalTokens > 0
+        ? (this.status.migratedTokens / this.status.totalTokens) * 100
+        : 100;
 
     const recommendations: string[] = [];
-    
+
     if (this.status.failedTokens > 0) {
-      recommendations.push('Some tokens failed to migrate. Check the error log for details.');
+      recommendations.push(
+        'Some tokens failed to migrate. Check the error log for details.'
+      );
     }
-    
+
     if (successRate < 100) {
-      recommendations.push('Consider running migration again for failed tokens.');
+      recommendations.push(
+        'Consider running migration again for failed tokens.'
+      );
     }
-    
+
     if (this.status.errors.length > 0) {
-      recommendations.push('Review error messages to prevent future migration issues.');
+      recommendations.push(
+        'Review error messages to prevent future migration issues.'
+      );
     }
 
     return {
@@ -651,13 +694,13 @@ export function createTokenMigrationService(
  */
 export async function hasTokensInLocalStorage(): Promise<boolean> {
   const patterns = DEFAULT_MIGRATION_CONFIG.tokenKeyPatterns;
-  
+
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
     if (key && patterns.some(pattern => pattern.test(key))) {
       return true;
     }
   }
-  
+
   return false;
 }

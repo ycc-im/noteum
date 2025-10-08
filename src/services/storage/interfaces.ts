@@ -1,9 +1,9 @@
 /**
  * Storage service interfaces for Noteum application
- * 
+ *
  * This module defines comprehensive interfaces for local storage services
  * including IndexedDB (via Dexie.js) and localStorage fallback mechanisms.
- * 
+ *
  * @fileoverview Storage interfaces for local data persistence
  * @module storage/interfaces
  */
@@ -73,34 +73,34 @@ export interface StorageUsage {
 export interface IStorageAdapter<T = any> {
   /** Initialize storage adapter */
   initialize(): Promise<StorageResult<void>>;
-  
+
   /** Check if storage is available and ready */
   isReady(): Promise<boolean>;
-  
+
   /** Store data with key */
   set(key: string, value: T): Promise<StorageResult<void>>;
-  
+
   /** Retrieve data by key */
   get(key: string): Promise<StorageResult<T>>;
-  
+
   /** Remove data by key */
   remove(key: string): Promise<StorageResult<void>>;
-  
+
   /** Clear all data */
   clear(): Promise<StorageResult<void>>;
-  
+
   /** Get all keys */
   keys(): Promise<StorageResult<string[]>>;
-  
+
   /** Check if key exists */
   has(key: string): Promise<StorageResult<boolean>>;
-  
+
   /** Get storage usage statistics */
   getUsage(): Promise<StorageResult<StorageUsage>>;
-  
+
   /** Cleanup expired or old data */
   cleanup(): Promise<StorageResult<void>>;
-  
+
   /** Close storage connection */
   close(): Promise<StorageResult<void>>;
 }
@@ -141,19 +141,24 @@ export interface IndexedDBIndexConfig {
 export interface IAdvancedStorageAdapter<T = any> extends IStorageAdapter<T> {
   /** Batch operations */
   batch(operations: StorageBatchOperation[]): Promise<StorageResult<void>>;
-  
+
   /** Query with filters */
   query(filter: StorageQuery): Promise<StorageResult<T[]>>;
-  
+
   /** Watch for changes */
-  watch(key: string, callback: StorageChangeCallback<T>): Promise<StorageResult<() => void>>;
-  
+  watch(
+    key: string,
+    callback: StorageChangeCallback<T>
+  ): Promise<StorageResult<() => void>>;
+
   /** Import/export data */
   export(): Promise<StorageResult<StorageExportData>>;
   import(data: StorageExportData): Promise<StorageResult<void>>;
-  
+
   /** Transaction support */
-  transaction<R>(callback: (adapter: IStorageAdapter<T>) => Promise<R>): Promise<StorageResult<R>>;
+  transaction<R>(
+    callback: (adapter: IStorageAdapter<T>) => Promise<R>
+  ): Promise<StorageResult<R>>;
 }
 
 export interface StorageBatchOperation {
@@ -208,19 +213,19 @@ export interface StorageChange<T> {
 export interface IStorageManager {
   /** Get storage adapter by name */
   getAdapter(name: string): Promise<IStorageAdapter>;
-  
+
   /** Register new adapter */
   registerAdapter(name: string, adapter: IStorageAdapter): Promise<void>;
-  
+
   /** Remove adapter */
   removeAdapter(name: string): Promise<void>;
-  
+
   /** List available adapters */
   listAdapters(): string[];
-  
+
   /** Initialize all adapters */
   initialize(): Promise<void>;
-  
+
   /** Cleanup and close all adapters */
   cleanup(): Promise<void>;
 }
@@ -228,13 +233,13 @@ export interface IStorageManager {
 export interface IStorageFactory {
   /** Create IndexedDB adapter */
   createIndexedDBAdapter(config: IndexedDBConfig): IAdvancedStorageAdapter;
-  
+
   /** Create localStorage adapter */
   createLocalStorageAdapter(config: StorageConfig): IStorageAdapter;
-  
+
   /** Create memory adapter for testing */
   createMemoryAdapter(config?: Partial<StorageConfig>): IStorageAdapter;
-  
+
   /** Create adapter with automatic fallback */
   createAdapterWithFallback(config: StorageConfig): IAdvancedStorageAdapter;
 }
@@ -251,16 +256,16 @@ export interface StorageService {
   set<T>(key: string, value: T): Promise<void>;
   remove(key: string): Promise<void>;
   clear(): Promise<void>;
-  
+
   // Batch operations
   getBatch<T>(keys: string[]): Promise<Record<string, T>>;
   setBatch<T>(data: Record<string, T>): Promise<void>;
-  
+
   // Advanced functionality
   exists(key: string): Promise<boolean>;
   keys(): Promise<string[]>;
   size(): Promise<number>;
-  
+
   // Event listening
   onChange(callback: (event: StorageChangeEvent) => void): () => void;
 }

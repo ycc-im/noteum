@@ -1,9 +1,9 @@
 /**
  * Storage Event Builder
- * 
+ *
  * Provides type-safe event creation utilities for storage operations.
  * Creates properly structured events with validation and default values.
- * 
+ *
  * @fileoverview Storage event construction utilities
  * @module storage/event-builder
  */
@@ -17,7 +17,7 @@ import type {
   StorageCleanupEvent,
   StorageEventBuilder,
   StorageMetadata,
-  StorageError
+  StorageError,
 } from './events';
 import type { StorageAdapterType } from './types';
 
@@ -46,8 +46,13 @@ export class StorageEventBuilderImpl implements StorageEventBuilder {
     if (data.type === 'removed' && data.oldValue === undefined) {
       throw new Error('Removed change events must include oldValue');
     }
-    if (data.type === 'updated' && (data.oldValue === undefined || data.newValue === undefined)) {
-      throw new Error('Updated change events must include both oldValue and newValue');
+    if (
+      data.type === 'updated' &&
+      (data.oldValue === undefined || data.newValue === undefined)
+    ) {
+      throw new Error(
+        'Updated change events must include both oldValue and newValue'
+      );
     }
 
     const metadata: StorageMetadata = {
@@ -111,9 +116,10 @@ export class StorageEventBuilderImpl implements StorageEventBuilder {
     this.validateNonNegativeNumber(data.availableQuota, 'availableQuota');
     this.validateNonNegativeNumber(data.requestedSize, 'requestedSize');
 
-    const usagePercentage = data.availableQuota > 0 
-      ? Math.round((data.currentUsage / data.availableQuota) * 100)
-      : 100;
+    const usagePercentage =
+      data.availableQuota > 0
+        ? Math.round((data.currentUsage / data.availableQuota) * 100)
+        : 100;
 
     return {
       type: 'quota-exceeded',
@@ -166,9 +172,11 @@ export class StorageEventBuilderImpl implements StorageEventBuilder {
   }): StorageTransactionEvent {
     this.validateSource(data.source);
     this.validateNonEmptyString(data.transactionId, 'transactionId');
-    
+
     if (data.objectStores.length === 0) {
-      throw new Error('Transaction events must include at least one object store');
+      throw new Error(
+        'Transaction events must include at least one object store'
+      );
     }
 
     if (data.duration !== undefined) {
@@ -242,9 +250,15 @@ export class StorageEventBuilderImpl implements StorageEventBuilder {
   }
 
   private validateSource(source: StorageAdapterType): void {
-    const validSources: StorageAdapterType[] = ['indexeddb', 'localstorage', 'memory'];
+    const validSources: StorageAdapterType[] = [
+      'indexeddb',
+      'localstorage',
+      'memory',
+    ];
     if (!validSources.includes(source)) {
-      throw new Error(`Invalid source type: ${source}. Must be one of: ${validSources.join(', ')}`);
+      throw new Error(
+        `Invalid source type: ${source}. Must be one of: ${validSources.join(', ')}`
+      );
     }
   }
 
@@ -271,7 +285,7 @@ export class StorageEventBuilderImpl implements StorageEventBuilder {
 
   private calculateSize(value: unknown): number {
     if (value === null || value === undefined) return 0;
-    
+
     try {
       // Rough size estimation based on JSON serialization
       const serialized = JSON.stringify(value);

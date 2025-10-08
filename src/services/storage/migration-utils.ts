@@ -1,15 +1,19 @@
 /**
  * Migration utility functions for storage operations
- * 
+ *
  * This module provides utility functions for data migration, transformation,
  * backup/restore operations, and migration analysis tools.
- * 
+ *
  * @fileoverview Migration utility functions
  * @module storage/migration-utils
  */
 
 import { TokenRecord } from './types';
-import { DetectedToken, MigrationConfig, MigrationStatus } from './token-migration';
+import {
+  DetectedToken,
+  MigrationConfig,
+  MigrationStatus,
+} from './token-migration';
 import { ValidationResult } from './migration-validator';
 
 /**
@@ -63,8 +67,8 @@ export interface MigrationReport {
   /** Performance metrics */
   performance: {
     migrationSpeed: number; // tokens per second
-    throughput: number;     // bytes per second
-    memoryUsage: number;    // estimated peak memory usage
+    throughput: number; // bytes per second
+    memoryUsage: number; // estimated peak memory usage
   };
   /** Recommendations */
   recommendations: string[];
@@ -186,10 +190,10 @@ export function serializeBackup(backup: LocalStorageBackup): string {
  */
 export function deserializeBackup(backupJson: string): LocalStorageBackup {
   const parsed = JSON.parse(backupJson);
-  
+
   // Convert timestamp back to Date object
   parsed.timestamp = new Date(parsed.timestamp);
-  
+
   return parsed;
 }
 
@@ -201,7 +205,7 @@ export function transformTokensToRecords(
   options: Partial<TransformationOptions> = {}
 ): TokenRecord[] {
   const config = { ...DEFAULT_TRANSFORM_OPTIONS, ...options };
-  
+
   return tokens.map(token => {
     let record: TokenRecord = {
       key: token.key,
@@ -238,7 +242,7 @@ export function transformTokensToRecords(
  */
 export function normalizeTokenType(type: string): string {
   const normalized = type.toLowerCase();
-  
+
   switch (normalized) {
     case 'access':
     case 'access_token':
@@ -284,7 +288,7 @@ export function sortTokensByPriority(
   strategy: Partial<MigrationStrategy> = {}
 ): DetectedToken[] {
   const config = { ...DEFAULT_MIGRATION_STRATEGY, ...strategy };
-  
+
   return [...tokens].sort((a, b) => {
     if (config.customPriority) {
       return config.customPriority(b) - config.customPriority(a);
@@ -293,16 +297,18 @@ export function sortTokensByPriority(
     switch (config.priorityOrder) {
       case 'alphabetical':
         return a.key.localeCompare(b.key);
-      
+
       case 'size':
         return b.size - a.size; // Larger first
-      
+
       case 'type':
-        return getTypePriority(a.estimatedType) - getTypePriority(b.estimatedType);
-      
+        return (
+          getTypePriority(a.estimatedType) - getTypePriority(b.estimatedType)
+        );
+
       case 'usage':
         return getUsagePriority(a.key) - getUsagePriority(b.key);
-      
+
       default:
         return 0;
     }
@@ -314,11 +320,16 @@ export function sortTokensByPriority(
  */
 function getTypePriority(type: string): number {
   switch (type) {
-    case 'access': return 1;  // Highest priority
-    case 'refresh': return 2;
-    case 'api': return 3;
-    case 'unknown': return 4; // Lowest priority
-    default: return 5;
+    case 'access':
+      return 1; // Highest priority
+    case 'refresh':
+      return 2;
+    case 'api':
+      return 3;
+    case 'unknown':
+      return 4; // Lowest priority
+    default:
+      return 5;
   }
 }
 
@@ -341,11 +352,11 @@ export function createTokenBatches(
   batchSize: number
 ): DetectedToken[][] {
   const batches: DetectedToken[][] = [];
-  
+
   for (let i = 0; i < tokens.length; i += batchSize) {
     batches.push(tokens.slice(i, i + batchSize));
   }
-  
+
   return batches;
 }
 
@@ -363,21 +374,20 @@ export function calculateMigrationStats(
 } {
   const elapsed = Date.now() - status.startTime.getTime();
   const elapsedSeconds = elapsed / 1000;
-  
-  const progress = status.totalTokens > 0 
-    ? (status.migratedTokens / status.totalTokens) * 100 
-    : 0;
-  
-  const speed = elapsedSeconds > 0 
-    ? status.migratedTokens / elapsedSeconds 
-    : 0;
-  
+
+  const progress =
+    status.totalTokens > 0
+      ? (status.migratedTokens / status.totalTokens) * 100
+      : 0;
+
+  const speed = elapsedSeconds > 0 ? status.migratedTokens / elapsedSeconds : 0;
+
   const remaining = status.totalTokens - status.migratedTokens;
   const eta = speed > 0 ? remaining / speed : 0;
-  
+
   const totalBytes = tokens.reduce((sum, token) => sum + token.size, 0);
   const throughput = elapsedSeconds > 0 ? totalBytes / elapsedSeconds : 0;
-  
+
   return {
     progress,
     speed,
@@ -394,36 +404,41 @@ export function generateMigrationReport(
   tokens: DetectedToken[],
   validationResults?: ValidationResult[]
 ): MigrationReport {
-  const duration = status.endTime 
+  const duration = status.endTime
     ? status.endTime.getTime() - status.startTime.getTime()
     : 0;
-  
+
   const durationSeconds = duration / 1000;
   const totalSize = tokens.reduce((sum, token) => sum + token.size, 0);
   const averageTokenSize = tokens.length > 0 ? totalSize / tokens.length : 0;
-  
-  const migrationSpeed = durationSeconds > 0 ? status.migratedTokens / durationSeconds : 0;
+
+  const migrationSpeed =
+    durationSeconds > 0 ? status.migratedTokens / durationSeconds : 0;
   const throughput = durationSeconds > 0 ? totalSize / durationSeconds : 0;
-  
+
   // Analyze validation results
   let errorCount = 0;
   let warningCount = 0;
   const criticalIssues: string[] = [];
-  
+
   if (validationResults) {
     validationResults.forEach(result => {
       errorCount += result.errors.length;
       warningCount += result.warnings.length;
-      
+
       result.errors
         .filter(error => error.severity === 'critical')
         .forEach(error => criticalIssues.push(error.message));
     });
   }
-  
+
   // Generate recommendations
-  const recommendations = generateRecommendations(status, tokens, validationResults);
-  
+  const recommendations = generateRecommendations(
+    status,
+    tokens,
+    validationResults
+  );
+
   return {
     metadata: {
       timestamp: new Date(),
@@ -434,9 +449,10 @@ export function generateMigrationReport(
       totalTokens: status.totalTokens,
       migratedTokens: status.migratedTokens,
       failedTokens: status.failedTokens,
-      successRate: status.totalTokens > 0 
-        ? (status.migratedTokens / status.totalTokens) * 100 
-        : 100,
+      successRate:
+        status.totalTokens > 0
+          ? (status.migratedTokens / status.totalTokens) * 100
+          : 100,
       averageTokenSize,
     },
     validation: {
@@ -463,37 +479,43 @@ function generateRecommendations(
   validationResults?: ValidationResult[]
 ): string[] {
   const recommendations: string[] = [];
-  
+
   // Performance recommendations
   if (status.totalTokens > 100) {
-    recommendations.push('Consider using progressive migration for large datasets');
+    recommendations.push(
+      'Consider using progressive migration for large datasets'
+    );
   }
-  
+
   // Error recommendations
   if (status.failedTokens > 0) {
     recommendations.push('Review failed tokens and consider retry mechanisms');
   }
-  
+
   // Size recommendations
   const largeTokens = tokens.filter(t => t.size > 10000);
   if (largeTokens.length > 0) {
-    recommendations.push('Consider compressing large tokens to save storage space');
+    recommendations.push(
+      'Consider compressing large tokens to save storage space'
+    );
   }
-  
+
   // Security recommendations
   const unencryptedTokens = tokens.filter(t => !t.isEncrypted);
   if (unencryptedTokens.length > 0) {
     recommendations.push('Consider encrypting sensitive token data');
   }
-  
+
   // Validation recommendations
   if (validationResults) {
     const hasErrors = validationResults.some(r => r.errors.length > 0);
     if (hasErrors) {
-      recommendations.push('Address validation errors to ensure data integrity');
+      recommendations.push(
+        'Address validation errors to ensure data integrity'
+      );
     }
   }
-  
+
   return recommendations;
 }
 
@@ -518,15 +540,19 @@ export function checkStorageCompatibility(): {
   const hasIndexedDB = 'indexedDB' in window;
   const hasLocalStorage = 'localStorage' in window;
   const hasWebCrypto = 'crypto' in window && 'subtle' in window.crypto;
-  
+
   // Estimate available quota (this is a rough estimation)
   let estimatedQuota = 0;
-  if ('navigator' in window && 'storage' in navigator && 'estimate' in navigator.storage) {
+  if (
+    'navigator' in window &&
+    'storage' in navigator &&
+    'estimate' in navigator.storage
+  ) {
     navigator.storage.estimate().then(estimate => {
       estimatedQuota = estimate.quota || 0;
     });
   }
-  
+
   return {
     hasIndexedDB,
     hasLocalStorage,
@@ -542,12 +568,12 @@ export function formatDuration(milliseconds: number): string {
   if (milliseconds < 1000) {
     return `${milliseconds}ms`;
   }
-  
+
   const seconds = Math.floor(milliseconds / 1000);
   if (seconds < 60) {
     return `${seconds}s`;
   }
-  
+
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   return `${minutes}m ${remainingSeconds}s`;
@@ -560,12 +586,12 @@ export function formatBytes(bytes: number): string {
   const units = ['B', 'KB', 'MB', 'GB'];
   let size = bytes;
   let unitIndex = 0;
-  
+
   while (size >= 1024 && unitIndex < units.length - 1) {
     size /= 1024;
     unitIndex++;
   }
-  
+
   return `${size.toFixed(2)} ${units[unitIndex]}`;
 }
 
@@ -586,7 +612,7 @@ export function createProgressDebouncer(
   delay: number = 250
 ): (status: MigrationStatus) => void {
   let timeoutId: NodeJS.Timeout;
-  
+
   return (status: MigrationStatus) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => callback(status), delay);
@@ -603,27 +629,27 @@ export function validateMigrationConfig(config: Partial<MigrationConfig>): {
 } {
   const errors: string[] = [];
   const warnings: string[] = [];
-  
+
   if (config.batchSize && config.batchSize <= 0) {
     errors.push('Batch size must be greater than 0');
   }
-  
+
   if (config.maxRetries && config.maxRetries < 0) {
     errors.push('Max retries cannot be negative');
   }
-  
+
   if (config.retryDelay && config.retryDelay < 0) {
     errors.push('Retry delay cannot be negative');
   }
-  
+
   if (config.batchSize && config.batchSize > 100) {
     warnings.push('Large batch sizes may impact performance');
   }
-  
+
   if (config.maxRetries && config.maxRetries > 10) {
     warnings.push('High retry counts may cause long delays');
   }
-  
+
   return {
     isValid: errors.length === 0,
     errors,
@@ -665,6 +691,6 @@ export async function measureExecutionTime<T>(
   const startTime = Date.now();
   const result = await operation();
   const duration = Date.now() - startTime;
-  
+
   return { result, duration };
 }

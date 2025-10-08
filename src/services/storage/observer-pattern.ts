@@ -1,9 +1,9 @@
 /**
  * Storage Observer Pattern Implementation
- * 
+ *
  * Provides observer pattern support for storage operations.
  * Enables data change notifications with batching and filtering capabilities.
- * 
+ *
  * @fileoverview Storage observer pattern implementation
  * @module storage/observer-pattern
  */
@@ -16,14 +16,19 @@ import type { StorageChangeEvent, StorageMetadata } from './events';
  */
 export interface StorageObserver {
   /** Called when data is changed (added/updated) */
-  onDataChanged(key: string, oldValue: any, newValue: any, metadata?: StorageMetadata): void;
-  
+  onDataChanged(
+    key: string,
+    oldValue: any,
+    newValue: any,
+    metadata?: StorageMetadata
+  ): void;
+
   /** Called when data is deleted */
   onDataDeleted(key: string, oldValue: any, metadata?: StorageMetadata): void;
-  
+
   /** Called when data is added */
   onDataAdded(key: string, value: any, metadata?: StorageMetadata): void;
-  
+
   /** Called when storage is cleared */
   onStorageCleared(metadata?: StorageMetadata): void;
 }
@@ -34,19 +39,19 @@ export interface StorageObserver {
 export interface ObserverOptions {
   /** Filter by key pattern */
   keyPattern?: string | RegExp;
-  
+
   /** Filter by source adapter */
   source?: StorageAdapterType;
-  
+
   /** Priority level (higher numbers = higher priority) */
   priority?: number;
-  
+
   /** Batch notifications within this time window (ms) */
   batchDelay?: number;
-  
+
   /** Maximum batch size before forced emission */
   maxBatchSize?: number;
-  
+
   /** Enable/disable specific notification types */
   notificationTypes?: {
     added?: boolean;
@@ -93,15 +98,23 @@ export class StorageObserverManager {
   /**
    * Register a storage observer
    */
-  register(observer: StorageObserver, options: ObserverOptions = {}): () => void {
+  register(
+    observer: StorageObserver,
+    options: ObserverOptions = {}
+  ): () => void {
     this.validateNotDestroyed();
-    
+
     if (!observer || typeof observer !== 'object') {
       throw new Error('Observer must be a valid object');
     }
 
     // Validate required methods
-    const requiredMethods = ['onDataChanged', 'onDataDeleted', 'onDataAdded', 'onStorageCleared'];
+    const requiredMethods = [
+      'onDataChanged',
+      'onDataDeleted',
+      'onDataAdded',
+      'onStorageCleared',
+    ];
     for (const method of requiredMethods) {
       if (typeof (observer as any)[method] !== 'function') {
         throw new Error(`Observer must implement ${method} method`);
@@ -131,7 +144,7 @@ export class StorageObserverManager {
     };
 
     this.observers.add(registration);
-    
+
     // Return unregister function
     return () => this.unregister(registration);
   }
@@ -139,7 +152,9 @@ export class StorageObserverManager {
   /**
    * Unregister a specific observer
    */
-  unregister(observerOrRegistration: StorageObserver | ObserverRegistration): void {
+  unregister(
+    observerOrRegistration: StorageObserver | ObserverRegistration
+  ): void {
     this.validateNotDestroyed();
 
     if ('id' in observerOrRegistration) {
@@ -161,12 +176,12 @@ export class StorageObserverManager {
    */
   unregisterAll(): void {
     this.validateNotDestroyed();
-    
+
     // Clear all batch timers
     for (const registration of this.observers) {
       this.clearBatchTimer(registration);
     }
-    
+
     this.observers.clear();
   }
 
@@ -182,9 +197,9 @@ export class StorageObserverManager {
     metadata?: StorageMetadata
   ): void {
     this.validateNotDestroyed();
-    
+
     const relevantObservers = this.getRelevantObservers(key, source, type);
-    
+
     if (relevantObservers.length === 0) return;
 
     // Sort by priority (higher priority first)
@@ -193,9 +208,23 @@ export class StorageObserverManager {
     for (const registration of relevantObservers) {
       try {
         if (registration.options.batchDelay > 0) {
-          this.addToBatch(registration, type, key, oldValue, newValue, metadata);
+          this.addToBatch(
+            registration,
+            type,
+            key,
+            oldValue,
+            newValue,
+            metadata
+          );
         } else {
-          this.notifyObserver(registration, type, key, oldValue, newValue, metadata);
+          this.notifyObserver(
+            registration,
+            type,
+            key,
+            oldValue,
+            newValue,
+            metadata
+          );
         }
       } catch (error) {
         console.error('Observer notification error:', error);
@@ -208,7 +237,14 @@ export class StorageObserverManager {
    */
   notifyFromChangeEvent(event: StorageChangeEvent): void {
     const { key, type, oldValue, newValue } = event.data;
-    this.notifyDataChange(type, key, oldValue, newValue, event.source, event.metadata);
+    this.notifyDataChange(
+      type,
+      key,
+      oldValue,
+      newValue,
+      event.source,
+      event.metadata
+    );
   }
 
   /**
@@ -216,7 +252,7 @@ export class StorageObserverManager {
    */
   flushBatchedNotifications(): void {
     this.validateNotDestroyed();
-    
+
     for (const registration of this.observers) {
       if (registration.batchedChanges.length > 0) {
         this.processBatchedChanges(registration);
@@ -247,7 +283,7 @@ export class StorageObserverManager {
    */
   destroy(): void {
     if (this.isDestroyed) return;
-    
+
     this.unregisterAll();
     this.isDestroyed = true;
   }
@@ -278,17 +314,28 @@ export class StorageObserverManager {
 
     for (const registration of this.observers) {
       // Check source filter
-      if (registration.options.source && registration.options.source !== source) {
+      if (
+        registration.options.source &&
+        registration.options.source !== source
+      ) {
         continue;
       }
 
       // Check key pattern filter
-      if (registration.options.keyPattern && !this.matchesKeyPattern(key, registration.options.keyPattern)) {
+      if (
+        registration.options.keyPattern &&
+        !this.matchesKeyPattern(key, registration.options.keyPattern)
+      ) {
         continue;
       }
 
       // Check notification type filter
-      if (type && !registration.options.notificationTypes[type as keyof typeof registration.options.notificationTypes]) {
+      if (
+        type &&
+        !registration.options.notificationTypes[
+          type as keyof typeof registration.options.notificationTypes
+        ]
+      ) {
         continue;
       }
 
@@ -336,7 +383,9 @@ export class StorageObserverManager {
     });
 
     // Check if we should flush immediately
-    if (registration.batchedChanges.length >= registration.options.maxBatchSize) {
+    if (
+      registration.batchedChanges.length >= registration.options.maxBatchSize
+    ) {
       this.processBatchedChanges(registration);
       return;
     }
@@ -362,7 +411,14 @@ export class StorageObserverManager {
       for (const [type, changes] of changesByType) {
         for (const change of changes) {
           const { key, oldValue, newValue } = change.data;
-          this.notifyObserver(registration, type, key, oldValue, newValue, change.metadata);
+          this.notifyObserver(
+            registration,
+            type,
+            key,
+            oldValue,
+            newValue,
+            change.metadata
+          );
         }
       }
     } catch (error) {
@@ -373,9 +429,11 @@ export class StorageObserverManager {
     }
   }
 
-  private groupChangesByType(changes: StorageChangeEvent[]): Map<string, StorageChangeEvent[]> {
+  private groupChangesByType(
+    changes: StorageChangeEvent[]
+  ): Map<string, StorageChangeEvent[]> {
     const groups = new Map<string, StorageChangeEvent[]>();
-    
+
     for (const change of changes) {
       const type = change.data.type;
       if (!groups.has(type)) {
@@ -426,7 +484,12 @@ export class StorageObserverManager {
  * Base observer class with optional method implementations
  */
 export abstract class BaseStorageObserver implements StorageObserver {
-  onDataChanged(key: string, oldValue: any, newValue: any, metadata?: StorageMetadata): void {
+  onDataChanged(
+    key: string,
+    oldValue: any,
+    newValue: any,
+    metadata?: StorageMetadata
+  ): void {
     // Override in subclass if needed
   }
 
@@ -449,14 +512,32 @@ export abstract class BaseStorageObserver implements StorageObserver {
 export class FunctionalStorageObserver implements StorageObserver {
   constructor(
     private readonly handlers: {
-      onDataChanged?: (key: string, oldValue: any, newValue: any, metadata?: StorageMetadata) => void;
-      onDataDeleted?: (key: string, oldValue: any, metadata?: StorageMetadata) => void;
-      onDataAdded?: (key: string, value: any, metadata?: StorageMetadata) => void;
+      onDataChanged?: (
+        key: string,
+        oldValue: any,
+        newValue: any,
+        metadata?: StorageMetadata
+      ) => void;
+      onDataDeleted?: (
+        key: string,
+        oldValue: any,
+        metadata?: StorageMetadata
+      ) => void;
+      onDataAdded?: (
+        key: string,
+        value: any,
+        metadata?: StorageMetadata
+      ) => void;
       onStorageCleared?: (metadata?: StorageMetadata) => void;
     }
   ) {}
 
-  onDataChanged(key: string, oldValue: any, newValue: any, metadata?: StorageMetadata): void {
+  onDataChanged(
+    key: string,
+    oldValue: any,
+    newValue: any,
+    metadata?: StorageMetadata
+  ): void {
     this.handlers.onDataChanged?.(key, oldValue, newValue, metadata);
   }
 

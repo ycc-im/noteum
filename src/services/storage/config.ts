@@ -1,17 +1,17 @@
 /**
  * Storage configuration management for Noteum application
- * 
+ *
  * This module provides default configurations and utilities for managing
  * storage settings across different storage adapters (IndexedDB, localStorage).
- * 
+ *
  * @fileoverview Storage configuration management
  * @module storage/config
  */
 
-import type { 
-  StorageConfig, 
-  IndexedDBConfig, 
-  IndexedDBStoreConfig 
+import type {
+  StorageConfig,
+  IndexedDBConfig,
+  IndexedDBStoreConfig,
 } from './interfaces';
 
 /**
@@ -164,7 +164,7 @@ export class StorageConfigManager {
    */
   updateConfig(updates: Partial<StorageConfig>): void {
     this.config = { ...this.config, ...updates };
-    
+
     // Update IndexedDB config if it shares properties
     this.indexedDBConfig = { ...this.indexedDBConfig, ...updates };
   }
@@ -253,14 +253,20 @@ export class StorageConfigManager {
           }
 
           if (indexNames.has(index.name)) {
-            errors.push(`Duplicate index name '${index.name}' in store: ${store.name}`);
+            errors.push(
+              `Duplicate index name '${index.name}' in store: ${store.name}`
+            );
           }
           indexNames.add(index.name);
 
-          if (!index.keyPath || 
-              (Array.isArray(index.keyPath) && index.keyPath.length === 0) ||
-              (typeof index.keyPath === 'string' && index.keyPath.trim() === '')) {
-            errors.push(`Index keyPath cannot be empty for index '${index.name}' in store: ${store.name}`);
+          if (
+            !index.keyPath ||
+            (Array.isArray(index.keyPath) && index.keyPath.length === 0) ||
+            (typeof index.keyPath === 'string' && index.keyPath.trim() === '')
+          ) {
+            errors.push(
+              `Index keyPath cannot be empty for index '${index.name}' in store: ${store.name}`
+            );
           }
         }
       }
@@ -283,7 +289,9 @@ export class StorageConfigManager {
   /**
    * Create a configuration optimized for development
    */
-  static createDevelopmentConfig(overrides?: Partial<StorageConfig>): StorageConfigManager {
+  static createDevelopmentConfig(
+    overrides?: Partial<StorageConfig>
+  ): StorageConfigManager {
     const devConfig: Partial<StorageConfig> = {
       debug: true,
       databaseName: 'noteum_storage_dev',
@@ -301,7 +309,9 @@ export class StorageConfigManager {
   /**
    * Create a configuration optimized for production
    */
-  static createProductionConfig(overrides?: Partial<StorageConfig>): StorageConfigManager {
+  static createProductionConfig(
+    overrides?: Partial<StorageConfig>
+  ): StorageConfigManager {
     const prodConfig: Partial<StorageConfig> = {
       debug: false,
       databaseName: 'noteum_storage',
@@ -320,7 +330,9 @@ export class StorageConfigManager {
   /**
    * Create a configuration for testing
    */
-  static createTestConfig(overrides?: Partial<StorageConfig>): StorageConfigManager {
+  static createTestConfig(
+    overrides?: Partial<StorageConfig>
+  ): StorageConfigManager {
     const testConfig: Partial<StorageConfig> = {
       debug: true,
       databaseName: 'noteum_storage_test',
@@ -345,7 +357,8 @@ export default defaultConfigManager;
  * Export utility functions for quick access
  */
 export const getDefaultConfig = () => defaultConfigManager.getConfig();
-export const getDefaultIndexedDBConfig = () => defaultConfigManager.getIndexedDBConfig();
+export const getDefaultIndexedDBConfig = () =>
+  defaultConfigManager.getIndexedDBConfig();
 export const validateConfig = (config: StorageConfig) => {
   const manager = new StorageConfigManager(config);
   return manager.validate();

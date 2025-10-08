@@ -1,9 +1,9 @@
 /**
  * Storage utility functions and helpers
- * 
+ *
  * This module provides utility functions for storage operations including
  * key parsing, error handling, serialization, compression, and performance helpers.
- * 
+ *
  * @fileoverview Storage utility functions
  * @module storage/utils
  */
@@ -52,7 +52,6 @@ export interface PerformanceMetrics {
  * StorageUtils - Utility class for storage operations
  */
 export class StorageUtils {
-  
   // =================== Key Management ===================
 
   /**
@@ -150,13 +149,21 @@ export class StorageUtils {
   /**
    * Generate key with proper prefix
    */
-  static generateKey(tableName: string, identifier: string, userId?: string): string {
+  static generateKey(
+    tableName: string,
+    identifier: string,
+    userId?: string
+  ): string {
     const prefix = this.getTablePrefix(tableName);
-    
-    if (userId && (tableName === TableNames.USER_PREFERENCES || tableName === TableNames.TOKENS)) {
+
+    if (
+      userId &&
+      (tableName === TableNames.USER_PREFERENCES ||
+        tableName === TableNames.TOKENS)
+    ) {
       return `${prefix}:${userId}:${identifier}`;
     }
-    
+
     return `${prefix}:${identifier}`;
   }
 
@@ -225,7 +232,14 @@ export class StorageUtils {
    * Create operation-specific error
    */
   static createOperationError(
-    operation: 'get' | 'set' | 'remove' | 'clear' | 'batch' | 'query' | 'transaction',
+    operation:
+      | 'get'
+      | 'set'
+      | 'remove'
+      | 'clear'
+      | 'batch'
+      | 'query'
+      | 'transaction',
     keys: string[],
     originalError: Error,
     retryable = false,
@@ -266,11 +280,11 @@ export class StorageUtils {
   static serialize(value: any, useCompression = false): string {
     try {
       const serialized = JSON.stringify(value);
-      
+
       if (useCompression && serialized.length > 1024) {
         return this.compress(serialized);
       }
-      
+
       return serialized;
     } catch (error) {
       throw new Error(`Serialization failed: ${error}`);
@@ -311,7 +325,9 @@ export class StorageUtils {
       // For now, just return the original data with a compression marker
       return `__COMPRESSED__:${data}`;
     } catch (error) {
-      console.warn('[StorageUtils] Compression failed, returning original data');
+      console.warn(
+        '[StorageUtils] Compression failed, returning original data'
+      );
       return data;
     }
   }
@@ -326,7 +342,9 @@ export class StorageUtils {
       }
       return data;
     } catch (error) {
-      console.warn('[StorageUtils] Decompression failed, returning original data');
+      console.warn(
+        '[StorageUtils] Decompression failed, returning original data'
+      );
       return data;
     }
   }
@@ -345,7 +363,7 @@ export class StorageUtils {
       recordCount += count;
       dataSize += size;
       const duration = performance.now() - startTime;
-      
+
       return {
         duration,
         dataSize,
@@ -372,11 +390,11 @@ export class StorageUtils {
    */
   static createChunks<T>(array: T[], chunkSize: number): T[][] {
     const chunks: T[][] = [];
-    
+
     for (let i = 0; i < array.length; i += chunkSize) {
       chunks.push(array.slice(i, i + chunkSize));
     }
-    
+
     return chunks;
   }
 
@@ -388,7 +406,7 @@ export class StorageUtils {
     wait: number
   ): (...args: Parameters<T>) => void {
     let timeout: NodeJS.Timeout;
-    
+
     return (...args: Parameters<T>) => {
       clearTimeout(timeout);
       timeout = setTimeout(() => func.apply(this, args), wait);
@@ -403,7 +421,7 @@ export class StorageUtils {
     limit: number
   ): (...args: Parameters<T>) => void {
     let inThrottle: boolean;
-    
+
     return (...args: Parameters<T>) => {
       if (!inThrottle) {
         func.apply(this, args);
@@ -436,14 +454,17 @@ export class StorageUtils {
    */
   static validateConfig(config: any): boolean {
     const required = ['databaseName', 'version'];
-    
+
     for (const field of required) {
       if (!(field in config)) {
         return false;
       }
     }
 
-    if (typeof config.databaseName !== 'string' || config.databaseName.length === 0) {
+    if (
+      typeof config.databaseName !== 'string' ||
+      config.databaseName.length === 0
+    ) {
       return false;
     }
 
@@ -457,7 +478,11 @@ export class StorageUtils {
   /**
    * Check storage quota
    */
-  static async checkStorageQuota(): Promise<{ usage: number; quota: number; available: number }> {
+  static async checkStorageQuota(): Promise<{
+    usage: number;
+    quota: number;
+    available: number;
+  }> {
     try {
       if ('storage' in navigator && 'estimate' in navigator.storage) {
         const estimate = await navigator.storage.estimate();
@@ -484,7 +509,10 @@ export class StorageUtils {
   /**
    * Check if migration is needed
    */
-  static needsMigration(currentVersion: number, targetVersion: number): boolean {
+  static needsMigration(
+    currentVersion: number,
+    targetVersion: number
+  ): boolean {
     return currentVersion < targetVersion;
   }
 
@@ -496,7 +524,7 @@ export class StorageUtils {
     targetVersion: number
   ): { from: number; to: number; steps: number[] } {
     const steps: number[] = [];
-    
+
     for (let v = currentVersion + 1; v <= targetVersion; v++) {
       steps.push(v);
     }
@@ -519,7 +547,10 @@ export class StorageUtils {
     value?: any,
     duration?: number
   ): void {
-    if (typeof window !== 'undefined' && window.localStorage.getItem('storage-debug') === 'true') {
+    if (
+      typeof window !== 'undefined' &&
+      window.localStorage.getItem('storage-debug') === 'true'
+    ) {
       console.group(`[StorageUtils] ${operation}`);
       console.log('Key:', key);
       if (value !== undefined) {
@@ -537,11 +568,12 @@ export class StorageUtils {
    */
   static async getDebugInfo(): Promise<Record<string, any>> {
     const quota = await this.checkStorageQuota();
-    
+
     return {
       quota,
       timestamp: new Date().toISOString(),
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
+      userAgent:
+        typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
       indexedDBSupported: typeof indexedDB !== 'undefined',
       storageSupported: typeof Storage !== 'undefined',
     };

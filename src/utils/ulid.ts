@@ -5,7 +5,6 @@ export type ULIDString = string & { readonly brand: unique symbol };
 const monotonicUlidGenerator = monotonicFactory();
 
 export class UlidGenerator {
-
   /**
    * Generate a standard ULID
    * @returns A new ULID string
@@ -41,7 +40,7 @@ export class UlidGenerator {
   static isValid(value: string): value is ULIDString {
     // ULID format: 26 characters, Crockford's base32
     const ulidRegex = /^[0-9A-HJKMNP-TV-Z]{26}$/;
-    
+
     if (!ulidRegex.test(value)) {
       return false;
     }
@@ -108,7 +107,6 @@ export class UlidGenerator {
   private static isValidFormat(value: string): boolean {
     return /^[0-9A-HJKMNP-TV-Z]{26}$/.test(value);
   }
-
 }
 
 // Convenience functions for common use cases

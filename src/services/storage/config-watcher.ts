@@ -1,9 +1,9 @@
 /**
  * Configuration Hot Reload Watcher
- * 
+ *
  * Provides real-time configuration monitoring and hot reloading capabilities.
  * Supports configuration validation, rollback mechanisms, and change notification system.
- * 
+ *
  * @fileoverview Configuration watching and hot reload implementation
  * @module storage/config-watcher
  */
@@ -14,13 +14,13 @@ import type { StorageConfig } from './interfaces';
 /**
  * Configuration change types
  */
-export type ConfigChangeType = 
-  | 'updated'     // Configuration was updated
-  | 'validated'   // Configuration was validated
-  | 'applied'     // Configuration was applied
-  | 'reverted'    // Configuration was reverted
-  | 'corrupted'   // Configuration became corrupted
-  | 'reloaded';   // Configuration was reloaded from source
+export type ConfigChangeType =
+  | 'updated' // Configuration was updated
+  | 'validated' // Configuration was validated
+  | 'applied' // Configuration was applied
+  | 'reverted' // Configuration was reverted
+  | 'corrupted' // Configuration became corrupted
+  | 'reloaded'; // Configuration was reloaded from source
 
 /**
  * Configuration change event
@@ -145,7 +145,7 @@ export class ConfigurationWatcher {
   ) {
     this.listeners = listeners;
     this.loadPersistedConfig();
-    
+
     if (this.options.enableHotReload) {
       this.startWatching();
     }
@@ -154,20 +154,27 @@ export class ConfigurationWatcher {
   /**
    * Set the current configuration
    */
-  async setConfig(config: any, source: ConfigChangeEvent['source'] = 'api'): Promise<ConfigValidationResult> {
+  async setConfig(
+    config: any,
+    source: ConfigChangeEvent['source'] = 'api'
+  ): Promise<ConfigValidationResult> {
     if (this.isDestroyed) {
       throw new Error('ConfigurationWatcher has been destroyed');
     }
 
     const oldConfig = { ...this.currentConfig };
-    
+
     try {
       // Validate configuration if enabled
-      let validationResult: ConfigValidationResult = { isValid: true, errors: [], warnings: [] };
-      
+      let validationResult: ConfigValidationResult = {
+        isValid: true,
+        errors: [],
+        warnings: [],
+      };
+
       if (this.options.enableValidation) {
         validationResult = await this.validateConfig(config);
-        
+
         if (!validationResult.isValid) {
           this.emitConfigChange({
             type: 'validated',
@@ -176,13 +183,15 @@ export class ConfigurationWatcher {
             timestamp: new Date(),
             source,
             validation: validationResult,
-            error: new Error(`Validation failed: ${validationResult.errors.join(', ')}`),
+            error: new Error(
+              `Validation failed: ${validationResult.errors.join(', ')}`
+            ),
           });
 
           if (this.options.enableAutoRollback) {
             await this.rollbackConfig('Validation failed', true);
           }
-          
+
           this.listeners.onValidationFailed?.(validationResult, config);
           return validationResult;
         }
@@ -191,7 +200,7 @@ export class ConfigurationWatcher {
       // Apply configuration
       this.addToHistory(this.currentConfig);
       this.currentConfig = { ...config };
-      
+
       // Persist if enabled
       if (this.options.enablePersistence) {
         this.persistConfig();
@@ -208,7 +217,6 @@ export class ConfigurationWatcher {
       });
 
       return validationResult;
-
     } catch (error) {
       this.emitConfigChange({
         type: 'corrupted',
@@ -233,7 +241,11 @@ export class ConfigurationWatcher {
   /**
    * Update specific configuration key
    */
-  async updateConfigKey(key: string, value: any, source: ConfigChangeEvent['source'] = 'api'): Promise<ConfigValidationResult> {
+  async updateConfigKey(
+    key: string,
+    value: any,
+    source: ConfigChangeEvent['source'] = 'api'
+  ): Promise<ConfigValidationResult> {
     const newConfig = { ...this.currentConfig };
     this.setNestedProperty(newConfig, key, value);
     return this.setConfig(newConfig, source);
@@ -242,7 +254,10 @@ export class ConfigurationWatcher {
   /**
    * Delete configuration key
    */
-  async deleteConfigKey(key: string, source: ConfigChangeEvent['source'] = 'api'): Promise<ConfigValidationResult> {
+  async deleteConfigKey(
+    key: string,
+    source: ConfigChangeEvent['source'] = 'api'
+  ): Promise<ConfigValidationResult> {
     const newConfig = { ...this.currentConfig };
     this.deleteNestedProperty(newConfig, key);
     return this.setConfig(newConfig, source);
@@ -251,7 +266,10 @@ export class ConfigurationWatcher {
   /**
    * Rollback to previous configuration
    */
-  async rollbackConfig(reason: string = 'Manual rollback', automatic: boolean = false): Promise<void> {
+  async rollbackConfig(
+    reason: string = 'Manual rollback',
+    automatic: boolean = false
+  ): Promise<void> {
     if (this.configHistory.length === 0) {
       throw new Error('No configuration history available for rollback');
     }
@@ -266,7 +284,7 @@ export class ConfigurationWatcher {
     };
 
     this.currentConfig = { ...previousEntry.config };
-    
+
     // Remove the rolled-back entry from history
     this.configHistory.pop();
 
@@ -276,7 +294,7 @@ export class ConfigurationWatcher {
     }
 
     this.listeners.onConfigRolledBack?.(rollbackInfo);
-    
+
     this.emitConfigChange({
       type: 'reverted',
       oldConfig: rollbackInfo.previousConfig,
@@ -307,10 +325,10 @@ export class ConfigurationWatcher {
     try {
       // In a real implementation, this would reload from file/API/etc.
       const reloadedConfig = this.loadConfigFromSource();
-      
+
       if (reloadedConfig) {
         await this.setConfig(reloadedConfig, 'file');
-        
+
         this.emitConfigChange({
           type: 'reloaded',
           oldConfig: this.currentConfig,
@@ -386,8 +404,11 @@ export class ConfigurationWatcher {
       // In a real implementation, this would check file modification time,
       // API endpoints, or other configuration sources
       const externalConfig = this.loadConfigFromSource();
-      
-      if (externalConfig && !this.isConfigEqual(externalConfig, this.currentConfig)) {
+
+      if (
+        externalConfig &&
+        !this.isConfigEqual(externalConfig, this.currentConfig)
+      ) {
         await this.setConfig(externalConfig, 'file');
       }
     } catch (error) {
@@ -403,7 +424,7 @@ export class ConfigurationWatcher {
 
   private async validateConfig(config: any): Promise<ConfigValidationResult> {
     const results: ConfigValidationResult[] = [];
-    
+
     for (const validator of this.validators) {
       try {
         const result = await validator.validate(config);
@@ -473,7 +494,10 @@ export class ConfigurationWatcher {
     if (!this.options.enablePersistence) return;
 
     try {
-      localStorage.setItem(this.options.storageKey, JSON.stringify(this.currentConfig));
+      localStorage.setItem(
+        this.options.storageKey,
+        JSON.stringify(this.currentConfig)
+      );
     } catch (error) {
       console.warn('[ConfigWatcher] Failed to persist config:', error);
     }
@@ -490,7 +514,7 @@ export class ConfigurationWatcher {
   private setNestedProperty(obj: any, key: string, value: any): void {
     const keys = key.split('.');
     let current = obj;
-    
+
     for (let i = 0; i < keys.length - 1; i++) {
       const k = keys[i];
       if (!(k in current) || typeof current[k] !== 'object') {
@@ -498,14 +522,14 @@ export class ConfigurationWatcher {
       }
       current = current[k];
     }
-    
+
     current[keys[keys.length - 1]] = value;
   }
 
   private deleteNestedProperty(obj: any, key: string): void {
     const keys = key.split('.');
     let current = obj;
-    
+
     for (let i = 0; i < keys.length - 1; i++) {
       const k = keys[i];
       if (!(k in current) || typeof current[k] !== 'object') {
@@ -513,7 +537,7 @@ export class ConfigurationWatcher {
       }
       current = current[k];
     }
-    
+
     delete current[keys[keys.length - 1]];
   }
 
@@ -561,7 +585,6 @@ export class DefaultConfigValidator implements ConfigValidator {
         errors,
         warnings,
       };
-
     } catch (error) {
       return {
         isValid: false,
@@ -571,7 +594,10 @@ export class DefaultConfigValidator implements ConfigValidator {
     }
   }
 
-  private validateAgainstSchema(config: any, schema: any): { errors: string[]; warnings: string[] } {
+  private validateAgainstSchema(
+    config: any,
+    schema: any
+  ): { errors: string[]; warnings: string[] } {
     // Simplified schema validation
     // In a real implementation, use a proper JSON schema validator
     const errors: string[] = [];
@@ -600,7 +626,10 @@ export class StorageConfigValidator implements ConfigValidator {
     const warnings: string[] = [];
 
     // Validate storage-specific configuration
-    if (config.maxSize && (typeof config.maxSize !== 'number' || config.maxSize <= 0)) {
+    if (
+      config.maxSize &&
+      (typeof config.maxSize !== 'number' || config.maxSize <= 0)
+    ) {
       errors.push('maxSize must be a positive number');
     }
 
@@ -612,7 +641,10 @@ export class StorageConfigValidator implements ConfigValidator {
       errors.push('databaseName must be a string');
     }
 
-    if (config.version && (typeof config.version !== 'number' || config.version < 1)) {
+    if (
+      config.version &&
+      (typeof config.version !== 'number' || config.version < 1)
+    ) {
       errors.push('version must be a number >= 1');
     }
 
@@ -667,7 +699,11 @@ export class ConfigurationUtils {
     const result = { ...base };
 
     for (const [key, value] of Object.entries(override)) {
-      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      if (
+        typeof value === 'object' &&
+        value !== null &&
+        !Array.isArray(value)
+      ) {
         result[key] = this.mergeConfigs(result[key] || {}, value);
       } else {
         result[key] = value;
@@ -680,7 +716,10 @@ export class ConfigurationUtils {
   /**
    * Extract configuration diff
    */
-  static getConfigDiff(oldConfig: any, newConfig: any): { added: any; modified: any; removed: string[] } {
+  static getConfigDiff(
+    oldConfig: any,
+    newConfig: any
+  ): { added: any; modified: any; removed: string[] } {
     const added: any = {};
     const modified: any = {};
     const removed: string[] = [];
@@ -723,18 +762,21 @@ export class ConfigurationUtils {
 /**
  * Global configuration watcher instance
  */
-export const globalConfigWatcher = createConfigurationWatcher({
-  enableHotReload: true,
-  enableValidation: true,
-  enableAutoRollback: false, // Don't auto-rollback global config
-}, {
-  onConfigChanged: (event) => {
-    console.debug('[GlobalConfig] Configuration changed:', event.type);
+export const globalConfigWatcher = createConfigurationWatcher(
+  {
+    enableHotReload: true,
+    enableValidation: true,
+    enableAutoRollback: false, // Don't auto-rollback global config
   },
-  onValidationFailed: (result) => {
-    console.warn('[GlobalConfig] Validation failed:', result.errors);
-  },
-  onWatcherError: (error) => {
-    console.error('[GlobalConfig] Watcher error:', error);
-  },
-});
+  {
+    onConfigChanged: event => {
+      console.debug('[GlobalConfig] Configuration changed:', event.type);
+    },
+    onValidationFailed: result => {
+      console.warn('[GlobalConfig] Validation failed:', result.errors);
+    },
+    onWatcherError: error => {
+      console.error('[GlobalConfig] Watcher error:', error);
+    },
+  }
+);

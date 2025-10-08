@@ -1,18 +1,18 @@
 /**
  * Event system types for storage services
- * 
+ *
  * This module defines event-related types for the storage system,
  * including event listeners, event dispatchers, and event data structures.
- * 
+ *
  * @fileoverview Event system types for storage services
  * @module storage/events
  */
 
-import type { 
+import type {
   StorageChangeEvent,
   StorageChangeCallback,
   StorageMetadata,
-  StorageError 
+  StorageError,
 } from './interfaces';
 import type { StorageAdapterType } from './types';
 
@@ -21,17 +21,17 @@ import type { StorageAdapterType } from './types';
 /**
  * Storage event types that can be emitted
  */
-export type StorageEventType = 
-  | 'change'           // Data changed (add/update/remove/clear)
-  | 'error'            // Error occurred during operation
-  | 'quota-exceeded'   // Storage quota has been exceeded
-  | 'connection-lost'  // Database connection lost
+export type StorageEventType =
+  | 'change' // Data changed (add/update/remove/clear)
+  | 'error' // Error occurred during operation
+  | 'quota-exceeded' // Storage quota has been exceeded
+  | 'connection-lost' // Database connection lost
   | 'connection-restored' // Database connection restored
-  | 'transaction-start'   // Transaction started
-  | 'transaction-commit'  // Transaction committed
+  | 'transaction-start' // Transaction started
+  | 'transaction-commit' // Transaction committed
   | 'transaction-rollback' // Transaction rolled back
-  | 'cleanup-start'       // Cleanup operation started
-  | 'cleanup-complete';   // Cleanup operation completed
+  | 'cleanup-start' // Cleanup operation started
+  | 'cleanup-complete'; // Cleanup operation completed
 
 /**
  * Base storage event interface
@@ -139,19 +139,30 @@ export interface StorageCleanupEvent extends StorageEvent {
 /**
  * Generic event listener type
  */
-export type StorageEventListener<T extends StorageEvent = StorageEvent> = (event: T) => void;
+export type StorageEventListener<T extends StorageEvent = StorageEvent> = (
+  event: T
+) => void;
 
 /**
  * Event listener with specific event type
  */
-export type TypedStorageEventListener<T extends StorageEventType> = 
-  T extends 'change' ? (event: StorageChangeEvent) => void :
-  T extends 'error' ? (event: StorageErrorEvent) => void :
-  T extends 'quota-exceeded' ? (event: StorageQuotaExceededEvent) => void :
-  T extends 'connection-lost' | 'connection-restored' ? (event: StorageConnectionEvent) => void :
-  T extends 'transaction-start' | 'transaction-commit' | 'transaction-rollback' ? (event: StorageTransactionEvent) => void :
-  T extends 'cleanup-start' | 'cleanup-complete' ? (event: StorageCleanupEvent) => void :
-  StorageEventListener;
+export type TypedStorageEventListener<T extends StorageEventType> =
+  T extends 'change'
+    ? (event: StorageChangeEvent) => void
+    : T extends 'error'
+      ? (event: StorageErrorEvent) => void
+      : T extends 'quota-exceeded'
+        ? (event: StorageQuotaExceededEvent) => void
+        : T extends 'connection-lost' | 'connection-restored'
+          ? (event: StorageConnectionEvent) => void
+          : T extends
+                | 'transaction-start'
+                | 'transaction-commit'
+                | 'transaction-rollback'
+            ? (event: StorageTransactionEvent) => void
+            : T extends 'cleanup-start' | 'cleanup-complete'
+              ? (event: StorageCleanupEvent) => void
+              : StorageEventListener;
 
 /**
  * Event listener options
@@ -309,12 +320,16 @@ export interface StorageEventBuilder {
 /**
  * Event filter function type
  */
-export type EventFilter<T extends StorageEvent = StorageEvent> = (event: T) => boolean;
+export type EventFilter<T extends StorageEvent = StorageEvent> = (
+  event: T
+) => boolean;
 
 /**
  * Event transformer function type
  */
-export type EventTransformer<T extends StorageEvent = StorageEvent, R = T> = (event: T) => R;
+export type EventTransformer<T extends StorageEvent = StorageEvent, R = T> = (
+  event: T
+) => R;
 
 /**
  * Event subscription handle

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -11,7 +11,7 @@ import {
   Edge,
   BackgroundVariant,
   Node,
-} from 'reactflow'
+} from 'reactflow';
 
 // Define initial nodes for the workflow
 const initialNodes: Node[] = [
@@ -37,7 +37,7 @@ const initialNodes: Node[] = [
     data: { label: 'Final Note' },
     position: { x: 250, y: 250 },
   },
-]
+];
 
 // Define initial edges connecting the nodes
 const initialEdges: Edge[] = [
@@ -45,16 +45,16 @@ const initialEdges: Edge[] = [
   { id: 'e1-3', source: '1', target: '3' },
   { id: 'e2-4', source: '2', target: '4' },
   { id: 'e3-4', source: '3', target: '4' },
-]
+];
 
 export default function NoteWorkflow() {
-  const [nodes, , onNodesChange] = useNodesState(initialNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(
-    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges],
-  )
+    (params: Connection) => setEdges(eds => addEdge(params, eds)),
+    [setEdges]
+  );
 
   return (
     <div className="w-full h-96 bg-gray-50 border border-gray-200 rounded-lg">
@@ -75,5 +75,5 @@ export default function NoteWorkflow() {
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
       </ReactFlow>
     </div>
-  )
+  );
 }

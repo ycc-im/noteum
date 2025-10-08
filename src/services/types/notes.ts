@@ -10,7 +10,7 @@ import {
   NodeType,
   ConnectionType,
   ChangeType,
-} from "./database";
+} from './database';
 
 // Base note interface
 export interface Note extends TimestampFields {
@@ -63,7 +63,7 @@ export interface NoteVersion {
 }
 
 // Note connections (React Flow Edge compatible)
-export interface NoteConnection extends Omit<TimestampFields, "updated_at"> {
+export interface NoteConnection extends Omit<TimestampFields, 'updated_at'> {
   id: string;
 
   // React Flow Edge compatibility

@@ -1,9 +1,9 @@
 /**
  * Database schema definitions for Noteum storage system
- * 
+ *
  * This module defines all database table schemas, interfaces, and type definitions
  * for the Dexie-based IndexedDB storage implementation.
- * 
+ *
  * @fileoverview Database schema definitions
  * @module storage/schema
  */
@@ -163,9 +163,12 @@ export const NOTEUM_DB_SCHEMA: DatabaseSchema = {
   version: 1,
   tables: {
     [TableNames.TOKENS]: 'key, value, expiredAt, createdAt, type, userId',
-    [TableNames.USER_PREFERENCES]: 'key, value, updatedAt, userId, category, isGlobal',
-    [TableNames.APP_SETTINGS]: 'key, value, updatedAt, scope, description, requiresRestart',
-    [TableNames.API_CACHE]: 'key, value, expiredAt, updatedAt, size, hitCount, source, tags',
+    [TableNames.USER_PREFERENCES]:
+      'key, value, updatedAt, userId, category, isGlobal',
+    [TableNames.APP_SETTINGS]:
+      'key, value, updatedAt, scope, description, requiresRestart',
+    [TableNames.API_CACHE]:
+      'key, value, expiredAt, updatedAt, size, hitCount, source, tags',
     [TableNames.METADATA]: 'key, value, updatedAt, type, version, readonly',
   },
 };
@@ -176,7 +179,7 @@ export const NOTEUM_DB_SCHEMA: DatabaseSchema = {
 export const INDEX_DEFINITIONS = {
   [TableNames.TOKENS]: [
     'expiredAt',
-    'createdAt', 
+    'createdAt',
     'type',
     'userId',
     '[userId+type]',
@@ -188,11 +191,7 @@ export const INDEX_DEFINITIONS = {
     'isGlobal',
     '[userId+category]',
   ],
-  [TableNames.APP_SETTINGS]: [
-    'updatedAt',
-    'scope',
-    'requiresRestart',
-  ],
+  [TableNames.APP_SETTINGS]: ['updatedAt', 'scope', 'requiresRestart'],
   [TableNames.API_CACHE]: [
     'expiredAt',
     'updatedAt',
@@ -201,12 +200,7 @@ export const INDEX_DEFINITIONS = {
     'tags',
     '[source+updatedAt]',
   ],
-  [TableNames.METADATA]: [
-    'updatedAt',
-    'type',
-    'version',
-    'readonly',
-  ],
+  [TableNames.METADATA]: ['updatedAt', 'type', 'version', 'readonly'],
 } as const;
 
 /**
@@ -216,11 +210,13 @@ export class SchemaValidator {
   /**
    * Validate token record structure
    */
-  static validateTokenRecord(record: Partial<TokenRecord>): record is TokenRecord {
+  static validateTokenRecord(
+    record: Partial<TokenRecord>
+  ): record is TokenRecord {
     return !!(
-      record.key && 
+      record.key &&
       typeof record.key === 'string' &&
-      record.value && 
+      record.value &&
       typeof record.value === 'string' &&
       record.createdAt instanceof Date
     );
@@ -229,9 +225,11 @@ export class SchemaValidator {
   /**
    * Validate preference record structure
    */
-  static validatePreferenceRecord(record: Partial<PreferenceRecord>): record is PreferenceRecord {
+  static validatePreferenceRecord(
+    record: Partial<PreferenceRecord>
+  ): record is PreferenceRecord {
     return !!(
-      record.key && 
+      record.key &&
       typeof record.key === 'string' &&
       record.value !== undefined &&
       record.updatedAt instanceof Date
@@ -241,9 +239,11 @@ export class SchemaValidator {
   /**
    * Validate setting record structure
    */
-  static validateSettingRecord(record: Partial<SettingRecord>): record is SettingRecord {
+  static validateSettingRecord(
+    record: Partial<SettingRecord>
+  ): record is SettingRecord {
     return !!(
-      record.key && 
+      record.key &&
       typeof record.key === 'string' &&
       record.value !== undefined &&
       record.updatedAt instanceof Date
@@ -253,9 +253,11 @@ export class SchemaValidator {
   /**
    * Validate cache record structure
    */
-  static validateCacheRecord(record: Partial<CacheRecord>): record is CacheRecord {
+  static validateCacheRecord(
+    record: Partial<CacheRecord>
+  ): record is CacheRecord {
     return !!(
-      record.key && 
+      record.key &&
       typeof record.key === 'string' &&
       record.value !== undefined &&
       record.updatedAt instanceof Date
@@ -267,7 +269,7 @@ export class SchemaValidator {
    */
   static validateMetaRecord(record: Partial<MetaRecord>): record is MetaRecord {
     return !!(
-      record.key && 
+      record.key &&
       typeof record.key === 'string' &&
       record.value !== undefined &&
       record.updatedAt instanceof Date
@@ -282,7 +284,10 @@ export class SchemaMigrationHelper {
   /**
    * Get migration path from current version to target version
    */
-  static getMigrationPath(currentVersion: number, targetVersion: number): number[] {
+  static getMigrationPath(
+    currentVersion: number,
+    targetVersion: number
+  ): number[] {
     const path: number[] = [];
     for (let v = currentVersion + 1; v <= targetVersion; v++) {
       path.push(v);
@@ -293,7 +298,10 @@ export class SchemaMigrationHelper {
   /**
    * Check if migration is required
    */
-  static requiresMigration(currentVersion: number, targetVersion: number): boolean {
+  static requiresMigration(
+    currentVersion: number,
+    targetVersion: number
+  ): boolean {
     return currentVersion < targetVersion;
   }
 
@@ -308,11 +316,11 @@ export class SchemaMigrationHelper {
 /**
  * Export all record types for convenience
  */
-export type DatabaseRecord = 
-  | TokenRecord 
-  | PreferenceRecord 
-  | SettingRecord 
-  | CacheRecord 
+export type DatabaseRecord =
+  | TokenRecord
+  | PreferenceRecord
+  | SettingRecord
+  | CacheRecord
   | MetaRecord;
 
 /**

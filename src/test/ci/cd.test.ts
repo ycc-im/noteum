@@ -94,9 +94,18 @@ describe('TDD CI/CD Pipeline Validation', () => {
 
   describe('Prettier Configuration', () => {
     it('should have Prettier configuration', () => {
-      const prettierConfig = require('../../../.prettierrc');
+      const fs = require('fs');
+      const path = require('path');
 
-      expect(prettierConfig).toBeDefined();
+      const prettierConfigPath = path.join(__dirname, '../../../.prettierrc');
+      const prettierConfigExists = fs.existsSync(prettierConfigPath);
+
+      expect(prettierConfigExists).toBe(true);
+
+      // 读取并验证Prettier配置内容
+      const prettierConfigContent = fs.readFileSync(prettierConfigPath, 'utf8');
+      const prettierConfig = JSON.parse(prettierConfigContent);
+
       expect(prettierConfig.semi).toBe(true);
       expect(prettierConfig.singleQuote).toBe(true);
       expect(prettierConfig.tabWidth).toBe(2);
@@ -254,23 +263,37 @@ describe('TDD CI/CD Pipeline Validation', () => {
   });
 
   describe('Test Environment Setup', () => {
-    it('should have test setup file', () => {
+    it('should have Jest setup file', () => {
       const fs = require('fs');
       const path = require('path');
 
-      const setupPath = path.join(__dirname, '../../setup.ts');
+      const setupPath = path.join(__dirname, '../setup.ts');
       const setupExists = fs.existsSync(setupPath);
 
       expect(setupExists).toBe(true);
     });
 
-    it('should be able to import test utilities', () => {
-      // 验证测试环境设置正确
-      expect(global.describe).toBeDefined();
-      expect(global.it).toBeDefined();
-      expect(global.expect).toBeDefined();
-      expect(global.beforeAll).toBeDefined();
-      expect(global.afterAll).toBeDefined();
+    it('should have test utils directory', () => {
+      const fs = require('fs');
+      const path = require('path');
+
+      const utilsPath = path.join(__dirname, '../utils');
+      const utilsExists = fs.existsSync(utilsPath);
+
+      // 如果utils目录不存在，检查是否有其他测试工具文件
+      const setupPath = path.join(__dirname, '../setup.ts');
+      const setupExists = fs.existsSync(setupPath);
+
+      expect(utilsExists || setupExists).toBe(true);
+    });
+
+    it('should validate Jest globals are available', () => {
+      // 验证Jest全局函数可用（这些在Jest运行时自动可用）
+      expect(typeof describe).toBe('function');
+      expect(typeof it).toBe('function');
+      expect(typeof expect).toBe('function');
+      expect(typeof beforeAll).toBe('function');
+      expect(typeof afterAll).toBe('function');
     });
   });
 

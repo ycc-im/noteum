@@ -1,10 +1,10 @@
 /**
  * Storage cache implementation for performance optimization
- * 
+ *
  * This module provides an in-memory cache layer for storage operations
  * to reduce database queries and improve performance. It includes TTL support,
  * LRU eviction, size limits, and smart cache invalidation.
- * 
+ *
  * @fileoverview In-memory cache for storage performance
  * @module storage/cache
  */
@@ -69,7 +69,7 @@ export interface CacheConfig {
 
 /**
  * StorageCache - High-performance in-memory cache
- * 
+ *
  * Features:
  * - TTL-based expiration
  * - LRU eviction policy
@@ -126,7 +126,7 @@ export class StorageCache {
     }
 
     const entry = this.cache.get(key);
-    
+
     if (!entry) {
       this.stats.misses++;
       this.updateHitRatio();
@@ -162,15 +162,16 @@ export class StorageCache {
 
     // Calculate size
     const size = StorageUtils.estimateSize(value);
-    
+
     // Check if value is too large
-    if (size > this.maxSizeBytes * 0.1) { // Don't cache items larger than 10% of max cache size
+    if (size > this.maxSizeBytes * 0.1) {
+      // Don't cache items larger than 10% of max cache size
       return;
     }
 
     const now = Date.now();
     const ttl = customTTL ?? this.config.ttl;
-    
+
     const entry: CacheEntry<T> = {
       value,
       timestamp: now,
@@ -203,7 +204,7 @@ export class StorageCache {
     }
 
     const entry = this.cache.get(key);
-    
+
     if (!entry) {
       return false;
     }
@@ -419,7 +420,7 @@ export class CacheManager {
       const cache = new StorageCache(config);
       this.caches.set(name, cache);
     }
-    
+
     return this.caches.get(name)!;
   }
 
@@ -439,11 +440,11 @@ export class CacheManager {
    */
   getAllStats(): Record<string, CacheStats> {
     const stats: Record<string, CacheStats> = {};
-    
+
     for (const [name, cache] of this.caches.entries()) {
       stats[name] = cache.getStats();
     }
-    
+
     return stats;
   }
 
@@ -451,7 +452,9 @@ export class CacheManager {
    * Clean up all caches
    */
   async cleanupAll(): Promise<void> {
-    const cleanupPromises = Array.from(this.caches.values()).map(cache => cache.cleanup());
+    const cleanupPromises = Array.from(this.caches.values()).map(cache =>
+      cache.cleanup()
+    );
     await Promise.all(cleanupPromises);
   }
 
@@ -459,7 +462,9 @@ export class CacheManager {
    * Close all caches
    */
   async closeAll(): Promise<void> {
-    const closePromises = Array.from(this.caches.values()).map(cache => cache.close());
+    const closePromises = Array.from(this.caches.values()).map(cache =>
+      cache.close()
+    );
     await Promise.all(closePromises);
     this.caches.clear();
   }
@@ -489,7 +494,7 @@ export const CacheUtils = {
     if (parts.length < 2) {
       return null;
     }
-    
+
     return {
       namespace: parts[0],
       key: parts.slice(1).join(':'),
@@ -505,9 +510,9 @@ export const CacheUtils = {
     dataVolatility: 'static' | 'dynamic' | 'volatile'
   ): number {
     const baseTTL = 5 * 60 * 1000; // 5 minutes
-    
+
     let multiplier = 1;
-    
+
     // Adjust based on access frequency
     switch (accessFrequency) {
       case 'high':
@@ -517,7 +522,7 @@ export const CacheUtils = {
         multiplier *= 0.5; // Cache shorter for rarely accessed data
         break;
     }
-    
+
     // Adjust based on data volatility
     switch (dataVolatility) {
       case 'static':
@@ -527,14 +532,16 @@ export const CacheUtils = {
         multiplier *= 0.25; // Cache very short for volatile data
         break;
     }
-    
+
     // Adjust based on data size (smaller data can be cached longer)
-    if (dataSize < 1024) { // Less than 1KB
+    if (dataSize < 1024) {
+      // Less than 1KB
       multiplier *= 1.5;
-    } else if (dataSize > 100 * 1024) { // More than 100KB
+    } else if (dataSize > 100 * 1024) {
+      // More than 100KB
       multiplier *= 0.5;
     }
-    
+
     return Math.round(baseTTL * multiplier);
   },
 };

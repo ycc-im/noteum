@@ -1,9 +1,9 @@
 /**
  * Cache Strategy Factory
- * 
+ *
  * Provides a factory for creating different cache strategies including LRU, LFU, FIFO, and TTL.
  * Supports dynamic strategy switching and performance optimization based on usage patterns.
- * 
+ *
  * @fileoverview Cache strategy factory and implementations
  * @module storage/cache-factory
  */
@@ -67,31 +67,31 @@ export interface StrategyPerformanceMetrics {
 export interface ICacheStrategy<T = any> {
   /** Strategy type identifier */
   readonly type: CacheStrategy;
-  
+
   /** Get item from cache */
   get(key: string): T | undefined;
-  
+
   /** Set item in cache */
   set(key: string, value: T, ttl?: number): void;
-  
+
   /** Delete item from cache */
   delete(key: string): boolean;
-  
+
   /** Clear all cache items */
   clear(): void;
-  
+
   /** Check if item exists */
   has(key: string): boolean;
-  
+
   /** Get cache statistics */
   getStats(): CacheStats;
-  
+
   /** Get performance metrics */
   getPerformanceMetrics(): StrategyPerformanceMetrics;
-  
+
   /** Initialize strategy */
   initialize(): void;
-  
+
   /** Cleanup and destroy strategy */
   destroy(): void;
 }
@@ -101,7 +101,7 @@ export interface ICacheStrategy<T = any> {
  */
 export class LFUCacheStrategy<T = any> implements ICacheStrategy<T> {
   readonly type: CacheStrategy = 'LFU';
-  
+
   private cache = new Map<string, EnhancedCacheEntry<T>>();
   private frequencyBuckets = new Map<number, Set<string>>();
   private minFrequency = 0;
@@ -130,7 +130,7 @@ export class LFUCacheStrategy<T = any> implements ICacheStrategy<T> {
 
   get(key: string): T | undefined {
     const entry = this.cache.get(key);
-    
+
     if (!entry) {
       this.stats.misses++;
       this.updateHitRatio();
@@ -148,7 +148,7 @@ export class LFUCacheStrategy<T = any> implements ICacheStrategy<T> {
 
     // Update frequency
     this.updateFrequency(key, entry);
-    
+
     this.stats.hits++;
     this.updateHitRatio();
     return entry.value;
@@ -183,7 +183,7 @@ export class LFUCacheStrategy<T = any> implements ICacheStrategy<T> {
     this.cache.set(key, entry);
     this.addToFrequencyBucket(key, 1);
     this.updateMinFrequency();
-    
+
     this.stats.itemCount = this.cache.size;
     this.stats.totalSize += size;
   }
@@ -194,11 +194,11 @@ export class LFUCacheStrategy<T = any> implements ICacheStrategy<T> {
 
     this.removeFromFrequencyBucket(key);
     this.cache.delete(key);
-    
+
     this.stats.itemCount = this.cache.size;
     this.stats.totalSize -= entry.size;
     this.updateMinFrequency();
-    
+
     return true;
   }
 
@@ -225,8 +225,12 @@ export class LFUCacheStrategy<T = any> implements ICacheStrategy<T> {
       strategy: this.type,
       hitRatio: this.stats.hitRatio,
       averageAccessTime: 1, // LFU has O(1) access time
-      memoryEfficiency: totalOps > 0 ? this.stats.hitRatio / (this.stats.totalSize / this.maxSizeBytes) : 0,
-      evictionEfficiency: this.stats.evictions > 0 ? this.stats.hits / this.stats.evictions : 0,
+      memoryEfficiency:
+        totalOps > 0
+          ? this.stats.hitRatio / (this.stats.totalSize / this.maxSizeBytes)
+          : 0,
+      evictionEfficiency:
+        this.stats.evictions > 0 ? this.stats.hits / this.stats.evictions : 0,
       totalOperations: totalOps,
     };
   }
@@ -241,7 +245,7 @@ export class LFUCacheStrategy<T = any> implements ICacheStrategy<T> {
 
     // Remove from old frequency bucket
     this.removeFromFrequencyBucket(key);
-    
+
     // Update entry
     entry.frequency = newFreq;
     entry.lastAccessed = Date.now();
@@ -273,18 +277,26 @@ export class LFUCacheStrategy<T = any> implements ICacheStrategy<T> {
   }
 
   private updateMinFrequency(): void {
-    const frequencies = Array.from(this.frequencyBuckets.keys()).sort((a, b) => a - b);
+    const frequencies = Array.from(this.frequencyBuckets.keys()).sort(
+      (a, b) => a - b
+    );
     this.minFrequency = frequencies.length > 0 ? frequencies[0] : 0;
   }
 
   private ensureCapacity(newItemSize: number): void {
     // Check size limit
-    while (this.stats.totalSize + newItemSize > this.maxSizeBytes && this.cache.size > 0) {
+    while (
+      this.stats.totalSize + newItemSize > this.maxSizeBytes &&
+      this.cache.size > 0
+    ) {
       this.evictLFU();
     }
 
     // Check entry count limit
-    while (this.config.maxEntries && this.cache.size >= this.config.maxEntries) {
+    while (
+      this.config.maxEntries &&
+      this.cache.size >= this.config.maxEntries
+    ) {
       this.evictLFU();
     }
   }
@@ -344,7 +356,7 @@ export class LFUCacheStrategy<T = any> implements ICacheStrategy<T> {
  */
 export class FIFOCacheStrategy<T = any> implements ICacheStrategy<T> {
   readonly type: CacheStrategy = 'FIFO';
-  
+
   private cache = new Map<string, EnhancedCacheEntry<T>>();
   private insertionQueue: string[] = [];
   private entryIdCounter = 0;
@@ -371,7 +383,7 @@ export class FIFOCacheStrategy<T = any> implements ICacheStrategy<T> {
 
   get(key: string): T | undefined {
     const entry = this.cache.get(key);
-    
+
     if (!entry) {
       this.stats.misses++;
       this.updateHitRatio();
@@ -389,7 +401,7 @@ export class FIFOCacheStrategy<T = any> implements ICacheStrategy<T> {
     // Update access metadata (but don't change insertion order)
     entry.lastAccessed = Date.now();
     entry.accessCount++;
-    
+
     this.stats.hits++;
     this.updateHitRatio();
     return entry.value;
@@ -423,7 +435,7 @@ export class FIFOCacheStrategy<T = any> implements ICacheStrategy<T> {
 
     this.cache.set(key, entry);
     this.insertionQueue.push(key);
-    
+
     this.stats.itemCount = this.cache.size;
     this.stats.totalSize += size;
   }
@@ -433,16 +445,16 @@ export class FIFOCacheStrategy<T = any> implements ICacheStrategy<T> {
     if (!entry) return false;
 
     this.cache.delete(key);
-    
+
     // Remove from insertion queue
     const index = this.insertionQueue.indexOf(key);
     if (index > -1) {
       this.insertionQueue.splice(index, 1);
     }
-    
+
     this.stats.itemCount = this.cache.size;
     this.stats.totalSize -= entry.size;
-    
+
     return true;
   }
 
@@ -468,8 +480,12 @@ export class FIFOCacheStrategy<T = any> implements ICacheStrategy<T> {
       strategy: this.type,
       hitRatio: this.stats.hitRatio,
       averageAccessTime: 1, // FIFO has O(1) access time
-      memoryEfficiency: totalOps > 0 ? this.stats.hitRatio / (this.stats.totalSize / this.maxSizeBytes) : 0,
-      evictionEfficiency: this.stats.evictions > 0 ? this.stats.hits / this.stats.evictions : 0,
+      memoryEfficiency:
+        totalOps > 0
+          ? this.stats.hitRatio / (this.stats.totalSize / this.maxSizeBytes)
+          : 0,
+      evictionEfficiency:
+        this.stats.evictions > 0 ? this.stats.hits / this.stats.evictions : 0,
       totalOperations: totalOps,
     };
   }
@@ -480,12 +496,18 @@ export class FIFOCacheStrategy<T = any> implements ICacheStrategy<T> {
 
   private ensureCapacity(newItemSize: number): void {
     // Check size limit
-    while (this.stats.totalSize + newItemSize > this.maxSizeBytes && this.cache.size > 0) {
+    while (
+      this.stats.totalSize + newItemSize > this.maxSizeBytes &&
+      this.cache.size > 0
+    ) {
       this.evictFIFO();
     }
 
     // Check entry count limit
-    while (this.config.maxEntries && this.cache.size >= this.config.maxEntries) {
+    while (
+      this.config.maxEntries &&
+      this.cache.size >= this.config.maxEntries
+    ) {
       this.evictFIFO();
     }
   }
@@ -496,7 +518,7 @@ export class FIFOCacheStrategy<T = any> implements ICacheStrategy<T> {
     // Evict the oldest item (first in queue)
     const keyToEvict = this.insertionQueue.shift()!;
     const entry = this.cache.get(keyToEvict);
-    
+
     if (entry) {
       this.cache.delete(keyToEvict);
       this.stats.totalSize -= entry.size;
@@ -544,7 +566,7 @@ export class FIFOCacheStrategy<T = any> implements ICacheStrategy<T> {
  */
 export class AdaptiveCacheStrategy<T = any> implements ICacheStrategy<T> {
   readonly type: CacheStrategy = 'LRU'; // Default type
-  
+
   private currentStrategy: ICacheStrategy<T>;
   private strategies = new Map<CacheStrategy, ICacheStrategy<T>>();
   private performanceHistory: StrategyPerformanceMetrics[] = [];
@@ -554,10 +576,10 @@ export class AdaptiveCacheStrategy<T = any> implements ICacheStrategy<T> {
   constructor(private config: Required<CacheStrategyConfig>) {
     // Initialize all strategies
     this.initializeStrategies();
-    
+
     // Start with LRU as default
     this.currentStrategy = this.strategies.get('LRU')!;
-    
+
     // Start performance monitoring
     if (config.enableAutoAdaptation) {
       this.startPerformanceMonitoring();
@@ -624,7 +646,7 @@ export class AdaptiveCacheStrategy<T = any> implements ICacheStrategy<T> {
     if (this.evaluationTimer) {
       clearInterval(this.evaluationTimer);
     }
-    
+
     for (const strategy of this.strategies.values()) {
       strategy.destroy();
     }
@@ -637,15 +659,25 @@ export class AdaptiveCacheStrategy<T = any> implements ICacheStrategy<T> {
       readonly type: CacheStrategy = 'LRU';
       private cache = new Map<string, EnhancedCacheEntry<T>>();
       // ... LRU implementation would go here
-      get() { return undefined; }
-      set() { }
-      delete() { return false; }
-      clear() { }
-      has() { return false; }
-      getStats() { return {} as CacheStats; }
-      getPerformanceMetrics() { return {} as StrategyPerformanceMetrics; }
-      initialize() { }
-      destroy() { }
+      get() {
+        return undefined;
+      }
+      set() {}
+      delete() {
+        return false;
+      }
+      clear() {}
+      has() {
+        return false;
+      }
+      getStats() {
+        return {} as CacheStats;
+      }
+      getPerformanceMetrics() {
+        return {} as StrategyPerformanceMetrics;
+      }
+      initialize() {}
+      destroy() {}
     })();
 
     this.strategies.set('LRU', lruStrategy);
@@ -670,12 +702,14 @@ export class AdaptiveCacheStrategy<T = any> implements ICacheStrategy<T> {
 
     // Find best performing strategy
     const bestStrategy = this.findBestStrategy();
-    
+
     if (bestStrategy !== this.currentStrategy.type) {
       const improvement = this.calculateImprovement(bestStrategy);
-      
+
       if (improvement > this.adaptationThreshold) {
-        console.debug(`[AdaptiveCache] Switching to ${bestStrategy} strategy (${improvement * 100}% improvement)`);
+        console.debug(
+          `[AdaptiveCache] Switching to ${bestStrategy} strategy (${improvement * 100}% improvement)`
+        );
         this.switchStrategy(bestStrategy);
       }
     }
@@ -689,7 +723,7 @@ export class AdaptiveCacheStrategy<T = any> implements ICacheStrategy<T> {
     for (const [strategy, impl] of this.strategies) {
       const metrics = impl.getPerformanceMetrics();
       const score = metrics.hitRatio * 0.6 + metrics.memoryEfficiency * 0.4;
-      
+
       if (score > bestScore) {
         bestScore = score;
         bestStrategy = strategy;
@@ -701,14 +735,20 @@ export class AdaptiveCacheStrategy<T = any> implements ICacheStrategy<T> {
 
   private calculateImprovement(strategy: CacheStrategy): number {
     const currentMetrics = this.currentStrategy.getPerformanceMetrics();
-    const candidateMetrics = this.strategies.get(strategy)?.getPerformanceMetrics();
-    
+    const candidateMetrics = this.strategies
+      .get(strategy)
+      ?.getPerformanceMetrics();
+
     if (!candidateMetrics) return 0;
 
-    const currentScore = currentMetrics.hitRatio * 0.6 + currentMetrics.memoryEfficiency * 0.4;
-    const candidateScore = candidateMetrics.hitRatio * 0.6 + candidateMetrics.memoryEfficiency * 0.4;
-    
-    return candidateScore > 0 ? (candidateScore - currentScore) / candidateScore : 0;
+    const currentScore =
+      currentMetrics.hitRatio * 0.6 + currentMetrics.memoryEfficiency * 0.4;
+    const candidateScore =
+      candidateMetrics.hitRatio * 0.6 + candidateMetrics.memoryEfficiency * 0.4;
+
+    return candidateScore > 0
+      ? (candidateScore - currentScore) / candidateScore
+      : 0;
   }
 
   private migrateData(from: ICacheStrategy<T>, to: ICacheStrategy<T>): void {
@@ -743,14 +783,14 @@ export class CacheStrategyFactory {
     switch (config.strategy) {
       case 'LFU':
         return new LFUCacheStrategy<T>(fullConfig);
-      
+
       case 'FIFO':
         return new FIFOCacheStrategy<T>(fullConfig);
-      
+
       case 'LRU':
         // Return a wrapper around the existing LRU implementation
         return new AdaptiveCacheStrategy<T>(fullConfig);
-      
+
       default:
         return new AdaptiveCacheStrategy<T>(fullConfig);
     }
@@ -759,7 +799,9 @@ export class CacheStrategyFactory {
   /**
    * Create an adaptive cache that automatically selects the best strategy
    */
-  static createAdaptive<T = any>(config: Partial<CacheStrategyConfig> = {}): AdaptiveCacheStrategy<T> {
+  static createAdaptive<T = any>(
+    config: Partial<CacheStrategyConfig> = {}
+  ): AdaptiveCacheStrategy<T> {
     const fullConfig: Required<CacheStrategyConfig> = {
       enabled: true,
       maxSize: 10,
@@ -786,7 +828,7 @@ export class CachePerformanceAnalyzer {
 
   addMetrics(metrics: StrategyPerformanceMetrics): void {
     this.metrics.push(metrics);
-    
+
     // Keep only last 1000 measurements
     if (this.metrics.length > 1000) {
       this.metrics.shift();
@@ -797,9 +839,12 @@ export class CachePerformanceAnalyzer {
     if (this.metrics.length === 0) return 'LRU';
 
     const strategyScores = new Map<CacheStrategy, number>();
-    
+
     for (const metric of this.metrics) {
-      const score = metric.hitRatio * 0.5 + metric.memoryEfficiency * 0.3 + metric.evictionEfficiency * 0.2;
+      const score =
+        metric.hitRatio * 0.5 +
+        metric.memoryEfficiency * 0.3 +
+        metric.evictionEfficiency * 0.2;
       const currentScore = strategyScores.get(metric.strategy) || 0;
       strategyScores.set(metric.strategy, Math.max(currentScore, score));
     }
@@ -823,8 +868,9 @@ export class CachePerformanceAnalyzer {
     metrics: Record<CacheStrategy, StrategyPerformanceMetrics[]>;
   } {
     const recommendation = this.getBestStrategy();
-    const strategyMetrics: Record<CacheStrategy, StrategyPerformanceMetrics[]> = {} as any;
-    
+    const strategyMetrics: Record<CacheStrategy, StrategyPerformanceMetrics[]> =
+      {} as any;
+
     // Group metrics by strategy
     for (const metric of this.metrics) {
       if (!strategyMetrics[metric.strategy]) {
@@ -847,13 +893,17 @@ export class CachePerformanceAnalyzer {
     recommendation: CacheStrategy
   ): string {
     let analysis = `Recommended strategy: ${recommendation}\\n\\n`;
-    
+
     for (const [strategy, strategyMetrics] of Object.entries(metrics)) {
       if (strategyMetrics.length === 0) continue;
-      
-      const avgHitRatio = strategyMetrics.reduce((sum, m) => sum + m.hitRatio, 0) / strategyMetrics.length;
-      const avgMemoryEff = strategyMetrics.reduce((sum, m) => sum + m.memoryEfficiency, 0) / strategyMetrics.length;
-      
+
+      const avgHitRatio =
+        strategyMetrics.reduce((sum, m) => sum + m.hitRatio, 0) /
+        strategyMetrics.length;
+      const avgMemoryEff =
+        strategyMetrics.reduce((sum, m) => sum + m.memoryEfficiency, 0) /
+        strategyMetrics.length;
+
       analysis += `${strategy}: Hit Ratio ${(avgHitRatio * 100).toFixed(1)}%, Memory Efficiency ${(avgMemoryEff * 100).toFixed(1)}%\\n`;
     }
 

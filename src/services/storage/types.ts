@@ -1,20 +1,20 @@
 /**
  * Core TypeScript type definitions for storage services
- * 
+ *
  * This module defines all TypeScript types used throughout the storage system,
  * including data models, table schemas, and runtime type definitions for Dexie.js.
- * 
+ *
  * @fileoverview Core type definitions for storage services
  * @module storage/types
  */
 
-import type { 
+import type {
   StorageConfig,
   StorageResult,
   StorageError,
   StorageMetadata,
   StorageChange,
-  StorageChangeCallback 
+  StorageChangeCallback,
 } from './interfaces';
 
 // =================== Dexie Database Schema Types ===================
@@ -198,26 +198,26 @@ export interface StorageService {
   set<T = unknown>(key: string, value: T): Promise<void>;
   remove(key: string): Promise<void>;
   clear(): Promise<void>;
-  
-  // Batch operations  
+
+  // Batch operations
   getBatch<T = unknown>(keys: string[]): Promise<Record<string, T>>;
   setBatch<T = unknown>(data: Record<string, T>): Promise<void>;
-  
+
   // Advanced functionality
   exists(key: string): Promise<boolean>;
   keys(): Promise<string[]>;
   size(): Promise<number>;
-  
+
   // Event listening
   onChange<T = unknown>(callback: StorageChangeCallback<T>): () => void;
-  
+
   // Advanced query capabilities
   query<T = unknown>(filter: TypedStorageQuery<T>): Promise<T[]>;
-  
+
   // Storage management
   getUsage(): Promise<{ used: number; available: number; percentage: number }>;
   cleanup(): Promise<void>;
-  
+
   // Transaction support
   transaction<R>(callback: (service: StorageService) => Promise<R>): Promise<R>;
 }
@@ -246,12 +246,14 @@ export interface StorageChangeEvent<T = unknown> extends StorageChange<T> {
 /**
  * Storage event listener type
  */
-export type StorageEventListener<T = unknown> = (event: StorageChangeEvent<T>) => void;
+export type StorageEventListener<T = unknown> = (
+  event: StorageChangeEvent<T>
+) => void;
 
 /**
  * Storage event types
  */
-export type StorageEventType = 
+export type StorageEventType =
   | 'change'
   | 'error'
   | 'quota-exceeded'
@@ -265,7 +267,14 @@ export type StorageEventType =
  */
 export interface StorageOperationError extends StorageError {
   /** Operation that failed */
-  operation: 'get' | 'set' | 'remove' | 'clear' | 'batch' | 'query' | 'transaction';
+  operation:
+    | 'get'
+    | 'set'
+    | 'remove'
+    | 'clear'
+    | 'batch'
+    | 'query'
+    | 'transaction';
   /** Key(s) involved in the operation */
   keys?: string[];
   /** Retry information */
@@ -305,12 +314,18 @@ export interface QuotaExceededError extends StorageError {
  */
 export interface TypedStorageConfig extends StorageConfig {
   /** Type mappings for validation */
-  typeMapping?: Record<string, 'string' | 'number' | 'boolean' | 'object' | 'array'>;
+  typeMapping?: Record<
+    string,
+    'string' | 'number' | 'boolean' | 'object' | 'array'
+  >;
   /** Custom serializers for specific types */
-  serializers?: Record<string, {
-    serialize: (value: unknown) => string;
-    deserialize: (value: string) => unknown;
-  }>;
+  serializers?: Record<
+    string,
+    {
+      serialize: (value: unknown) => string;
+      deserialize: (value: string) => unknown;
+    }
+  >;
   /** Validation rules */
   validation?: {
     /** Maximum key length */
@@ -360,13 +375,13 @@ export interface MigrationResult {
  * Extract record type from table name
  */
 export type RecordTypeMap = {
-  'tokens': TokenRecord;
-  'userPreferences': PreferenceRecord;
-  'appSettings': SettingRecord;
-  'apiCache': CacheRecord;
-  'metadata': MetaRecord;
-  'formDrafts': FormDraftRecord;
-  'offlineData': OfflineDataRecord;
+  tokens: TokenRecord;
+  userPreferences: PreferenceRecord;
+  appSettings: SettingRecord;
+  apiCache: CacheRecord;
+  metadata: MetaRecord;
+  formDrafts: FormDraftRecord;
+  offlineData: OfflineDataRecord;
 };
 
 /**
@@ -387,7 +402,11 @@ export type StorageAdapterType = 'indexeddb' | 'localstorage' | 'memory';
 /**
  * Storage operation status
  */
-export type StorageOperationStatus = 'pending' | 'in-progress' | 'completed' | 'failed';
+export type StorageOperationStatus =
+  | 'pending'
+  | 'in-progress'
+  | 'completed'
+  | 'failed';
 
 /**
  * Key-value pair type

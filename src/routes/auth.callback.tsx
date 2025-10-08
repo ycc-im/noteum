@@ -1,47 +1,47 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useHandleSignInCallback } from '@logto/react'
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useHandleSignInCallback } from '@logto/react';
 
 export const Route = createFileRoute('/auth/callback')({
   component: AuthCallbackPage,
-})
+});
 
 /**
  * Callback page for handling Logto authentication response
  * Processes the authorization code and redirects to intended destination
  */
 function AuthCallbackPage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // Use the correct Logto hook for handling sign-in callback
   const { isLoading } = useHandleSignInCallback(() => {
-    console.log('Logto 登录回调处理完成')
+    console.log('Logto 登录回调处理完成');
 
-    let redirectTo = '/' // default redirect to home
+    let redirectTo = '/'; // default redirect to home
 
     // Extract redirect destination from URL state parameter (safe for SSR)
     if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search)
-      const state = urlParams.get('state')
+      const urlParams = new URLSearchParams(window.location.search);
+      const state = urlParams.get('state');
 
       if (state) {
         try {
-          const stateData = JSON.parse(state)
+          const stateData = JSON.parse(state);
           if (stateData.redirect) {
-            redirectTo = stateData.redirect
+            redirectTo = stateData.redirect;
           }
         } catch (error) {
-          console.warn('Failed to parse callback state:', error)
+          console.warn('Failed to parse callback state:', error);
         }
       }
     }
 
-    console.log('准备跳转到:', redirectTo)
+    console.log('准备跳转到:', redirectTo);
 
     // Navigate to the intended destination
     setTimeout(() => {
-      navigate({ to: redirectTo, replace: true })
-    }, 500)
-  })
+      navigate({ to: redirectTo, replace: true });
+    }, 500);
+  });
 
   // Show loading while processing the callback
   if (isLoading) {
@@ -55,7 +55,7 @@ function AuthCallbackPage() {
           <p className="mt-2 text-gray-600">请稍候，正在验证您的身份...</p>
         </div>
       </div>
-    )
+    );
   }
 
   // This should not be shown as the callback should handle redirect
@@ -67,5 +67,5 @@ function AuthCallbackPage() {
         <p className="text-gray-600">正在跳转...</p>
       </div>
     </div>
-  )
+  );
 }

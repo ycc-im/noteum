@@ -1,9 +1,9 @@
 /**
  * Storage service module entry point
- * 
+ *
  * This module exports all storage-related interfaces, types, and implementations
  * for the Noteum application local storage system.
- * 
+ *
  * @fileoverview Main entry point for storage services
  * @module storage
  */
@@ -41,19 +41,19 @@ export type {
 export const STORAGE_CONSTANTS = {
   /** Default database name */
   DEFAULT_DB_NAME: 'noteum_storage',
-  
+
   /** Default database version */
   DEFAULT_DB_VERSION: 1,
-  
+
   /** Default maximum size limit (100MB) */
   DEFAULT_MAX_SIZE: 100 * 1024 * 1024,
-  
+
   /** Storage type identifiers */
   STORAGE_TYPES: {
     INDEXEDDB: 'indexeddb' as const,
     LOCALSTORAGE: 'localstorage' as const,
   },
-  
+
   /** Error codes */
   ERROR_CODES: {
     INITIALIZATION_FAILED: 'INIT_FAILED',
@@ -76,12 +76,12 @@ export async function isIndexedDBAvailable(): Promise<boolean> {
     if (!('indexedDB' in window)) {
       return false;
     }
-    
+
     // Test actual functionality with a simple operation
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const testDB = 'noteum_storage_test';
       const request = indexedDB.open(testDB, 1);
-      
+
       request.onerror = () => resolve(false);
       request.onsuccess = () => {
         const db = request.result;
@@ -90,7 +90,7 @@ export async function isIndexedDBAvailable(): Promise<boolean> {
         indexedDB.deleteDatabase(testDB);
         resolve(true);
       };
-      request.onupgradeneeded = (event) => {
+      request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result;
         // Create a test object store
         if (!db.objectStoreNames.contains('test')) {
@@ -112,11 +112,11 @@ export function isLocalStorageAvailable(): boolean {
   try {
     const testKey = '__noteum_storage_test__';
     const testValue = 'test';
-    
+
     localStorage.setItem(testKey, testValue);
     const retrieved = localStorage.getItem(testKey);
     localStorage.removeItem(testKey);
-    
+
     return retrieved === testValue;
   } catch (error) {
     console.warn('localStorage availability check failed:', error);
@@ -128,14 +128,16 @@ export function isLocalStorageAvailable(): boolean {
  * Get the best available storage type for the current environment
  * @returns Promise<'indexeddb' | 'localstorage' | null>
  */
-export async function getBestStorageType(): Promise<'indexeddb' | 'localstorage' | null> {
+export async function getBestStorageType(): Promise<
+  'indexeddb' | 'localstorage' | null
+> {
   if (await isIndexedDBAvailable()) {
     return STORAGE_CONSTANTS.STORAGE_TYPES.INDEXEDDB;
   }
-  
+
   if (isLocalStorageAvailable()) {
     return STORAGE_CONSTANTS.STORAGE_TYPES.LOCALSTORAGE;
   }
-  
+
   return null;
 }

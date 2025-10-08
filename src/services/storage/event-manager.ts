@@ -1,9 +1,9 @@
 /**
  * Universal Storage Event Manager
- * 
+ *
  * Provides a robust, type-safe event management system for storage operations.
  * Supports event filtering, debouncing, throttling, and memory leak prevention.
- * 
+ *
  * @fileoverview Storage event management system
  * @module storage/event-manager
  */
@@ -21,7 +21,7 @@ import type {
   EventBatch,
   EventHistoryEntry,
   EventPriority,
-  DEFAULT_EVENT_CONFIG
+  DEFAULT_EVENT_CONFIG,
 } from './events';
 
 /**
@@ -53,7 +53,10 @@ interface ListenerRegistration<T extends StorageEventType = StorageEventType> {
  */
 export class StorageEventManager implements StorageEventEmitter {
   private readonly config: Required<EventDispatcherConfig>;
-  private readonly listeners = new Map<StorageEventType, Set<ListenerRegistration>>();
+  private readonly listeners = new Map<
+    StorageEventType,
+    Set<ListenerRegistration>
+  >();
   private readonly listenerIdCounter = { value: 0 };
   private readonly eventHistory: EventHistoryEntry[] = [];
   private readonly maxHistorySize = 1000;
@@ -73,16 +76,18 @@ export class StorageEventManager implements StorageEventEmitter {
     options: EventListenerOptions = {}
   ): () => void {
     this.validateNotDestroyed();
-    
+
     if (!this.listeners.has(eventType)) {
       this.listeners.set(eventType, new Set());
     }
 
     const eventListeners = this.listeners.get(eventType)!;
-    
+
     // Check max listeners limit
     if (eventListeners.size >= this.config.maxListeners) {
-      throw new Error(`Maximum number of listeners (${this.config.maxListeners}) exceeded for event type: ${eventType}`);
+      throw new Error(
+        `Maximum number of listeners (${this.config.maxListeners}) exceeded for event type: ${eventType}`
+      );
     }
 
     const registration: ListenerRegistration<T> = {
@@ -108,7 +113,11 @@ export class StorageEventManager implements StorageEventEmitter {
     });
 
     // Return unsubscribe function
-    return () => this.removeListenerRegistration(eventType, registration as ListenerRegistration);
+    return () =>
+      this.removeListenerRegistration(
+        eventType,
+        registration as ListenerRegistration
+      );
   }
 
   /**
@@ -129,7 +138,7 @@ export class StorageEventManager implements StorageEventEmitter {
     listener: TypedStorageEventListener<T>
   ): void {
     this.validateNotDestroyed();
-    
+
     const eventListeners = this.listeners.get(eventType);
     if (!eventListeners) return;
 
@@ -147,7 +156,7 @@ export class StorageEventManager implements StorageEventEmitter {
    */
   removeAllListeners(eventType?: StorageEventType): void {
     this.validateNotDestroyed();
-    
+
     if (eventType) {
       const eventListeners = this.listeners.get(eventType);
       if (eventListeners) {
@@ -176,10 +185,10 @@ export class StorageEventManager implements StorageEventEmitter {
    */
   emit<T extends StorageEvent>(event: T): void {
     this.validateNotDestroyed();
-    
+
     const startTime = performance.now();
     const eventListeners = this.listeners.get(event.type);
-    
+
     if (!eventListeners || eventListeners.size === 0) {
       return;
     }
@@ -190,7 +199,7 @@ export class StorageEventManager implements StorageEventEmitter {
     // Process listeners
     for (const registration of Array.from(eventListeners)) {
       if (context.propagationStopped) break;
-      
+
       if (this.shouldExecuteListener(registration, event)) {
         this.executeListener(registration, event, context);
         listenerCount++;
@@ -269,13 +278,13 @@ export class StorageEventManager implements StorageEventEmitter {
 
     // Clear all listeners and timers
     this.removeAllListeners();
-    
+
     // Clear history
     this.clearEventHistory();
-    
+
     // Mark as destroyed
     this.isDestroyed = true;
-    
+
     this.logEvent('event-manager-destroyed', {});
   }
 
@@ -317,7 +326,10 @@ export class StorageEventManager implements StorageEventEmitter {
     event: StorageEvent
   ): boolean {
     // Check source filter
-    if (registration.options.source && event.source !== registration.options.source) {
+    if (
+      registration.options.source &&
+      event.source !== registration.options.source
+    ) {
       return false;
     }
 
@@ -325,7 +337,10 @@ export class StorageEventManager implements StorageEventEmitter {
     if (registration.options.keyPattern && event.type === 'change') {
       const changeEvent = event as any;
       const key = changeEvent.data?.key;
-      if (key && !this.matchesKeyPattern(key, registration.options.keyPattern)) {
+      if (
+        key &&
+        !this.matchesKeyPattern(key, registration.options.keyPattern)
+      ) {
         return false;
       }
     }
@@ -367,7 +382,10 @@ export class StorageEventManager implements StorageEventEmitter {
     // Apply debouncing if configured
     if (registration.options.debounce > 0) {
       this.clearDebounceTimer(registration);
-      registration.debounceTimer = window.setTimeout(execute, registration.options.debounce);
+      registration.debounceTimer = window.setTimeout(
+        execute,
+        registration.options.debounce
+      );
     } else {
       execute();
     }
@@ -388,10 +406,18 @@ export class StorageEventManager implements StorageEventEmitter {
       event,
       source: event.source,
       timestamp: new Date(),
-      preventDefault: () => { defaultPrevented = true; },
-      stopPropagation: () => { propagationStopped = true; },
-      get defaultPrevented() { return defaultPrevented; },
-      get propagationStopped() { return propagationStopped; },
+      preventDefault: () => {
+        defaultPrevented = true;
+      },
+      stopPropagation: () => {
+        propagationStopped = true;
+      },
+      get defaultPrevented() {
+        return defaultPrevented;
+      },
+      get propagationStopped() {
+        return propagationStopped;
+      },
     };
   }
 
@@ -411,7 +437,10 @@ export class StorageEventManager implements StorageEventEmitter {
 
     // Limit history size
     if (this.eventHistory.length > this.maxHistorySize) {
-      this.eventHistory.splice(0, this.eventHistory.length - this.maxHistorySize);
+      this.eventHistory.splice(
+        0,
+        this.eventHistory.length - this.maxHistorySize
+      );
     }
   }
 
@@ -419,7 +448,7 @@ export class StorageEventManager implements StorageEventEmitter {
     // Periodic cleanup of expired listeners and history
     setInterval(() => {
       if (this.isDestroyed) return;
-      
+
       // Clean up expired debounce timers
       for (const eventListeners of this.listeners.values()) {
         for (const registration of eventListeners) {
@@ -439,7 +468,9 @@ export class StorageEventManager implements StorageEventEmitter {
 /**
  * Create a new storage event manager instance
  */
-export function createStorageEventManager(config?: EventDispatcherConfig): StorageEventManager {
+export function createStorageEventManager(
+  config?: EventDispatcherConfig
+): StorageEventManager {
   return new StorageEventManager(config);
 }
 

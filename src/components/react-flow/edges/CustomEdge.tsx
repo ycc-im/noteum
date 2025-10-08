@@ -1,9 +1,9 @@
-import { EdgeProps, getSmoothStepPath, EdgeLabelRenderer } from 'reactflow'
+import { EdgeProps, getSmoothStepPath, EdgeLabelRenderer } from 'reactflow';
 
 export interface CustomEdgeData {
-  label?: string
-  type?: 'default' | 'success' | 'error' | 'warning'
-  animated?: boolean
+  label?: string;
+  type?: 'default' | 'success' | 'error' | 'warning';
+  animated?: boolean;
 }
 
 export function CustomEdge({
@@ -24,50 +24,56 @@ export function CustomEdge({
     targetX,
     targetY,
     targetPosition,
-  })
+  });
 
   const getEdgeStyle = () => {
     const baseStyle = {
       strokeWidth: selected ? 3 : 2,
-    }
+    };
 
     switch (data?.type) {
       case 'success':
         return {
           ...baseStyle,
           stroke: '#10b981',
-        }
+        };
       case 'error':
         return {
           ...baseStyle,
           stroke: '#ef4444',
-        }
+        };
       case 'warning':
         return {
           ...baseStyle,
           stroke: '#f59e0b',
-        }
+        };
       default:
         return {
           ...baseStyle,
           stroke: selected ? '#3b82f6' : '#6b7280',
-        }
+        };
     }
-  }
+  };
 
   const getMarkerEnd = () => {
-    const color = data?.type === 'success' ? '#10b981' : 
-                  data?.type === 'error' ? '#ef4444' : 
-                  data?.type === 'warning' ? '#f59e0b' : 
-                  selected ? '#3b82f6' : '#6b7280'
+    const color =
+      data?.type === 'success'
+        ? '#10b981'
+        : data?.type === 'error'
+          ? '#ef4444'
+          : data?.type === 'warning'
+            ? '#f59e0b'
+            : selected
+              ? '#3b82f6'
+              : '#6b7280';
 
     return {
       type: 'arrowclosed' as const,
       width: 20,
       height: 20,
       color,
-    }
-  }
+    };
+  };
 
   return (
     <>
@@ -78,7 +84,7 @@ export function CustomEdge({
         style={getEdgeStyle()}
         markerEnd={`url(#${getMarkerEnd().type})`}
       />
-      
+
       {data?.label && (
         <EdgeLabelRenderer>
           <div
@@ -115,5 +121,5 @@ export function CustomEdge({
         }
       `}</style>
     </>
-  )
+  );
 }

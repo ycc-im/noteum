@@ -71,6 +71,6 @@
 // export { CommonPb, UserPb, NotePb, UserGrpcPb, NoteGrpcPb };
 
 // Database types for Noteum PostgreSQL schema
-export * from "./database";
-export * from "./notes";
-export * from "./users";
+export * from './database';
+export * from './notes';
+export * from './users';

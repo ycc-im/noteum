@@ -1,5 +1,11 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 export default function Dashboard() {
   return (
@@ -16,9 +22,7 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="mt-4 flex md:mt-0 md:ml-4">
-            <Button>
-              新建笔记
-            </Button>
+            <Button>新建笔记</Button>
           </div>
         </div>
 
@@ -30,7 +34,9 @@ export default function Dashboard() {
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-                      <span className="text-primary-foreground text-sm font-medium">📝</span>
+                      <span className="text-primary-foreground text-sm font-medium">
+                        📝
+                      </span>
                     </div>
                   </div>
                   <div className="ml-5 w-0 flex-1">
@@ -38,7 +44,9 @@ export default function Dashboard() {
                       <dt className="text-sm font-medium text-muted-foreground truncate">
                         总笔记数
                       </dt>
-                      <dd className="text-lg font-medium text-foreground">42</dd>
+                      <dd className="text-lg font-medium text-foreground">
+                        42
+                      </dd>
                     </dl>
                   </div>
                 </div>
@@ -58,7 +66,9 @@ export default function Dashboard() {
                       <dt className="text-sm font-medium text-muted-foreground truncate">
                         连接数
                       </dt>
-                      <dd className="text-lg font-medium text-foreground">128</dd>
+                      <dd className="text-lg font-medium text-foreground">
+                        128
+                      </dd>
                     </dl>
                   </div>
                 </div>
@@ -98,7 +108,9 @@ export default function Dashboard() {
                       <dt className="text-sm font-medium text-muted-foreground truncate">
                         本周活动
                       </dt>
-                      <dd className="text-lg font-medium text-foreground">15</dd>
+                      <dd className="text-lg font-medium text-foreground">
+                        15
+                      </dd>
                     </dl>
                   </div>
                 </div>
@@ -111,12 +123,8 @@ export default function Dashboard() {
         <div className="mt-8">
           <Card>
             <CardHeader>
-              <CardTitle>
-                最近的笔记
-              </CardTitle>
-              <CardDescription>
-                您最近编辑或创建的笔记
-              </CardDescription>
+              <CardTitle>最近的笔记</CardTitle>
+              <CardDescription>您最近编辑或创建的笔记</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="mt-2 space-y-3">
@@ -134,9 +142,14 @@ export default function Dashboard() {
                       <p className="text-sm font-medium text-foreground">
                         {note.title}
                       </p>
-                      <p className="text-xs text-muted-foreground">{note.time}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {note.time}
+                      </p>
                     </div>
-                    <Button variant="link" className="text-primary hover:text-primary/90 text-sm font-medium p-0 h-auto">
+                    <Button
+                      variant="link"
+                      className="text-primary hover:text-primary/90 text-sm font-medium p-0 h-auto"
+                    >
                       编辑
                     </Button>
                   </div>
@@ -147,5 +160,5 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 }

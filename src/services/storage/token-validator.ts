@@ -1,9 +1,9 @@
 /**
  * Token validator service for token validation and security checks
- * 
+ *
  * This module provides comprehensive token validation capabilities including
  * expiration checks, format validation, and security policy enforcement.
- * 
+ *
  * @fileoverview Token validation utilities for secure storage
  * @module storage/token-validator
  */
@@ -106,7 +106,10 @@ export class TokenValidatorService {
   /**
    * Validate a token string
    */
-  async validateToken(token: string, type?: string): Promise<TokenValidationResult> {
+  async validateToken(
+    token: string,
+    type?: string
+  ): Promise<TokenValidationResult> {
     const result: TokenValidationResult = {
       valid: true,
       errors: [],
@@ -128,7 +131,9 @@ export class TokenValidatorService {
     // Format validation
     if (type && this.config.patterns![type]) {
       if (!this.config.patterns![type].test(token)) {
-        result.errors.push(`Token does not match expected format for type: ${type}`);
+        result.errors.push(
+          `Token does not match expected format for type: ${type}`
+        );
         result.valid = false;
       }
     }
@@ -143,7 +148,11 @@ export class TokenValidatorService {
     result.metadata!.securityScore = this.calculateSecurityScore(token, type);
 
     // Apply security policy
-    const policyResult = this.applySecurityPolicy(token, type, result.metadata!.securityScore!);
+    const policyResult = this.applySecurityPolicy(
+      token,
+      type,
+      result.metadata!.securityScore!
+    );
     if (!policyResult.valid) {
       result.errors.push(...policyResult.errors);
       result.warnings.push(...policyResult.warnings);
@@ -156,7 +165,9 @@ export class TokenValidatorService {
   /**
    * Validate a token record
    */
-  async validateTokenRecord(record: TokenRecord): Promise<TokenValidationResult> {
+  async validateTokenRecord(
+    record: TokenRecord
+  ): Promise<TokenValidationResult> {
     const result = await this.validateToken(record.value, record.type);
 
     // Check expiration
@@ -170,13 +181,17 @@ export class TokenValidatorService {
       if (timeUntilExpiration < 0) {
         const expiredFor = Math.abs(timeUntilExpiration);
         if (expiredFor > (this.config.gracePeriod || 0)) {
-          result.errors.push(`Token expired ${Math.floor(expiredFor / 60000)} minutes ago`);
+          result.errors.push(
+            `Token expired ${Math.floor(expiredFor / 60000)} minutes ago`
+          );
           result.valid = false;
         } else {
           result.warnings.push(`Token expired recently (within grace period)`);
         }
       } else if (timeUntilExpiration < 5 * 60 * 1000) {
-        result.warnings.push(`Token expires soon (in ${Math.floor(timeUntilExpiration / 60000)} minutes)`);
+        result.warnings.push(
+          `Token expires soon (in ${Math.floor(timeUntilExpiration / 60000)} minutes)`
+        );
       }
     }
 
@@ -203,13 +218,16 @@ export class TokenValidatorService {
     const expirationTime = new Date(record.expiredAt);
     const gracePeriod = this.config.gracePeriod || 0;
 
-    return (expirationTime.getTime() + gracePeriod) < now.getTime();
+    return expirationTime.getTime() + gracePeriod < now.getTime();
   }
 
   /**
    * Check if a token needs refresh
    */
-  needsRefresh(record: TokenRecord, refreshThreshold: number = 5 * 60 * 1000): boolean {
+  needsRefresh(
+    record: TokenRecord,
+    refreshThreshold: number = 5 * 60 * 1000
+  ): boolean {
     if (!record.expiredAt) {
       return false;
     }
@@ -264,7 +282,9 @@ export class TokenValidatorService {
     const hasUpper = /[A-Z]/.test(token);
     const hasSpecial = /[^A-Za-z0-9]/.test(token);
 
-    const complexity = [hasNumbers, hasLower, hasUpper, hasSpecial].filter(Boolean).length;
+    const complexity = [hasNumbers, hasLower, hasUpper, hasSpecial].filter(
+      Boolean
+    ).length;
     score += complexity * 5;
 
     // Type bonus
@@ -282,7 +302,11 @@ export class TokenValidatorService {
   /**
    * Apply security policy to token validation
    */
-  private applySecurityPolicy(token: string, type: string, securityScore: number): TokenValidationResult {
+  private applySecurityPolicy(
+    token: string,
+    type: string,
+    securityScore: number
+  ): TokenValidationResult {
     const result: TokenValidationResult = {
       valid: true,
       errors: [],
@@ -291,12 +315,18 @@ export class TokenValidatorService {
 
     // Check security score
     if (securityScore < this.securityPolicy.minSecurityScore) {
-      result.errors.push(`Token security score too low: ${securityScore} (min: ${this.securityPolicy.minSecurityScore})`);
+      result.errors.push(
+        `Token security score too low: ${securityScore} (min: ${this.securityPolicy.minSecurityScore})`
+      );
       result.valid = false;
     }
 
     // Check allowed types
-    if (type && !this.securityPolicy.allowedTypes.includes(type) && type !== 'unknown') {
+    if (
+      type &&
+      !this.securityPolicy.allowedTypes.includes(type) &&
+      type !== 'unknown'
+    ) {
       result.errors.push(`Token type not allowed: ${type}`);
       result.valid = false;
     }
@@ -347,11 +377,16 @@ export const defaultTokenValidator = new TokenValidatorService();
 /**
  * Convenience functions for common validation tasks
  */
-export async function validateToken(token: string, type?: string): Promise<TokenValidationResult> {
+export async function validateToken(
+  token: string,
+  type?: string
+): Promise<TokenValidationResult> {
   return defaultTokenValidator.validateToken(token, type);
 }
 
-export async function validateTokenRecord(record: TokenRecord): Promise<TokenValidationResult> {
+export async function validateTokenRecord(
+  record: TokenRecord
+): Promise<TokenValidationResult> {
   return defaultTokenValidator.validateTokenRecord(record);
 }
 
@@ -359,7 +394,10 @@ export function isTokenExpired(record: TokenRecord): boolean {
   return defaultTokenValidator.isTokenExpired(record);
 }
 
-export function needsTokenRefresh(record: TokenRecord, threshold?: number): boolean {
+export function needsTokenRefresh(
+  record: TokenRecord,
+  threshold?: number
+): boolean {
   return defaultTokenValidator.needsRefresh(record, threshold);
 }
 

@@ -1,9 +1,9 @@
 /**
  * Database migration utilities and version management
- * 
+ *
  * This module provides utilities for managing database schema migrations,
  * version upgrades, and backward compatibility handling for the NoteumDB.
- * 
+ *
  * @fileoverview Database migration management
  * @module storage/migrations
  */
@@ -97,11 +97,15 @@ export class MigrationRegistry {
   register(migration: MigrationFunction): void {
     // Validate migration
     if (!migration.name || !migration.migrate) {
-      throw new Error('Invalid migration: name and migrate function are required');
+      throw new Error(
+        'Invalid migration: name and migrate function are required'
+      );
     }
 
     if (migration.fromVersion >= migration.toVersion) {
-      throw new Error('Invalid migration: toVersion must be greater than fromVersion');
+      throw new Error(
+        'Invalid migration: toVersion must be greater than fromVersion'
+      );
     }
 
     // Check for duplicate migrations
@@ -183,7 +187,10 @@ export class DatabaseMigrator {
       // Fallback to schema constant
       return SCHEMA_CONSTANTS.CURRENT_VERSION;
     } catch (error) {
-      console.warn('[DatabaseMigrator] Could not get current version, using default:', error);
+      console.warn(
+        '[DatabaseMigrator] Could not get current version, using default:',
+        error
+      );
       return SCHEMA_CONSTANTS.CURRENT_VERSION;
     }
   }
@@ -212,12 +219,19 @@ export class DatabaseMigrator {
     }
 
     // Find migration path
-    const migrationPath = SchemaMigrationHelper.getMigrationPath(currentVersion, target);
-    
+    const migrationPath = SchemaMigrationHelper.getMigrationPath(
+      currentVersion,
+      target
+    );
+
     for (const version of migrationPath) {
-      const versionMigrations = this.registry.getMigrationsFromVersion(version - 1);
-      const targetMigration = versionMigrations.find(m => m.toVersion === version);
-      
+      const versionMigrations = this.registry.getMigrationsFromVersion(
+        version - 1
+      );
+      const targetMigration = versionMigrations.find(
+        m => m.toVersion === version
+      );
+
       if (targetMigration) {
         plan.migrations.push(targetMigration);
         plan.estimatedDuration += 1000; // Estimate 1 second per migration
@@ -233,7 +247,10 @@ export class DatabaseMigrator {
   /**
    * Execute migration plan
    */
-  async executeMigrationPlan(plan: MigrationPlan, createBackup = true): Promise<MigrationResult[]> {
+  async executeMigrationPlan(
+    plan: MigrationPlan,
+    createBackup = true
+  ): Promise<MigrationResult[]> {
     const results: MigrationResult[] = [];
 
     // Create backup if recommended and requested
@@ -258,7 +275,9 @@ export class DatabaseMigrator {
   /**
    * Execute a single migration
    */
-  async executeMigration(migration: MigrationFunction): Promise<MigrationResult> {
+  async executeMigration(
+    migration: MigrationFunction
+  ): Promise<MigrationResult> {
     const startTime = Date.now();
     const result: MigrationResult = {
       success: false,
@@ -280,21 +299,33 @@ export class DatabaseMigrator {
       result.success = true;
       result.duration = Date.now() - startTime;
 
-      console.log(`[DatabaseMigrator] Migration completed: ${migration.name} (${result.duration}ms)`);
+      console.log(
+        `[DatabaseMigrator] Migration completed: ${migration.name} (${result.duration}ms)`
+      );
     } catch (error) {
       result.error = error instanceof Error ? error.message : String(error);
       result.duration = Date.now() - startTime;
 
-      console.error(`[DatabaseMigrator] Migration failed: ${migration.name}`, error);
+      console.error(
+        `[DatabaseMigrator] Migration failed: ${migration.name}`,
+        error
+      );
 
       // Attempt rollback if available
       if (migration.rollback) {
         try {
-          console.log(`[DatabaseMigrator] Attempting rollback for: ${migration.name}`);
+          console.log(
+            `[DatabaseMigrator] Attempting rollback for: ${migration.name}`
+          );
           await migration.rollback(this.db);
-          console.log(`[DatabaseMigrator] Rollback completed for: ${migration.name}`);
+          console.log(
+            `[DatabaseMigrator] Rollback completed for: ${migration.name}`
+          );
         } catch (rollbackError) {
-          console.error(`[DatabaseMigrator] Rollback failed for: ${migration.name}`, rollbackError);
+          console.error(
+            `[DatabaseMigrator] Rollback failed for: ${migration.name}`,
+            rollbackError
+          );
         }
       }
     }
@@ -345,7 +376,9 @@ export class DatabaseMigrator {
         this.backups = this.backups.slice(-5);
       }
 
-      console.log(`[DatabaseMigrator] Backup created: ${backup.metadata.totalRecords} records`);
+      console.log(
+        `[DatabaseMigrator] Backup created: ${backup.metadata.totalRecords} records`
+      );
     } catch (error) {
       console.error('[DatabaseMigrator] Failed to create backup:', error);
       throw error;
@@ -362,11 +395,12 @@ export class DatabaseMigrator {
       console.log('[DatabaseMigrator] Starting database restore...');
 
       // Clear existing data
-      await this.db.transaction('rw', 
-        this.db.tokens, 
-        this.db.userPreferences, 
-        this.db.appSettings, 
-        this.db.apiCache, 
+      await this.db.transaction(
+        'rw',
+        this.db.tokens,
+        this.db.userPreferences,
+        this.db.appSettings,
+        this.db.apiCache,
         this.db.metadata,
         async () => {
           await this.db.tokens.clear();
@@ -396,7 +430,9 @@ export class DatabaseMigrator {
       // Update version
       await this.updateDatabaseVersion(backup.version);
 
-      console.log(`[DatabaseMigrator] Restore completed: ${backup.metadata.totalRecords} records`);
+      console.log(
+        `[DatabaseMigrator] Restore completed: ${backup.metadata.totalRecords} records`
+      );
     } catch (error) {
       console.error('[DatabaseMigrator] Failed to restore backup:', error);
       throw error;
@@ -452,7 +488,10 @@ initializeDefaultMigrations();
 /**
  * Create migration helper for a database instance
  */
-export function createMigrator(db: NoteumDB, registry = defaultMigrationRegistry): DatabaseMigrator {
+export function createMigrator(
+  db: NoteumDB,
+  registry = defaultMigrationRegistry
+): DatabaseMigrator {
   return new DatabaseMigrator(db, registry);
 }
 
@@ -462,16 +501,22 @@ export function createMigrator(db: NoteumDB, registry = defaultMigrationRegistry
 export async function isMigrationNeeded(db: NoteumDB): Promise<boolean> {
   const migrator = createMigrator(db);
   const currentVersion = await migrator.getCurrentVersion();
-  return SchemaMigrationHelper.requiresMigration(currentVersion, SCHEMA_CONSTANTS.CURRENT_VERSION);
+  return SchemaMigrationHelper.requiresMigration(
+    currentVersion,
+    SCHEMA_CONSTANTS.CURRENT_VERSION
+  );
 }
 
 /**
  * Utility function to auto-migrate database
  */
-export async function autoMigrate(db: NoteumDB, createBackup = true): Promise<MigrationResult[]> {
+export async function autoMigrate(
+  db: NoteumDB,
+  createBackup = true
+): Promise<MigrationResult[]> {
   const migrator = createMigrator(db);
   const plan = await migrator.createMigrationPlan();
-  
+
   if (plan.migrations.length === 0) {
     return []; // No migrations needed
   }

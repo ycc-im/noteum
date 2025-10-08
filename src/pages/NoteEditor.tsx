@@ -1,12 +1,12 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 /**
  * Note Editor page component - placeholder implementation
  * This will be the main editor interface with workflow-based editing capabilities
  */
 export default function NoteEditor() {
-  const [title, setTitle] = useState('未命名笔记')
-  const [content, setContent] = useState('')
+  const [title, setTitle] = useState('未命名笔记');
+  const [content, setContent] = useState('');
 
   return (
     <div className="min-h-screen bg-white">
@@ -33,7 +33,7 @@ export default function NoteEditor() {
               <input
                 type="text"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={e => setTitle(e.target.value)}
                 className="text-xl font-medium text-gray-900 border-none outline-none bg-transparent"
                 placeholder="输入笔记标题..."
               />
@@ -121,7 +121,7 @@ export default function NoteEditor() {
                 </div>
                 <textarea
                   value={content}
-                  onChange={(e) => setContent(e.target.value)}
+                  onChange={e => setContent(e.target.value)}
                   className="w-full h-96 p-4 border-none outline-none resize-none"
                   placeholder="开始编写您的笔记内容...
 
@@ -201,5 +201,5 @@ export default function NoteEditor() {
         </div>
       </div>
     </div>
-  )
+  );
 }

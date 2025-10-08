@@ -1,9 +1,9 @@
 /**
  * Migration validator service for ensuring data integrity during migrations
- * 
+ *
  * This service provides comprehensive validation capabilities for migration operations,
  * including data integrity checks, consistency validation, and corruption detection.
- * 
+ *
  * @fileoverview Migration validation service
  * @module storage/migration-validator
  */
@@ -31,7 +31,13 @@ export interface ValidationResult {
  */
 export interface ValidationError {
   /** Error code for categorization */
-  code: 'MISSING_DATA' | 'DATA_MISMATCH' | 'CORRUPTION_DETECTED' | 'INVALID_FORMAT' | 'SIZE_MISMATCH' | 'TYPE_MISMATCH';
+  code:
+    | 'MISSING_DATA'
+    | 'DATA_MISMATCH'
+    | 'CORRUPTION_DETECTED'
+    | 'INVALID_FORMAT'
+    | 'SIZE_MISMATCH'
+    | 'TYPE_MISMATCH';
   /** Human-readable error message */
   message: string;
   /** Key that failed validation */
@@ -49,7 +55,11 @@ export interface ValidationError {
  */
 export interface ValidationWarning {
   /** Warning code */
-  code: 'PERFORMANCE_IMPACT' | 'COMPATIBILITY_ISSUE' | 'DEPRECATED_FORMAT' | 'POTENTIAL_ISSUE';
+  code:
+    | 'PERFORMANCE_IMPACT'
+    | 'COMPATIBILITY_ISSUE'
+    | 'DEPRECATED_FORMAT'
+    | 'POTENTIAL_ISSUE';
   /** Warning message */
   message: string;
   /** Key related to warning */
@@ -154,7 +164,10 @@ export class MigrationValidator {
   /**
    * Initialize validator service
    */
-  constructor(storageService: StorageService, config?: Partial<ValidationConfig>) {
+  constructor(
+    storageService: StorageService,
+    config?: Partial<ValidationConfig>
+  ) {
     this.storageService = storageService;
     this.config = { ...DEFAULT_VALIDATION_CONFIG, ...config };
   }
@@ -167,24 +180,31 @@ export class MigrationValidator {
     targetTokens?: TokenRecord[]
   ): Promise<BatchValidationResult> {
     const startTime = Date.now();
-    this.logInfo('Starting migration validation', { 
+    this.logInfo('Starting migration validation', {
       sourceCount: sourceTokens.length,
-      targetCount: targetTokens?.length || 'unknown'
+      targetCount: targetTokens?.length || 'unknown',
     });
 
     try {
       // If target tokens not provided, fetch from storage
-      const actualTargetTokens = targetTokens || await this.fetchTargetTokens(sourceTokens);
-      
+      const actualTargetTokens =
+        targetTokens || (await this.fetchTargetTokens(sourceTokens));
+
       // Determine validation method based on dataset size
       const method = this.determineValidationMethod(sourceTokens.length);
-      const tokensToValidate = this.selectValidationSample(sourceTokens, method);
+      const tokensToValidate = this.selectValidationSample(
+        sourceTokens,
+        method
+      );
 
       // Perform validation
       const results: ValidationResult[] = [];
-      
+
       for (const sourceToken of tokensToValidate) {
-        const result = await this.validateSingleToken(sourceToken, actualTargetTokens);
+        const result = await this.validateSingleToken(
+          sourceToken,
+          actualTargetTokens
+        );
         results.push(result);
       }
 
@@ -192,9 +212,9 @@ export class MigrationValidator {
       const summary = this.calculateValidationSummary(results);
       const duration = Date.now() - startTime;
 
-      this.logInfo('Migration validation completed', { 
+      this.logInfo('Migration validation completed', {
         summary,
-        duration 
+        duration,
       });
 
       return {
@@ -203,7 +223,6 @@ export class MigrationValidator {
         summary,
         log: [...this.log],
       };
-
     } catch (error) {
       const errorMessage = `Validation failed: ${error}`;
       this.logError(errorMessage, { error });
@@ -219,17 +238,23 @@ export class MigrationValidator {
   /**
    * Fetch target tokens from storage
    */
-  private async fetchTargetTokens(sourceTokens: DetectedToken[]): Promise<TokenRecord[]> {
+  private async fetchTargetTokens(
+    sourceTokens: DetectedToken[]
+  ): Promise<TokenRecord[]> {
     const targetTokens: TokenRecord[] = [];
-    
+
     for (const sourceToken of sourceTokens) {
       try {
-        const targetToken = await this.storageService.get<TokenRecord>(sourceToken.key);
+        const targetToken = await this.storageService.get<TokenRecord>(
+          sourceToken.key
+        );
         if (targetToken) {
           targetTokens.push(targetToken);
         }
       } catch (error) {
-        this.logWarning(`Failed to fetch target token: ${sourceToken.key}`, { error });
+        this.logWarning(`Failed to fetch target token: ${sourceToken.key}`, {
+          error,
+        });
       }
     }
 
@@ -239,7 +264,9 @@ export class MigrationValidator {
   /**
    * Determine optimal validation method based on dataset size
    */
-  private determineValidationMethod(itemCount: number): 'full' | 'sample' | 'incremental' {
+  private determineValidationMethod(
+    itemCount: number
+  ): 'full' | 'sample' | 'incremental' {
     if (itemCount <= 100) return 'full';
     if (itemCount <= 1000) return 'sample';
     return 'incremental';
@@ -248,14 +275,17 @@ export class MigrationValidator {
   /**
    * Select validation sample based on method
    */
-  private selectValidationSample(tokens: DetectedToken[], method: 'full' | 'sample' | 'incremental'): DetectedToken[] {
+  private selectValidationSample(
+    tokens: DetectedToken[],
+    method: 'full' | 'sample' | 'incremental'
+  ): DetectedToken[] {
     if (method === 'full' || this.config.sampleSize === 0) {
       return tokens;
     }
 
     const sampleSize = this.config.sampleSize || Math.min(tokens.length, 100);
     const step = Math.floor(tokens.length / sampleSize);
-    
+
     return tokens.filter((_, index) => index % step === 0).slice(0, sampleSize);
   }
 
@@ -282,7 +312,14 @@ export class MigrationValidator {
           key: sourceToken.key,
           severity: 'critical',
         });
-        return this.createValidationResult(false, errors, warnings, startTime, 1, sourceToken.size);
+        return this.createValidationResult(
+          false,
+          errors,
+          warnings,
+          startTime,
+          1,
+          sourceToken.size
+        );
       }
 
       // Validate token value
@@ -307,8 +344,14 @@ export class MigrationValidator {
       this.validateTokenSize(sourceToken, targetToken, errors, warnings);
 
       const isValid = errors.filter(e => e.severity !== 'minor').length === 0;
-      return this.createValidationResult(isValid, errors, warnings, startTime, 1, sourceToken.size);
-
+      return this.createValidationResult(
+        isValid,
+        errors,
+        warnings,
+        startTime,
+        1,
+        sourceToken.size
+      );
     } catch (error) {
       errors.push({
         code: 'CORRUPTION_DETECTED',
@@ -316,7 +359,14 @@ export class MigrationValidator {
         key: sourceToken.key,
         severity: 'critical',
       });
-      return this.createValidationResult(false, errors, warnings, startTime, 1, sourceToken.size);
+      return this.createValidationResult(
+        false,
+        errors,
+        warnings,
+        startTime,
+        1,
+        sourceToken.size
+      );
     }
   }
 
@@ -351,7 +401,9 @@ export class MigrationValidator {
     warnings: ValidationWarning[]
   ): void {
     // Check JWT format
-    if (this.isJWTToken(sourceToken.value) !== this.isJWTToken(targetToken.value)) {
+    if (
+      this.isJWTToken(sourceToken.value) !== this.isJWTToken(targetToken.value)
+    ) {
       warnings.push({
         code: 'COMPATIBILITY_ISSUE',
         message: `Token format changed from JWT to non-JWT or vice versa: ${sourceToken.key}`,
@@ -405,7 +457,7 @@ export class MigrationValidator {
     // Check for size corruption
     const expectedSize = new Blob([sourceToken.value]).size;
     const actualSize = new Blob([targetToken.value]).size;
-    
+
     if (Math.abs(expectedSize - actualSize) > this.config.maxSizeDifference) {
       errors.push({
         code: 'SIZE_MISMATCH',
@@ -459,7 +511,10 @@ export class MigrationValidator {
         key: sourceToken.key,
         expected: sourceToken.size,
         actual: targetSize,
-        severity: sizeDifference > this.config.maxSizeDifference * 2 ? 'major' : 'minor',
+        severity:
+          sizeDifference > this.config.maxSizeDifference * 2
+            ? 'major'
+            : 'minor',
       });
     }
   }
@@ -510,7 +565,9 @@ export class MigrationValidator {
   /**
    * Calculate validation summary statistics
    */
-  private calculateValidationSummary(results: ValidationResult[]): ValidationSummary {
+  private calculateValidationSummary(
+    results: ValidationResult[]
+  ): ValidationSummary {
     const totalItems = results.length;
     const validItems = results.filter(r => r.isValid).length;
     const invalidItems = totalItems - validItems;
@@ -523,9 +580,15 @@ export class MigrationValidator {
     results.forEach(result => {
       result.errors.forEach(error => {
         switch (error.severity) {
-          case 'critical': criticalErrors++; break;
-          case 'major': majorErrors++; break;
-          case 'minor': minorErrors++; break;
+          case 'critical':
+            criticalErrors++;
+            break;
+          case 'major':
+            majorErrors++;
+            break;
+          case 'minor':
+            minorErrors++;
+            break;
         }
       });
     });
@@ -558,7 +621,7 @@ export class MigrationValidator {
     try {
       // Check storage service availability
       const keys = await this.storageService.keys();
-      
+
       // Check for orphaned data
       const orphanedKeys = await this.findOrphanedKeys();
       if (orphanedKeys.length > 0) {
@@ -568,7 +631,9 @@ export class MigrationValidator {
           key: 'storage_integrity',
           severity: 'minor',
         });
-        recommendations.push('Clean up orphaned keys to improve storage efficiency');
+        recommendations.push(
+          'Clean up orphaned keys to improve storage efficiency'
+        );
       }
 
       // Check for duplicate keys
@@ -580,21 +645,25 @@ export class MigrationValidator {
           key: 'storage_integrity',
           severity: 'major',
         });
-        recommendations.push('Remove duplicate keys to prevent data inconsistency');
+        recommendations.push(
+          'Remove duplicate keys to prevent data inconsistency'
+        );
       }
 
       // Check storage usage
       const usage = await this.storageService.getUsage();
       if (usage.percentage > 90) {
-        recommendations.push('Storage usage is high. Consider cleaning up old data');
+        recommendations.push(
+          'Storage usage is high. Consider cleaning up old data'
+        );
       }
 
       return {
-        isIntegrityValid: issues.filter(i => i.severity !== 'minor').length === 0,
+        isIntegrityValid:
+          issues.filter(i => i.severity !== 'minor').length === 0,
         issues,
         recommendations,
       };
-
     } catch (error) {
       this.logError('Migration integrity validation failed', { error });
       issues.push({
@@ -607,7 +676,9 @@ export class MigrationValidator {
       return {
         isIntegrityValid: false,
         issues,
-        recommendations: ['Re-run migration validation to identify specific issues'],
+        recommendations: [
+          'Re-run migration validation to identify specific issues',
+        ],
       };
     }
   }

@@ -59,5 +59,24 @@
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "jest.pathToConfig": "<rootDir>/jest.config.cjs",
+  "jest.rootPath": "<rootDir>",
+  "jest.enableCodeLens": true,
+  "jest.runAllTestsFirst": false,
+  "jest.showCoverageOnLoad": false,
+  "jest.autoEnable": true,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "$(capture).test.ts, $(capture).spec.ts, $(capture).d.ts",
+    "*.tsx": "$(capture).test.tsx, $(capture).spec.tsx, $(capture).stories.tsx",
+    "*.js": "$(capture).test.js, $(capture).spec.js",
+    "*.jsx": "$(capture).test.jsx, $(capture).spec.jsx"
+  },
+  "testing.automaticallyOpenPeekView": "failureInVisibleDocument",
+  "testing.followRunningTest": true,
+  "testing.openTesting": "openOnTestStart",
+  "testing.saveBeforeTest": true,
+  "testing.autoRun.mode": "watch",
+  "testing.defaultRunMode": "watch"
 }

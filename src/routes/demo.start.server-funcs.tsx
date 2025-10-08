@@ -1,45 +1,45 @@
-import { useCallback, useState, useEffect } from 'react'
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { useCallback, useState, useEffect } from 'react';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
 
 // 简单的内存 todos 存储（客户端版本）
 const defaultTodos = [
   { id: 1, name: 'Get groceries' },
   { id: 2, name: 'Buy a new phone' },
-]
+];
 
 export const Route = createFileRoute('/demo/start/server-funcs')({
   component: Home,
-})
+});
 
 function Home() {
-  const router = useRouter()
-  const [todos, setTodos] = useState(defaultTodos)
-  const [todo, setTodo] = useState('')
+  const router = useRouter();
+  const [todos, setTodos] = useState(defaultTodos);
+  const [todo, setTodo] = useState('');
 
   // 使用 localStorage 持久化数据
   useEffect(() => {
-    const savedTodos = localStorage.getItem('todos')
+    const savedTodos = localStorage.getItem('todos');
     if (savedTodos) {
       try {
-        setTodos(JSON.parse(savedTodos))
+        setTodos(JSON.parse(savedTodos));
       } catch (e) {
-        console.error('Failed to parse saved todos:', e)
+        console.error('Failed to parse saved todos:', e);
       }
     }
-  }, [])
+  }, []);
 
   const saveTodos = useCallback((newTodos: typeof defaultTodos) => {
-    setTodos(newTodos)
-    localStorage.setItem('todos', JSON.stringify(newTodos))
-  }, [])
+    setTodos(newTodos);
+    localStorage.setItem('todos', JSON.stringify(newTodos));
+  }, []);
 
   const submitTodo = useCallback(async () => {
     if (todo.trim()) {
-      const newTodos = [...todos, { id: todos.length + 1, name: todo.trim() }]
-      saveTodos(newTodos)
-      setTodo('')
+      const newTodos = [...todos, { id: todos.length + 1, name: todo.trim() }];
+      saveTodos(newTodos);
+      setTodo('');
     }
-  }, [todo, todos, saveTodos])
+  }, [todo, todos, saveTodos]);
 
   return (
     <div
@@ -52,7 +52,7 @@ function Home() {
       <div className="w-full max-w-2xl p-8 rounded-xl backdrop-blur-md bg-black/50 shadow-xl border-8 border-black/10">
         <h1 className="text-2xl mb-4">Start Server Functions - Todo Example</h1>
         <ul className="mb-4 space-y-2">
-          {todos?.map((t) => (
+          {todos?.map(t => (
             <li
               key={t.id}
               className="bg-white/10 border border-white/20 rounded-lg p-3 backdrop-blur-sm shadow-md"
@@ -65,10 +65,10 @@ function Home() {
           <input
             type="text"
             value={todo}
-            onChange={(e) => setTodo(e.target.value)}
-            onKeyDown={(e) => {
+            onChange={e => setTodo(e.target.value)}
+            onKeyDown={e => {
               if (e.key === 'Enter') {
-                submitTodo()
+                submitTodo();
               }
             }}
             placeholder="Enter a new todo..."
@@ -84,5 +84,5 @@ function Home() {
         </div>
       </div>
     </div>
-  )
+  );
 }

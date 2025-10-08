@@ -1,10 +1,10 @@
 /**
  * DexieStorageAdapter - IndexedDB storage adapter implementation
- * 
+ *
  * This module implements the StorageService interface using Dexie.js for IndexedDB
  * operations. It provides a complete storage solution with CRUD operations,
  * batch processing, transaction support, and performance optimizations.
- * 
+ *
  * @fileoverview Dexie-based storage adapter implementation
  * @module storage/dexie-adapter
  */
@@ -19,14 +19,20 @@ import type {
   StorageExportData,
   StorageUsage,
   StorageChangeCallback,
-  StorageConfig
+  StorageConfig,
 } from './interfaces';
 import { NoteumDB, getDatabase, type DatabaseOptions } from './database';
 import { TableNames } from './schema';
 import { StorageCache } from './cache';
 import { StorageUtils } from './utils';
-import { StorageEventManager, globalStorageEventManager } from './event-manager';
-import { StorageObserverManager, globalStorageObserverManager } from './observer-pattern';
+import {
+  StorageEventManager,
+  globalStorageEventManager,
+} from './event-manager';
+import {
+  StorageObserverManager,
+  globalStorageObserverManager,
+} from './observer-pattern';
 import { StorageEventUtils } from './event-builder';
 
 /**
@@ -73,7 +79,7 @@ export interface DexieAdapterConfig extends StorageConfig {
 
 /**
  * DexieStorageAdapter - Complete IndexedDB storage implementation
- * 
+ *
  * Implements the StorageService interface with full feature support including:
  * - Basic CRUD operations
  * - Batch operations
@@ -82,14 +88,16 @@ export interface DexieAdapterConfig extends StorageConfig {
  * - Performance optimizations
  * - Caching mechanism
  */
-export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdapter {
+export class DexieStorageAdapter
+  implements StorageService, IAdvancedStorageAdapter
+{
   private db: NoteumDB;
   private cache: StorageCache;
   private config: Required<DexieAdapterConfig>;
   private changeListeners: Set<StorageChangeCallback> = new Set();
   private eventDebounceMap: Map<string, NodeJS.Timeout> = new Map();
   private initialized = false;
-  
+
   // Enhanced event and observer system
   private eventManager: StorageEventManager;
   private observerManager: StorageObserverManager;
@@ -132,10 +140,10 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
 
     // Initialize database
     this.db = getDatabase(this.config.databaseOptions);
-    
+
     // Initialize cache
     this.cache = new StorageCache(this.config.cacheConfig);
-    
+
     // Initialize event system
     this.eventManager = this.config.eventConfig.useGlobalEventManager
       ? globalStorageEventManager
@@ -143,7 +151,7 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
           maxListeners: this.config.eventConfig.maxListeners,
           enableLogging: this.config.eventConfig.enableLogging,
         });
-    
+
     // Initialize observer system
     this.observerManager = this.config.observerConfig.useGlobalObserverManager
       ? globalStorageObserverManager
@@ -216,7 +224,7 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
 
       // Get from database
       const result = await this.getFromDatabase<T>(key);
-      
+
       // Cache the result
       if (result !== null && this.config.cacheConfig.enabled) {
         await this.cache.set(key, result);
@@ -248,7 +256,9 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
       this.emitChangeEvent(key, 'updated', undefined, value);
 
       if (this.config.debug) {
-        console.log(`[DexieStorageAdapter] Set operation completed for key: ${key}`);
+        console.log(
+          `[DexieStorageAdapter] Set operation completed for key: ${key}`
+        );
       }
     } catch (error) {
       if (this.config.debug) {
@@ -278,7 +288,9 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
       this.emitChangeEvent(key, 'removed', oldValue, undefined);
 
       if (this.config.debug) {
-        console.log(`[DexieStorageAdapter] Remove operation completed for key: ${key}`);
+        console.log(
+          `[DexieStorageAdapter] Remove operation completed for key: ${key}`
+        );
       }
     } catch (error) {
       if (this.config.debug) {
@@ -294,21 +306,25 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
   async clear(): Promise<void> {
     try {
       // Clear database
-      await this.db.transaction('rw', [
-        this.db.tokens,
-        this.db.userPreferences,
-        this.db.appSettings,
-        this.db.apiCache,
-        this.db.metadata,
-      ], async () => {
-        await Promise.all([
-          this.db.tokens.clear(),
-          this.db.userPreferences.clear(),
-          this.db.appSettings.clear(),
-          this.db.apiCache.clear(),
-          this.db.metadata.clear(),
-        ]);
-      });
+      await this.db.transaction(
+        'rw',
+        [
+          this.db.tokens,
+          this.db.userPreferences,
+          this.db.appSettings,
+          this.db.apiCache,
+          this.db.metadata,
+        ],
+        async () => {
+          await Promise.all([
+            this.db.tokens.clear(),
+            this.db.userPreferences.clear(),
+            this.db.appSettings.clear(),
+            this.db.apiCache.clear(),
+            this.db.metadata.clear(),
+          ]);
+        }
+      );
 
       // Clear cache
       if (this.config.cacheConfig.enabled) {
@@ -336,31 +352,36 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
    */
   async getBatch<T>(keys: string[]): Promise<Record<string, T>> {
     const result: Record<string, T> = {};
-    
+
     try {
       // Process in batches to avoid overwhelming the database
       const batchSize = this.config.performanceOptions.batchSize;
-      
+
       for (let i = 0; i < keys.length; i += batchSize) {
         const batch = keys.slice(i, i + batchSize);
-        const batchPromises = batch.map(async (key) => {
+        const batchPromises = batch.map(async key => {
           const value = await this.get<T>(key);
           if (value !== null) {
             result[key] = value;
           }
         });
-        
+
         await Promise.all(batchPromises);
       }
 
       if (this.config.debug) {
-        console.log(`[DexieStorageAdapter] Batch get completed for ${keys.length} keys`);
+        console.log(
+          `[DexieStorageAdapter] Batch get completed for ${keys.length} keys`
+        );
       }
 
       return result;
     } catch (error) {
       if (this.config.debug) {
-        console.error('[DexieStorageAdapter] Batch get operation failed:', error);
+        console.error(
+          '[DexieStorageAdapter] Batch get operation failed:',
+          error
+        );
       }
       throw error;
     }
@@ -377,17 +398,23 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
       // Process in batches
       for (let i = 0; i < entries.length; i += batchSize) {
         const batch = entries.slice(i, i + batchSize);
-        
+
         if (this.config.performanceOptions.optimizeTransactions) {
           // Use a single transaction for the batch
-          await this.db.transaction('rw', [
-            this.db.userPreferences,
-            this.db.appSettings,
-            this.db.apiCache,
-            this.db.metadata,
-          ], async () => {
-            await Promise.all(batch.map(([key, value]) => this.storeInDatabase(key, value)));
-          });
+          await this.db.transaction(
+            'rw',
+            [
+              this.db.userPreferences,
+              this.db.appSettings,
+              this.db.apiCache,
+              this.db.metadata,
+            ],
+            async () => {
+              await Promise.all(
+                batch.map(([key, value]) => this.storeInDatabase(key, value))
+              );
+            }
+          );
         } else {
           // Process individually
           await Promise.all(batch.map(([key, value]) => this.set(key, value)));
@@ -407,11 +434,16 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
       }
 
       if (this.config.debug) {
-        console.log(`[DexieStorageAdapter] Batch set completed for ${entries.length} items`);
+        console.log(
+          `[DexieStorageAdapter] Batch set completed for ${entries.length} items`
+        );
       }
     } catch (error) {
       if (this.config.debug) {
-        console.error('[DexieStorageAdapter] Batch set operation failed:', error);
+        console.error(
+          '[DexieStorageAdapter] Batch set operation failed:',
+          error
+        );
       }
       throw error;
     }
@@ -440,7 +472,7 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
 
       const table = this.getTable(tableInfo.tableName);
       const count = await table.where('key').equals(key).count();
-      
+
       return count > 0;
     } catch (error) {
       if (this.config.debug) {
@@ -467,7 +499,7 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
       ];
 
       for (const table of tables) {
-        const keys = await table.orderBy('key').keys() as string[];
+        const keys = (await table.orderBy('key').keys()) as string[];
         allKeys.push(...keys);
       }
 
@@ -486,7 +518,10 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
   async size(): Promise<number> {
     try {
       const stats = await this.db.getStats();
-      return Object.values(stats.recordCount).reduce((sum, count) => sum + count, 0);
+      return Object.values(stats.recordCount).reduce(
+        (sum, count) => sum + count,
+        0
+      );
     } catch (error) {
       if (this.config.debug) {
         console.error('[DexieStorageAdapter] Size operation failed:', error);
@@ -521,20 +556,26 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
     // Debounce events
     const debounceKey = `${key}:${type}`;
     const existingTimeout = this.eventDebounceMap.get(debounceKey);
-    
+
     if (existingTimeout) {
       clearTimeout(existingTimeout);
     }
 
     const timeout = setTimeout(() => {
       // Create event using the event builder for consistency
-      const storageEvent = type === 'added' 
-        ? StorageEventUtils.dataAdded(key, newValue, 'indexeddb')
-        : type === 'updated'
-        ? StorageEventUtils.dataUpdated(key, oldValue, newValue, 'indexeddb')
-        : type === 'removed'
-        ? StorageEventUtils.dataRemoved(key, oldValue, 'indexeddb')
-        : StorageEventUtils.storageCleared('indexeddb');
+      const storageEvent =
+        type === 'added'
+          ? StorageEventUtils.dataAdded(key, newValue, 'indexeddb')
+          : type === 'updated'
+            ? StorageEventUtils.dataUpdated(
+                key,
+                oldValue,
+                newValue,
+                'indexeddb'
+              )
+            : type === 'removed'
+              ? StorageEventUtils.dataRemoved(key, oldValue, 'indexeddb')
+              : StorageEventUtils.storageCleared('indexeddb');
 
       // Legacy event for backward compatibility
       const event: StorageChangeEvent<T> = {
@@ -552,7 +593,7 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
       };
 
       // Emit to legacy change listeners
-      this.changeListeners.forEach((callback) => {
+      this.changeListeners.forEach(callback => {
         try {
           callback(event);
         } catch (error) {
@@ -596,7 +637,7 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
 
     const table = this.getTable(tableInfo.tableName);
     const record = await table.get(key);
-    
+
     return record ? (record.value as T) : null;
   }
 
@@ -658,38 +699,44 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
   /**
    * Execute batch operations
    */
-  async batch(operations: StorageBatchOperation[]): Promise<StorageResult<void>> {
+  async batch(
+    operations: StorageBatchOperation[]
+  ): Promise<StorageResult<void>> {
     try {
       const batchSize = this.config.performanceOptions.batchSize;
-      
+
       for (let i = 0; i < operations.length; i += batchSize) {
         const batch = operations.slice(i, i + batchSize);
-        
-        await this.db.transaction('rw', [
-          this.db.tokens,
-          this.db.userPreferences,
-          this.db.appSettings,
-          this.db.apiCache,
-          this.db.metadata,
-        ], async () => {
-          for (const op of batch) {
-            switch (op.type) {
-              case 'set':
-                if (op.key && op.value !== undefined) {
-                  await this.storeInDatabase(op.key, op.value);
-                }
-                break;
-              case 'remove':
-                if (op.key) {
-                  await this.removeFromDatabase(op.key);
-                }
-                break;
-              case 'clear':
-                await this.clear();
-                break;
+
+        await this.db.transaction(
+          'rw',
+          [
+            this.db.tokens,
+            this.db.userPreferences,
+            this.db.appSettings,
+            this.db.apiCache,
+            this.db.metadata,
+          ],
+          async () => {
+            for (const op of batch) {
+              switch (op.type) {
+                case 'set':
+                  if (op.key && op.value !== undefined) {
+                    await this.storeInDatabase(op.key, op.value);
+                  }
+                  break;
+                case 'remove':
+                  if (op.key) {
+                    await this.removeFromDatabase(op.key);
+                  }
+                  break;
+                case 'clear':
+                  await this.clear();
+                  break;
+              }
             }
           }
-        });
+        );
       }
 
       return { success: true };
@@ -751,9 +798,12 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
   /**
    * Watch for changes
    */
-  async watch(key: string, callback: StorageChangeCallback): Promise<StorageResult<() => void>> {
+  async watch(
+    key: string,
+    callback: StorageChangeCallback
+  ): Promise<StorageResult<() => void>> {
     try {
-      const unsubscribe = this.onChange((event) => {
+      const unsubscribe = this.onChange(event => {
         if (event.key === key || key === '*') {
           callback(event);
         }
@@ -832,17 +882,23 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
   /**
    * Execute transaction
    */
-  async transaction<R>(callback: (adapter: StorageService) => Promise<R>): Promise<StorageResult<R>> {
+  async transaction<R>(
+    callback: (adapter: StorageService) => Promise<R>
+  ): Promise<StorageResult<R>> {
     try {
-      const result = await this.db.transaction('rw', [
-        this.db.tokens,
-        this.db.userPreferences,
-        this.db.appSettings,
-        this.db.apiCache,
-        this.db.metadata,
-      ], async () => {
-        return await callback(this);
-      });
+      const result = await this.db.transaction(
+        'rw',
+        [
+          this.db.tokens,
+          this.db.userPreferences,
+          this.db.appSettings,
+          this.db.apiCache,
+          this.db.metadata,
+        ],
+        async () => {
+          return await callback(this);
+        }
+      );
 
       return {
         success: true,
@@ -866,7 +922,10 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
   async getUsage(): Promise<StorageResult<StorageUsage>> {
     try {
       const stats = await this.db.getStats();
-      const totalRecords = Object.values(stats.recordCount).reduce((sum, count) => sum + count, 0);
+      const totalRecords = Object.values(stats.recordCount).reduce(
+        (sum, count) => sum + count,
+        0
+      );
 
       // Estimate storage usage (rough calculation)
       const estimatedSize = stats.size || 0;
@@ -901,7 +960,7 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
   async cleanup(): Promise<StorageResult<void>> {
     try {
       await this.db.cleanup();
-      
+
       if (this.config.cacheConfig.enabled) {
         await this.cache.cleanup();
       }
@@ -965,7 +1024,13 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
     oldValue?: any,
     newValue?: any
   ): void {
-    this.observerManager.notifyDataChange(type, key, oldValue, newValue, 'indexeddb');
+    this.observerManager.notifyDataChange(
+      type,
+      key,
+      oldValue,
+      newValue,
+      'indexeddb'
+    );
   }
 
   /**
@@ -991,7 +1056,7 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
   async close(): Promise<StorageResult<void>> {
     try {
       // Clear event debounce timers
-      this.eventDebounceMap.forEach((timeout) => clearTimeout(timeout));
+      this.eventDebounceMap.forEach(timeout => clearTimeout(timeout));
       this.eventDebounceMap.clear();
 
       // Clear listeners
@@ -1034,7 +1099,9 @@ export class DexieStorageAdapter implements StorageService, IAdvancedStorageAdap
 /**
  * Factory function to create DexieStorageAdapter
  */
-export function createDexieAdapter(config?: Partial<DexieAdapterConfig>): DexieStorageAdapter {
+export function createDexieAdapter(
+  config?: Partial<DexieAdapterConfig>
+): DexieStorageAdapter {
   return new DexieStorageAdapter(config);
 }
 

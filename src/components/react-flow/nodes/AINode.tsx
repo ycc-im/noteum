@@ -1,42 +1,42 @@
-import { useState } from 'react'
-import { Handle, Position, NodeProps } from 'reactflow'
+import { useState } from 'react';
+import { Handle, Position, NodeProps } from 'reactflow';
 
 export interface AINodeData {
-  title: string
-  content: string
-  aiModel?: string
-  status?: 'idle' | 'processing' | 'completed' | 'error'
-  confidence?: number
+  title: string;
+  content: string;
+  aiModel?: string;
+  status?: 'idle' | 'processing' | 'completed' | 'error';
+  confidence?: number;
 }
 
 export function AINode({ data, selected }: NodeProps<AINodeData>) {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const getStatusColor = () => {
     switch (data.status) {
       case 'processing':
-        return '#fbbf24'
+        return '#fbbf24';
       case 'completed':
-        return '#10b981'
+        return '#10b981';
       case 'error':
-        return '#ef4444'
+        return '#ef4444';
       default:
-        return '#6b7280'
+        return '#6b7280';
     }
-  }
+  };
 
   const getStatusIcon = () => {
     switch (data.status) {
       case 'processing':
-        return '⏳'
+        return '⏳';
       case 'completed':
-        return '✅'
+        return '✅';
       case 'error':
-        return '❌'
+        return '❌';
       default:
-        return '🤖'
+        return '🤖';
     }
-  }
+  };
 
   return (
     <div
@@ -47,7 +47,9 @@ export function AINode({ data, selected }: NodeProps<AINodeData>) {
         background: 'white',
         minWidth: '250px',
         maxWidth: '350px',
-        boxShadow: selected ? '0 4px 12px rgba(0,0,0,0.15)' : '0 2px 8px rgba(0,0,0,0.1)',
+        boxShadow: selected
+          ? '0 4px 12px rgba(0,0,0,0.15)'
+          : '0 2px 8px rgba(0,0,0,0.1)',
         fontFamily: 'system-ui, sans-serif',
       }}
     >
@@ -58,7 +60,9 @@ export function AINode({ data, selected }: NodeProps<AINodeData>) {
       />
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+      <div
+        style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}
+      >
         <span style={{ fontSize: '18px', marginRight: '8px' }}>
           {getStatusIcon()}
         </span>
@@ -105,7 +109,9 @@ export function AINode({ data, selected }: NodeProps<AINodeData>) {
       {/* Confidence Score */}
       {data.confidence !== undefined && (
         <div style={{ marginTop: '12px' }}>
-          <div style={{ fontSize: '12px', color: '#6b7280', marginBottom: '4px' }}>
+          <div
+            style={{ fontSize: '12px', color: '#6b7280', marginBottom: '4px' }}
+          >
             置信度: {Math.round(data.confidence * 100)}%
           </div>
           <div
@@ -121,7 +127,12 @@ export function AINode({ data, selected }: NodeProps<AINodeData>) {
               style={{
                 width: `${data.confidence * 100}%`,
                 height: '100%',
-                background: data.confidence > 0.8 ? '#10b981' : data.confidence > 0.6 ? '#fbbf24' : '#ef4444',
+                background:
+                  data.confidence > 0.8
+                    ? '#10b981'
+                    : data.confidence > 0.6
+                      ? '#fbbf24'
+                      : '#ef4444',
                 transition: 'width 0.3s ease',
               }}
             />
@@ -135,5 +146,5 @@ export function AINode({ data, selected }: NodeProps<AINodeData>) {
         style={{ background: getStatusColor() }}
       />
     </div>
-  )
+  );
 }

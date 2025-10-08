@@ -3,7 +3,7 @@
  * Includes Logto integration and sync logging
  */
 
-import { TimestampFields, SyncStatus, SyncType } from "./database";
+import { TimestampFields, SyncStatus, SyncType } from './database';
 
 // User interface with Logto integration
 export interface User extends TimestampFields {
@@ -31,7 +31,7 @@ export interface UserSyncLog {
   user_id: string | null;
   sync_type: SyncType;
   logto_data: Record<string, any> | null;
-  sync_status: "success" | "error";
+  sync_status: 'success' | 'error';
   error_message: string | null;
   synced_at: string;
 }
@@ -68,7 +68,7 @@ export interface UserProfile {
 
 // User preferences structure
 export interface UserPreferences {
-  theme?: "light" | "dark" | "system";
+  theme?: 'light' | 'dark' | 'system';
   language?: string;
   notifications?: {
     email?: boolean;
@@ -101,7 +101,7 @@ export interface UserSettings {
   workspace?: {
     default_workflow?: string;
     auto_backup?: boolean;
-    backup_frequency?: "hourly" | "daily" | "weekly";
+    backup_frequency?: 'hourly' | 'daily' | 'weekly';
   };
   integrations?: {
     logto?: {

@@ -1,9 +1,9 @@
 /**
  * Configuration Validation System
- * 
+ *
  * Provides comprehensive configuration validation with schema support,
  * custom validation rules, and type checking for storage configurations.
- * 
+ *
  * @fileoverview Configuration validation implementation
  * @module storage/config-validator
  */
@@ -14,15 +14,15 @@ import type { StorageConfig } from './interfaces';
 /**
  * Validation rule types
  */
-export type ValidationRuleType = 
-  | 'required'      // Field is required
-  | 'type'          // Type validation
-  | 'range'         // Numeric range validation
-  | 'pattern'       // Regex pattern validation
-  | 'enum'          // Enum value validation
-  | 'custom'        // Custom validation function
-  | 'dependency'    // Field dependency validation
-  | 'conditional';  // Conditional validation
+export type ValidationRuleType =
+  | 'required' // Field is required
+  | 'type' // Type validation
+  | 'range' // Numeric range validation
+  | 'pattern' // Regex pattern validation
+  | 'enum' // Enum value validation
+  | 'custom' // Custom validation function
+  | 'dependency' // Field dependency validation
+  | 'conditional'; // Conditional validation
 
 /**
  * Validation rule definition
@@ -55,7 +55,10 @@ export interface ValidationSchema {
   /** Validation rules */
   rules: ValidationRule[];
   /** Custom validators */
-  customValidators?: Record<string, (value: any, config: any) => ValidationRuleResult>;
+  customValidators?: Record<
+    string,
+    (value: any, config: any) => ValidationRuleResult
+  >;
 }
 
 /**
@@ -118,7 +121,11 @@ export class ValidationRules {
   /**
    * Type validation
    */
-  static type(value: any, config: any, params: { type: string; message?: string }): ValidationRuleResult {
+  static type(
+    value: any,
+    config: any,
+    params: { type: string; message?: string }
+  ): ValidationRuleResult {
     if (value === undefined || value === null) {
       return { passed: true }; // Type validation skips null/undefined (use required rule for that)
     }
@@ -157,14 +164,21 @@ export class ValidationRules {
 
     return {
       passed,
-      error: passed ? undefined : params.message || `Expected type ${expectedType}, got ${typeof value}`,
+      error: passed
+        ? undefined
+        : params.message ||
+          `Expected type ${expectedType}, got ${typeof value}`,
     };
   }
 
   /**
    * Range validation for numbers
    */
-  static range(value: any, config: any, params: { min?: number; max?: number; message?: string }): ValidationRuleResult {
+  static range(
+    value: any,
+    config: any,
+    params: { min?: number; max?: number; message?: string }
+  ): ValidationRuleResult {
     if (typeof value !== 'number') {
       return { passed: false, error: 'Range validation requires a number' };
     }
@@ -190,70 +204,100 @@ export class ValidationRules {
   /**
    * Pattern validation using regex
    */
-  static pattern(value: any, config: any, params: { pattern: string | RegExp; message?: string }): ValidationRuleResult {
+  static pattern(
+    value: any,
+    config: any,
+    params: { pattern: string | RegExp; message?: string }
+  ): ValidationRuleResult {
     if (typeof value !== 'string') {
       return { passed: false, error: 'Pattern validation requires a string' };
     }
 
-    const regex = typeof params.pattern === 'string' ? new RegExp(params.pattern) : params.pattern;
+    const regex =
+      typeof params.pattern === 'string'
+        ? new RegExp(params.pattern)
+        : params.pattern;
     const passed = regex.test(value);
 
     return {
       passed,
-      error: passed ? undefined : params.message || `Value does not match pattern ${regex}`,
+      error: passed
+        ? undefined
+        : params.message || `Value does not match pattern ${regex}`,
     };
   }
 
   /**
    * Enum validation
    */
-  static enum(value: any, config: any, params: { values: any[]; message?: string }): ValidationRuleResult {
+  static enum(
+    value: any,
+    config: any,
+    params: { values: any[]; message?: string }
+  ): ValidationRuleResult {
     const passed = params.values.includes(value);
     return {
       passed,
-      error: passed ? undefined : params.message || `Value must be one of: ${params.values.join(', ')}`,
+      error: passed
+        ? undefined
+        : params.message || `Value must be one of: ${params.values.join(', ')}`,
     };
   }
 
   /**
    * Dependency validation (field depends on another field)
    */
-  static dependency(value: any, config: any, params: { dependsOn: string; message?: string }): ValidationRuleResult {
+  static dependency(
+    value: any,
+    config: any,
+    params: { dependsOn: string; message?: string }
+  ): ValidationRuleResult {
     const dependentValue = this.getNestedValue(config, params.dependsOn);
     const passed = dependentValue !== undefined && dependentValue !== null;
 
     return {
       passed,
-      error: passed ? undefined : params.message || `Field depends on ${params.dependsOn} being set`,
+      error: passed
+        ? undefined
+        : params.message || `Field depends on ${params.dependsOn} being set`,
     };
   }
 
   /**
    * Custom validation
    */
-  static custom(value: any, config: any, params: { validator: string | Function; message?: string }): ValidationRuleResult {
+  static custom(
+    value: any,
+    config: any,
+    params: { validator: string | Function; message?: string }
+  ): ValidationRuleResult {
     try {
       let validator: Function;
-      
+
       if (typeof params.validator === 'string') {
         // Look up validator by name
         validator = CustomValidators[params.validator];
         if (!validator) {
-          return { passed: false, error: `Unknown validator: ${params.validator}` };
+          return {
+            passed: false,
+            error: `Unknown validator: ${params.validator}`,
+          };
         }
       } else {
         validator = params.validator;
       }
 
       const result = validator(value, config);
-      
+
       if (typeof result === 'boolean') {
         return {
           passed: result,
-          error: result ? undefined : params.message || 'Custom validation failed',
+          error: result
+            ? undefined
+            : params.message || 'Custom validation failed',
         };
       }
-      
+
       return result;
     } catch (error) {
       return {
@@ -271,7 +315,10 @@ export class ValidationRules {
 /**
  * Custom validators library
  */
-export const CustomValidators: Record<string, (value: any, config: any) => ValidationRuleResult | boolean> = {
+export const CustomValidators: Record<
+  string,
+  (value: any, config: any) => ValidationRuleResult | boolean
+> = {
   /**
    * Validate database name format
    */
@@ -281,11 +328,14 @@ export const CustomValidators: Record<string, (value: any, config: any) => Valid
     }
 
     const validPattern = /^[a-zA-Z0-9_-]+$/;
-    const passed = validPattern.test(value) && value.length >= 3 && value.length <= 50;
+    const passed =
+      validPattern.test(value) && value.length >= 3 && value.length <= 50;
 
     return {
       passed,
-      error: passed ? undefined : 'Database name must be 3-50 characters, alphanumeric, underscore, or dash only',
+      error: passed
+        ? undefined
+        : 'Database name must be 3-50 characters, alphanumeric, underscore, or dash only',
     };
   },
 
@@ -294,7 +344,8 @@ export const CustomValidators: Record<string, (value: any, config: any) => Valid
    */
   cacheSize: (value: number): ValidationRuleResult => {
     const passed = value >= 1 && value <= 1000; // 1MB to 1GB
-    const warning = value > 100 ? 'Cache size > 100MB may impact performance' : undefined;
+    const warning =
+      value > 100 ? 'Cache size > 100MB may impact performance' : undefined;
 
     return {
       passed,
@@ -308,7 +359,8 @@ export const CustomValidators: Record<string, (value: any, config: any) => Valid
    */
   ttlValue: (value: number): ValidationRuleResult => {
     const passed = value >= 1000 && value <= 7 * 24 * 60 * 60 * 1000; // 1 second to 1 week
-    const warning = value < 60000 ? 'TTL < 1 minute may cause performance issues' : undefined;
+    const warning =
+      value < 60000 ? 'TTL < 1 minute may cause performance issues' : undefined;
 
     return {
       passed,
@@ -339,7 +391,10 @@ export class SchemaConfigValidator implements ConfigValidator {
   private schema: ValidationSchema;
   private options: ValidationOptions;
 
-  constructor(schema: ValidationSchema, options: Partial<ValidationOptions> = {}) {
+  constructor(
+    schema: ValidationSchema,
+    options: Partial<ValidationOptions> = {}
+  ) {
     this.schema = schema;
     this.options = {
       failFast: false,
@@ -367,7 +422,7 @@ export class SchemaConfigValidator implements ConfigValidator {
         }
 
         const result = await this.validateRule(rule, config, context);
-        
+
         if (!result.passed) {
           if (rule.warningOnly) {
             if (result.warning) warnings.push(result.warning);
@@ -389,7 +444,6 @@ export class SchemaConfigValidator implements ConfigValidator {
           validatedAt: new Date().toISOString(),
         },
       };
-
     } catch (error) {
       return {
         isValid: false,
@@ -399,7 +453,11 @@ export class SchemaConfigValidator implements ConfigValidator {
     }
   }
 
-  private async validateRule(rule: ValidationRule, config: any, context: ValidationContext): Promise<ValidationRuleResult> {
+  private async validateRule(
+    rule: ValidationRule,
+    config: any,
+    context: ValidationContext
+  ): Promise<ValidationRuleResult> {
     const value = this.getNestedValue(config, rule.path);
     context.currentPath = rule.path;
 
@@ -436,10 +494,18 @@ export class SchemaConfigValidator implements ConfigValidator {
 
     // Override messages if provided in rule
     if (rule.message && !result.passed) {
-      result.error = this.interpolateMessage(rule.message, { value, path: rule.path, config });
+      result.error = this.interpolateMessage(rule.message, {
+        value,
+        path: rule.path,
+        config,
+      });
     }
     if (rule.warningMessage && result.warning) {
-      result.warning = this.interpolateMessage(rule.warningMessage, { value, path: rule.path, config });
+      result.warning = this.interpolateMessage(rule.warningMessage, {
+        value,
+        path: rule.path,
+        config,
+      });
     }
 
     return result;
@@ -449,7 +515,10 @@ export class SchemaConfigValidator implements ConfigValidator {
     return path.split('.').reduce((current, key) => current?.[key], obj);
   }
 
-  private interpolateMessage(template: string, variables: Record<string, any>): string {
+  private interpolateMessage(
+    template: string,
+    variables: Record<string, any>
+  ): string {
     return template.replace(/\{(\w+)\}/g, (match, key) => {
       return variables[key] !== undefined ? String(variables[key]) : match;
     });
@@ -529,7 +598,7 @@ export const StorageConfigSchema: ValidationSchema = {
       type: 'custom',
       path: 'cacheConfig.strategy',
       params: { validator: 'cacheStrategy' },
-      condition: (config) => config.cacheConfig?.strategy !== undefined,
+      condition: config => config.cacheConfig?.strategy !== undefined,
     },
 
     // Warning for large cache sizes
@@ -539,7 +608,7 @@ export const StorageConfigSchema: ValidationSchema = {
       params: { max: 100 },
       warningOnly: true,
       warningMessage: 'Cache size > 100MB may impact browser performance',
-      condition: (config) => config.maxSize > 100,
+      condition: config => config.maxSize > 100,
     },
 
     // Warning for short TTL
@@ -549,7 +618,7 @@ export const StorageConfigSchema: ValidationSchema = {
       params: { min: 60000 },
       warningOnly: true,
       warningMessage: 'TTL < 1 minute may cause frequent cache invalidation',
-      condition: (config) => config.ttl < 60000,
+      condition: config => config.ttl < 60000,
     },
   ],
 };
@@ -561,7 +630,7 @@ export function createStorageConfigValidator(
   customSchema?: Partial<ValidationSchema>,
   options?: Partial<ValidationOptions>
 ): SchemaConfigValidator {
-  const schema = customSchema 
+  const schema = customSchema
     ? { ...StorageConfigSchema, ...customSchema }
     : StorageConfigSchema;
 
@@ -571,7 +640,9 @@ export function createStorageConfigValidator(
 /**
  * Validate storage configuration with default schema
  */
-export async function validateStorageConfig(config: TypedStorageConfig): Promise<ConfigValidationResult> {
+export async function validateStorageConfig(
+  config: TypedStorageConfig
+): Promise<ConfigValidationResult> {
   const validator = createStorageConfigValidator();
   return validator.validate(config);
 }
@@ -608,9 +679,15 @@ export class ConfigValidationUtils {
   static mergeSchemas(...schemas: ValidationSchema[]): ValidationSchema {
     return {
       version: schemas[schemas.length - 1].version,
-      title: schemas.map(s => s.title).filter(Boolean).join(' + '),
+      title: schemas
+        .map(s => s.title)
+        .filter(Boolean)
+        .join(' + '),
       rules: schemas.flatMap(s => s.rules),
-      customValidators: Object.assign({}, ...schemas.map(s => s.customValidators)),
+      customValidators: Object.assign(
+        {},
+        ...schemas.map(s => s.customValidators)
+      ),
     };
   }
 
@@ -627,7 +704,9 @@ export class ConfigValidationUtils {
   /**
    * Create warning-only rule
    */
-  static warningRule(rule: Omit<ValidationRule, 'warningOnly'>): ValidationRule {
+  static warningRule(
+    rule: Omit<ValidationRule, 'warningOnly'>
+  ): ValidationRule {
     return { ...rule, warningOnly: true };
   }
 }

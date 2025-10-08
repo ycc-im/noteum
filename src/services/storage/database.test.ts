@@ -1,6 +1,6 @@
 /**
  * Database tests for NoteumDB implementation
- * 
+ *
  * @fileoverview Tests for database initialization and basic operations
  */
 
@@ -17,10 +17,10 @@ describe('NoteumDB Database', () => {
   beforeEach(async () => {
     // Create test database instance with unique name
     const dbName = `test_noteum_db_${Date.now()}_${Math.random()}`;
-    db = new NoteumDB({ 
+    db = new NoteumDB({
       name: dbName,
       debug: true,
-      enableAutoCleanup: false 
+      enableAutoCleanup: false,
     });
   });
 
@@ -33,7 +33,7 @@ describe('NoteumDB Database', () => {
   describe('Database Initialization', () => {
     it('应该成功初始化数据库', async () => {
       await db.initialize();
-      
+
       expect(db.isReady()).toBe(true);
       expect(db.getDatabaseName()).toContain('test_noteum_db');
       expect(db.getDatabaseVersion()).toBe(SCHEMA_CONSTANTS.CURRENT_VERSION);
@@ -41,10 +41,10 @@ describe('NoteumDB Database', () => {
 
     it('应该创建所有必需的表', async () => {
       await db.initialize();
-      
+
       const tables = db.tables;
       const tableNames = tables.map(table => table.name);
-      
+
       expect(tableNames).toContain(TableNames.TOKENS);
       expect(tableNames).toContain(TableNames.USER_PREFERENCES);
       expect(tableNames).toContain(TableNames.APP_SETTINGS);
@@ -54,10 +54,12 @@ describe('NoteumDB Database', () => {
 
     it('应该设置正确的数据库版本', async () => {
       await db.initialize();
-      
+
       const versionRecord = await db.metadata.get('db_initialized');
       expect(versionRecord).toBeDefined();
-      expect(versionRecord?.value.version).toBe(SCHEMA_CONSTANTS.CURRENT_VERSION);
+      expect(versionRecord?.value.version).toBe(
+        SCHEMA_CONSTANTS.CURRENT_VERSION
+      );
     });
   });
 
@@ -77,7 +79,7 @@ describe('NoteumDB Database', () => {
       };
 
       await db.tokens.add(tokenRecord);
-      
+
       const retrieved = await db.tokens.get('test_token');
       expect(retrieved).toBeDefined();
       expect(retrieved?.value).toBe('token_value_123');
@@ -92,7 +94,7 @@ describe('NoteumDB Database', () => {
       };
 
       await db.tokens.add(tokenRecord as TokenRecord);
-      
+
       const retrieved = await db.tokens.get('auto_timestamp_token');
       expect(retrieved?.createdAt).toBeInstanceOf(Date);
     });
@@ -115,12 +117,12 @@ describe('NoteumDB Database', () => {
       };
 
       await db.tokens.bulkAdd([expiredToken, validToken]);
-      
+
       const expiredTokens = await db.tokens
         .where('expiredAt')
         .below(new Date())
         .toArray();
-      
+
       expect(expiredTokens).toHaveLength(1);
       expect(expiredTokens[0].key).toBe('expired_token');
     });
@@ -142,7 +144,7 @@ describe('NoteumDB Database', () => {
       };
 
       await db.userPreferences.add(preference);
-      
+
       const retrieved = await db.userPreferences.get('theme');
       expect(retrieved).toBeDefined();
       expect(retrieved?.value.mode).toBe('dark');
@@ -158,7 +160,7 @@ describe('NoteumDB Database', () => {
       };
 
       await db.userPreferences.add(preference as PreferenceRecord);
-      
+
       const retrieved = await db.userPreferences.get('auto_timestamp_pref');
       expect(retrieved?.updatedAt).toBeInstanceOf(Date);
     });
@@ -192,12 +194,12 @@ describe('NoteumDB Database', () => {
       ];
 
       await db.userPreferences.bulkAdd(prefs);
-      
+
       const user1Prefs = await db.userPreferences
         .where('userId')
         .equals('user_1')
         .toArray();
-      
+
       expect(user1Prefs).toHaveLength(2);
       expect(user1Prefs.map(p => p.key)).toContain('pref1');
       expect(user1Prefs.map(p => p.key)).toContain('pref3');
@@ -224,7 +226,7 @@ describe('NoteumDB Database', () => {
       });
 
       const stats = await db.getStats();
-      
+
       expect(stats.name).toContain('test_noteum_db');
       expect(stats.version).toBe(SCHEMA_CONSTANTS.CURRENT_VERSION);
       expect(stats.recordCount.tokens).toBe(1);
@@ -256,12 +258,12 @@ describe('NoteumDB Database', () => {
       };
 
       await db.tokens.bulkAdd([expiredToken, validToken]);
-      
+
       const result = await db.cleanup({ expiredTokens: true });
-      
+
       expect(result.breakdown.tokens).toBe(1);
       expect(result.recordsRemoved).toBe(1);
-      
+
       const remainingTokens = await db.tokens.toArray();
       expect(remainingTokens).toHaveLength(1);
       expect(remainingTokens[0].key).toBe('valid_token');
@@ -277,14 +279,14 @@ describe('NoteumDB Database', () => {
       };
 
       await db.tokens.add(expiredToken);
-      
-      const result = await db.cleanup({ 
-        expiredTokens: true, 
-        dryRun: true 
+
+      const result = await db.cleanup({
+        expiredTokens: true,
+        dryRun: true,
       });
-      
+
       expect(result.breakdown.tokens).toBe(1);
-      
+
       // 验证数据没有被实际删除
       const tokens = await db.tokens.toArray();
       expect(tokens).toHaveLength(1);
@@ -299,26 +301,26 @@ describe('Database Factory Functions', () => {
 
   it('应该能够初始化默认数据库实例', async () => {
     const dbName = `test_default_db_${Date.now()}_${Math.random()}`;
-    const db = await initializeDatabase({ 
+    const db = await initializeDatabase({
       name: dbName,
-      debug: true 
+      debug: true,
     });
-    
+
     expect(db.isReady()).toBe(true);
     expect(db.getDatabaseName()).toBe(dbName);
   });
 
   it('应该能够关闭默认数据库实例', async () => {
     const dbName = `test_close_db_${Date.now()}_${Math.random()}`;
-    const db = await initializeDatabase({ 
+    const db = await initializeDatabase({
       name: dbName,
-      debug: true 
+      debug: true,
     });
-    
+
     expect(db.isReady()).toBe(true);
-    
+
     await closeDatabase();
-    
+
     expect(db.isReady()).toBe(false);
   });
 });

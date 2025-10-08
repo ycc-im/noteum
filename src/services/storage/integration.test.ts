@@ -1,10 +1,10 @@
 /**
  * Integration Tests for Enhanced Storage System
- * 
+ *
  * Comprehensive test suite covering all Issue #100 implementations:
  * - Event Management System
  * - Observer Pattern
- * - Cross-Tab Synchronization  
+ * - Cross-Tab Synchronization
  * - Extended Cache Strategies (LFU/FIFO)
  * - Configuration Hot Reload
  */
@@ -12,10 +12,16 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { DexieStorageAdapter } from './dexie-adapter';
 import { StorageEventManager } from './event-manager';
-import { StorageObserverManager, FunctionalStorageObserver } from './observer-pattern';
+import {
+  StorageObserverManager,
+  FunctionalStorageObserver,
+} from './observer-pattern';
 import { CrossTabSyncManager } from './cross-tab-sync';
 import { CacheStrategyFactory } from './cache-factory';
-import { ConfigurationWatcher, createConfigurationWatcher } from './config-watcher';
+import {
+  ConfigurationWatcher,
+  createConfigurationWatcher,
+} from './config-watcher';
 import { createStorageConfigValidator } from './config-validator';
 import type { StorageEvent, StorageChangeEvent } from './events';
 import type { StorageObserver } from './observer-pattern';
@@ -44,10 +50,10 @@ describe('Enhanced Storage System Integration', () => {
     });
 
     await adapter.initialize();
-    
+
     eventManager = adapter.getEventManager();
     observerManager = adapter.getObserverManager();
-    
+
     crossTabSync = new CrossTabSyncManager({
       channelName: `test-sync-${Date.now()}`,
       heartbeatInterval: 1000,
@@ -85,7 +91,7 @@ describe('Enhanced Storage System Integration', () => {
       expect(event.source).toBe('indexeddb');
 
       unsubscribe();
-      
+
       // Event manager stats should reflect activity
       const stats = eventManager.getStats();
       expect(stats.totalListeners).toBe(0); // After unsubscribe
@@ -186,11 +192,27 @@ describe('Enhanced Storage System Integration', () => {
 
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      expect(userObserver.handlers.onDataAdded).toHaveBeenCalledWith('user.name', 'John', expect.any(Object));
-      expect(userObserver.handlers.onDataAdded).not.toHaveBeenCalledWith('app.theme', 'dark', expect.any(Object));
+      expect(userObserver.handlers.onDataAdded).toHaveBeenCalledWith(
+        'user.name',
+        'John',
+        expect.any(Object)
+      );
+      expect(userObserver.handlers.onDataAdded).not.toHaveBeenCalledWith(
+        'app.theme',
+        'dark',
+        expect.any(Object)
+      );
 
-      expect(appObserver.handlers.onDataAdded).toHaveBeenCalledWith('app.theme', 'dark', expect.any(Object));
-      expect(appObserver.handlers.onDataAdded).not.toHaveBeenCalledWith('user.name', 'John', expect.any(Object));
+      expect(appObserver.handlers.onDataAdded).toHaveBeenCalledWith(
+        'app.theme',
+        'dark',
+        expect.any(Object)
+      );
+      expect(appObserver.handlers.onDataAdded).not.toHaveBeenCalledWith(
+        'user.name',
+        'John',
+        expect.any(Object)
+      );
     });
 
     it('should batch observer notifications when configured', async () => {
@@ -201,9 +223,9 @@ describe('Enhanced Storage System Integration', () => {
         onStorageCleared: vi.fn(),
       };
 
-      observerManager.register(batchedObserver, { 
+      observerManager.register(batchedObserver, {
         batchDelay: 50,
-        maxBatchSize: 5 
+        maxBatchSize: 5,
       });
 
       // Rapid operations
@@ -225,14 +247,22 @@ describe('Enhanced Storage System Integration', () => {
   describe('Cross-Tab Synchronization', () => {
     it('should broadcast data changes to other tabs', async () => {
       const mockSyncListener = vi.fn();
-      const syncManager2 = new CrossTabSyncManager({
-        channelName: crossTabSync.getStats().tabId, // Same channel
-      }, {
-        onDataSynced: mockSyncListener,
-      });
+      const syncManager2 = new CrossTabSyncManager(
+        {
+          channelName: crossTabSync.getStats().tabId, // Same channel
+        },
+        {
+          onDataSynced: mockSyncListener,
+        }
+      );
 
       // Simulate data change broadcast
-      crossTabSync.broadcastDataChange('added', 'sync-test', undefined, 'sync-value');
+      crossTabSync.broadcastDataChange(
+        'added',
+        'sync-test',
+        undefined,
+        'sync-value'
+      );
 
       await new Promise(resolve => setTimeout(resolve, 50));
 
@@ -251,12 +281,15 @@ describe('Enhanced Storage System Integration', () => {
       const tabConnectedListener = vi.fn();
       const tabDisconnectedListener = vi.fn();
 
-      const syncManager2 = new CrossTabSyncManager({
-        channelName: crossTabSync.getStats().tabId,
-      }, {
-        onTabConnected: tabConnectedListener,
-        onTabDisconnected: tabDisconnectedListener,
-      });
+      const syncManager2 = new CrossTabSyncManager(
+        {
+          channelName: crossTabSync.getStats().tabId,
+        },
+        {
+          onTabConnected: tabConnectedListener,
+          onTabDisconnected: tabDisconnectedListener,
+        }
+      );
 
       await new Promise(resolve => setTimeout(resolve, 100));
 
@@ -372,7 +405,7 @@ describe('Enhanced Storage System Integration', () => {
       // Simulate workload that might benefit from different strategies
       for (let i = 0; i < 20; i++) {
         adaptiveCache.set(`key${i}`, `value${i}`);
-        
+
         // Access some keys multiple times (LFU pattern)
         if (i % 3 === 0) {
           adaptiveCache.get(`key${i}`);
@@ -442,13 +475,16 @@ describe('Enhanced Storage System Integration', () => {
       const changeListener = vi.fn();
       const rollbackListener = vi.fn();
 
-      const watcher = createConfigurationWatcher({
-        enableValidation: false,
-        enableDebouncing: false,
-      }, {
-        onConfigChanged: changeListener,
-        onConfigRolledBack: rollbackListener,
-      });
+      const watcher = createConfigurationWatcher(
+        {
+          enableValidation: false,
+          enableDebouncing: false,
+        },
+        {
+          onConfigChanged: changeListener,
+          onConfigRolledBack: rollbackListener,
+        }
+      );
 
       await watcher.setConfig({ test: 'value1' });
       await watcher.setConfig({ test: 'value2' });
@@ -470,7 +506,7 @@ describe('Enhanced Storage System Integration', () => {
     it('should update specific configuration keys', async () => {
       await configWatcher.setConfig({
         database: { name: 'test' },
-        cache: { size: 100 }
+        cache: { size: 100 },
       });
 
       await configWatcher.updateConfigKey('database.name', 'updated-test');
@@ -496,13 +532,16 @@ describe('Enhanced Storage System Integration', () => {
 
       eventManager.on('change', eventListener);
       observerManager.register(observerCallbacks);
-      
-      const systemWatcher = createConfigurationWatcher({
-        enableValidation: true,
-        enableAutoRollback: false,
-      }, {
-        onConfigChanged: configChangeListener,
-      });
+
+      const systemWatcher = createConfigurationWatcher(
+        {
+          enableValidation: true,
+          enableAutoRollback: false,
+        },
+        {
+          onConfigChanged: configChangeListener,
+        }
+      );
 
       // 1. Configure the system
       await systemWatcher.setConfig({
@@ -555,15 +594,23 @@ describe('Enhanced Storage System Integration', () => {
       const observerData: any[] = [];
       const syncData: any[] = [];
 
-      eventManager.on('change', (event) => {
-        eventData.push({ key: event.data.key, type: event.data.type, value: event.data.newValue });
+      eventManager.on('change', event => {
+        eventData.push({
+          key: event.data.key,
+          type: event.data.type,
+          value: event.data.newValue,
+        });
       });
 
       observerManager.register({
-        onDataAdded: (key, value) => observerData.push({ key, type: 'added', value }),
-        onDataChanged: (key, oldValue, newValue) => observerData.push({ key, type: 'updated', value: newValue }),
-        onDataDeleted: (key, oldValue) => observerData.push({ key, type: 'removed', value: undefined }),
-        onStorageCleared: () => observerData.push({ key: '*', type: 'cleared', value: undefined }),
+        onDataAdded: (key, value) =>
+          observerData.push({ key, type: 'added', value }),
+        onDataChanged: (key, oldValue, newValue) =>
+          observerData.push({ key, type: 'updated', value: newValue }),
+        onDataDeleted: (key, oldValue) =>
+          observerData.push({ key, type: 'removed', value: undefined }),
+        onStorageCleared: () =>
+          observerData.push({ key: '*', type: 'cleared', value: undefined }),
       });
 
       const testData = [

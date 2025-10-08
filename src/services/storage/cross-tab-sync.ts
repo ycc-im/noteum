@@ -1,31 +1,35 @@
 /**
  * Cross-Tab Synchronization Manager
- * 
+ *
  * Provides real-time data synchronization across browser tabs using BroadcastChannel API.
  * Handles configuration changes, data updates, and conflict resolution between tabs.
- * 
+ *
  * @fileoverview Cross-tab synchronization implementation
  * @module storage/cross-tab-sync
  */
 
 import type { StorageAdapterType } from './types';
-import type { StorageChangeEvent, StorageEvent, StorageMetadata } from './events';
+import type {
+  StorageChangeEvent,
+  StorageEvent,
+  StorageMetadata,
+} from './events';
 import { StorageEventUtils } from './event-builder';
 
 /**
  * Cross-tab message types
  */
 export type CrossTabMessageType =
-  | 'data-changed'      // Data was modified in another tab
-  | 'config-updated'    // Configuration was updated
-  | 'storage-cleared'   // Storage was cleared
-  | 'tab-connected'     // New tab connected
-  | 'tab-disconnected'  // Tab disconnected
-  | 'heartbeat'         // Keep-alive message
-  | 'sync-request'      // Request full sync
-  | 'sync-response'     // Response to sync request
+  | 'data-changed' // Data was modified in another tab
+  | 'config-updated' // Configuration was updated
+  | 'storage-cleared' // Storage was cleared
+  | 'tab-connected' // New tab connected
+  | 'tab-disconnected' // Tab disconnected
+  | 'heartbeat' // Keep-alive message
+  | 'sync-request' // Request full sync
+  | 'sync-response' // Response to sync request
   | 'conflict-detected' // Data conflict detected
-  | 'conflict-resolved';// Conflict was resolved
+  | 'conflict-resolved'; // Conflict was resolved
 
 /**
  * Cross-tab message structure
@@ -86,7 +90,11 @@ export interface CrossTabSyncConfig {
 /**
  * Conflict resolution strategy
  */
-export type ConflictResolutionStrategy = 'timestamp' | 'manual' | 'merge' | 'ignore';
+export type ConflictResolutionStrategy =
+  | 'timestamp'
+  | 'manual'
+  | 'merge'
+  | 'ignore';
 
 /**
  * Conflict information
@@ -115,7 +123,11 @@ export interface CrossTabSyncListeners {
   onDataSynced?: (data: StorageChangeEvent) => void;
   onConfigSynced?: (config: any) => void;
   onConflictDetected?: (conflict: ConflictInfo) => void;
-  onConflictResolved?: (key: string, resolvedValue: any, strategy: ConflictResolutionStrategy) => void;
+  onConflictResolved?: (
+    key: string,
+    resolvedValue: any,
+    strategy: ConflictResolutionStrategy
+  ) => void;
   onSyncError?: (error: Error, message?: CrossTabMessage) => void;
 }
 
@@ -135,7 +147,10 @@ export class CrossTabSyncManager {
   private pendingSyncRequests = new Set<string>();
   private isDestroyed = false;
 
-  constructor(config: Partial<CrossTabSyncConfig> = {}, listeners: CrossTabSyncListeners = {}) {
+  constructor(
+    config: Partial<CrossTabSyncConfig> = {},
+    listeners: CrossTabSyncListeners = {}
+  ) {
     this.config = {
       channelName: 'noteum-storage-sync',
       heartbeatInterval: 30000, // 30 seconds
@@ -154,7 +169,9 @@ export class CrossTabSyncManager {
     if (this.isBroadcastChannelSupported()) {
       this.initialize();
     } else {
-      console.warn('[CrossTabSyncManager] BroadcastChannel not supported in this environment');
+      console.warn(
+        '[CrossTabSyncManager] BroadcastChannel not supported in this environment'
+      );
     }
   }
 
@@ -178,7 +195,6 @@ export class CrossTabSyncManager {
 
       // Announce connection
       this.broadcastMessage('tab-connected', this.getTabInfo());
-
     } catch (error) {
       console.error('[CrossTabSyncManager] Initialization failed:', error);
     }
@@ -213,7 +229,10 @@ export class CrossTabSyncManager {
   /**
    * Broadcast configuration update
    */
-  broadcastConfigUpdate(config: any, source: StorageAdapterType = 'indexeddb'): void {
+  broadcastConfigUpdate(
+    config: any,
+    source: StorageAdapterType = 'indexeddb'
+  ): void {
     if (!this.channel || this.isDestroyed) return;
 
     this.broadcastMessage('config-updated', {
@@ -262,7 +281,7 @@ export class CrossTabSyncManager {
 
       // Listen for sync response
       const originalHandler = this.listeners.onDataSynced;
-      this.listeners.onDataSynced = (data) => {
+      this.listeners.onDataSynced = data => {
         if ((data as any).syncId === syncId) {
           clearTimeout(timeout);
           this.pendingSyncRequests.delete(syncId);
@@ -362,7 +381,8 @@ export class CrossTabSyncManager {
       lastActivity: new Date(),
       title: typeof document !== 'undefined' ? document.title : undefined,
       isActive: typeof document !== 'undefined' ? !document.hidden : true,
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
+      userAgent:
+        typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
     };
   }
 
@@ -386,13 +406,16 @@ export class CrossTabSyncManager {
       this.channel.postMessage(message);
       this.addToMessageQueue(message);
     } catch (error) {
-      console.error('[CrossTabSyncManager] Failed to broadcast message:', error);
+      console.error(
+        '[CrossTabSyncManager] Failed to broadcast message:',
+        error
+      );
     }
   }
 
   private handleMessage(event: MessageEvent<CrossTabMessage>): void {
     const message = event.data;
-    
+
     // Ignore messages from self
     if (message.tabId === this.tabId) return;
 
@@ -460,18 +483,26 @@ export class CrossTabSyncManager {
 
   private isDuplicateMessage(message: CrossTabMessage): boolean {
     return this.messageQueue.some(
-      (msg) => msg.messageId === message.messageId || 
-      (msg.tabId === message.tabId && msg.type === message.type && 
-       Math.abs(new Date(msg.timestamp).getTime() - new Date(message.timestamp).getTime()) < 1000)
+      msg =>
+        msg.messageId === message.messageId ||
+        (msg.tabId === message.tabId &&
+          msg.type === message.type &&
+          Math.abs(
+            new Date(msg.timestamp).getTime() -
+              new Date(message.timestamp).getTime()
+          ) < 1000)
     );
   }
 
   private addToMessageQueue(message: CrossTabMessage): void {
     this.messageQueue.push(message);
-    
+
     // Limit queue size
     if (this.messageQueue.length > this.config.maxMessageQueueSize) {
-      this.messageQueue.splice(0, this.messageQueue.length - this.config.maxMessageQueueSize);
+      this.messageQueue.splice(
+        0,
+        this.messageQueue.length - this.config.maxMessageQueueSize
+      );
     }
   }
 
@@ -500,7 +531,10 @@ export class CrossTabSyncManager {
     };
 
     // Check for conflicts if enabled
-    if (this.config.enableConflictResolution && this.shouldCheckConflict(changeEvent)) {
+    if (
+      this.config.enableConflictResolution &&
+      this.shouldCheckConflict(changeEvent)
+    ) {
       this.checkForConflict(changeEvent, message);
     }
 
@@ -536,7 +570,7 @@ export class CrossTabSyncManager {
 
   private handleSyncRequest(message: CrossTabMessage): void {
     const { syncId, keys } = message.data;
-    
+
     // This would typically trigger a response with current data
     // Implementation depends on the storage adapter
     this.broadcastMessage('sync-response', {
@@ -566,7 +600,10 @@ export class CrossTabSyncManager {
     return changeEvent.type === 'updated' && changeEvent.key !== '*';
   }
 
-  private checkForConflict(changeEvent: StorageChangeEvent, message: CrossTabMessage): void {
+  private checkForConflict(
+    changeEvent: StorageChangeEvent,
+    message: CrossTabMessage
+  ): void {
     // Implement conflict detection logic based on timestamps, versions, etc.
     // This is a simplified example
     const conflict: ConflictInfo = {
@@ -615,9 +652,9 @@ export class CrossTabSyncManager {
   private cleanupMessageQueue(): void {
     const now = Date.now();
     const messageTimeout = 5 * 60 * 1000; // 5 minutes
-    
+
     this.messageQueue = this.messageQueue.filter(
-      (message) => now - new Date(message.timestamp).getTime() < messageTimeout
+      message => now - new Date(message.timestamp).getTime() < messageTimeout
     );
   }
 }

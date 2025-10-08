@@ -1,9 +1,9 @@
 /**
  * Token encryption service for secure token storage
- * 
+ *
  * This module provides encryption/decryption capabilities for token storage
  * using Web Crypto API for maximum security in browser environments.
- * 
+ *
  * @fileoverview Token encryption utilities for secure storage
  * @module storage/token-encryption
  */
@@ -71,7 +71,8 @@ export class TokenEncryptionService {
           ['deriveKey']
         );
 
-        const salt = this.config.salt || crypto.getRandomValues(new Uint8Array(16));
+        const salt =
+          this.config.salt || crypto.getRandomValues(new Uint8Array(16));
         this.masterKey = await crypto.subtle.deriveKey(
           {
             name: 'PBKDF2',
@@ -105,7 +106,9 @@ export class TokenEncryptionService {
 
       this.encryptionKey = this.masterKey;
     } catch (error) {
-      throw new Error(`Failed to initialize token encryption: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to initialize token encryption: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -141,7 +144,9 @@ export class TokenEncryptionService {
       // Convert to base64 for storage
       return this.serializeEncryptedData(encryptedData);
     } catch (error) {
-      throw new Error(`Failed to encrypt token: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to encrypt token: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -168,7 +173,9 @@ export class TokenEncryptionService {
       const decoder = new TextDecoder();
       return decoder.decode(decrypted);
     } catch (error) {
-      throw new Error(`Failed to decrypt token: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to decrypt token: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -176,9 +183,11 @@ export class TokenEncryptionService {
    * Check if Web Crypto API is available
    */
   static isAvailable(): boolean {
-    return typeof crypto !== 'undefined' && 
-           typeof crypto.subtle !== 'undefined' &&
-           typeof crypto.getRandomValues !== 'undefined';
+    return (
+      typeof crypto !== 'undefined' &&
+      typeof crypto.subtle !== 'undefined' &&
+      typeof crypto.getRandomValues !== 'undefined'
+    );
   }
 
   /**
@@ -208,7 +217,7 @@ export class TokenEncryptionService {
   private deserializeEncryptedData(serialized: string): EncryptedTokenData {
     try {
       const parsed = JSON.parse(atob(serialized));
-      
+
       return {
         data: this.base64ToArrayBuffer(parsed.data),
         iv: this.base64ToUint8Array(parsed.iv),
@@ -216,7 +225,9 @@ export class TokenEncryptionService {
         salt: parsed.salt ? this.base64ToUint8Array(parsed.salt) : undefined,
       };
     } catch (error) {
-      throw new Error(`Failed to deserialize encrypted data: ${error instanceof Error ? error.message : 'Invalid format'}`);
+      throw new Error(
+        `Failed to deserialize encrypted data: ${error instanceof Error ? error.message : 'Invalid format'}`
+      );
     }
   }
 
@@ -277,13 +288,19 @@ export const defaultTokenEncryption = new TokenEncryptionService();
 /**
  * Convenience functions for quick encryption/decryption
  */
-export async function encryptToken(token: string, password?: string): Promise<string> {
+export async function encryptToken(
+  token: string,
+  password?: string
+): Promise<string> {
   const service = new TokenEncryptionService();
   await service.initialize(password);
   return service.encryptToken(token);
 }
 
-export async function decryptToken(encryptedToken: string, password?: string): Promise<string> {
+export async function decryptToken(
+  encryptedToken: string,
+  password?: string
+): Promise<string> {
   const service = new TokenEncryptionService();
   await service.initialize(password);
   return service.decryptToken(encryptedToken);

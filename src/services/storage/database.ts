@@ -1,10 +1,10 @@
 /**
  * NoteumDB - Dexie-based IndexedDB database implementation
- * 
+ *
  * This module implements the core database class using Dexie.js for IndexedDB
  * operations. It provides type-safe access to all storage tables with proper
  * initialization, error handling, and lifecycle management.
- * 
+ *
  * @fileoverview Core database implementation
  * @module storage/database
  */
@@ -84,7 +84,7 @@ export interface CleanupResult {
 
 /**
  * NoteumDB - Main database class extending Dexie
- * 
+ *
  * Provides type-safe access to all storage tables with proper initialization,
  * error handling, and lifecycle management.
  */
@@ -110,21 +110,24 @@ export class NoteumDB extends Dexie {
       debug: options.debug ?? false,
       maxRetries: options.maxRetries ?? 3,
       enableAutoCleanup: options.enableAutoCleanup ?? true,
-      cleanupInterval: options.cleanupInterval ?? SCHEMA_CONSTANTS.CLEANUP_INTERVAL_MS,
+      cleanupInterval:
+        options.cleanupInterval ?? SCHEMA_CONSTANTS.CLEANUP_INTERVAL_MS,
     };
 
     // Define schema
     this.version(SCHEMA_CONSTANTS.CURRENT_VERSION).stores({
       [TableNames.TOKENS]: NOTEUM_DB_SCHEMA.tables[TableNames.TOKENS],
-      [TableNames.USER_PREFERENCES]: NOTEUM_DB_SCHEMA.tables[TableNames.USER_PREFERENCES],
-      [TableNames.APP_SETTINGS]: NOTEUM_DB_SCHEMA.tables[TableNames.APP_SETTINGS],
+      [TableNames.USER_PREFERENCES]:
+        NOTEUM_DB_SCHEMA.tables[TableNames.USER_PREFERENCES],
+      [TableNames.APP_SETTINGS]:
+        NOTEUM_DB_SCHEMA.tables[TableNames.APP_SETTINGS],
       [TableNames.API_CACHE]: NOTEUM_DB_SCHEMA.tables[TableNames.API_CACHE],
       [TableNames.METADATA]: NOTEUM_DB_SCHEMA.tables[TableNames.METADATA],
     });
 
-    // Set up hooks 
+    // Set up hooks
     this.setupHooks();
-    
+
     // Event handlers will be set up during initialization
   }
 
@@ -259,7 +262,9 @@ export class NoteumDB extends Dexie {
 
       // Clean expired tokens
       if (options.expiredTokens !== false) {
-        const expiredTokensCount = await this.cleanExpiredTokens(options.dryRun);
+        const expiredTokensCount = await this.cleanExpiredTokens(
+          options.dryRun
+        );
         result.breakdown.tokens = expiredTokensCount;
         result.recordsRemoved += expiredTokensCount;
       }
@@ -304,10 +309,7 @@ export class NoteumDB extends Dexie {
         .toArray();
 
       if (!dryRun && expiredTokens.length > 0) {
-        await this.tokens
-          .where('expiredAt')
-          .below(new Date())
-          .delete();
+        await this.tokens.where('expiredAt').below(new Date()).delete();
       }
 
       return expiredTokens.length;
@@ -320,10 +322,13 @@ export class NoteumDB extends Dexie {
   /**
    * Clean expired cache entries
    */
-  private async cleanExpiredCache(maxAgeHours: number, dryRun = false): Promise<number> {
+  private async cleanExpiredCache(
+    maxAgeHours: number,
+    dryRun = false
+  ): Promise<number> {
     try {
       const cutoffDate = new Date(Date.now() - maxAgeHours * 60 * 60 * 1000);
-      
+
       const expiredCache = await this.apiCache
         .where('expiredAt')
         .below(new Date())
@@ -397,9 +402,12 @@ export class NoteumDB extends Dexie {
       obj.updatedAt = new Date();
     });
 
-    this.userPreferences.hook('updating', (modifications, primKey, obj, trans) => {
-      modifications.updatedAt = new Date();
-    });
+    this.userPreferences.hook(
+      'updating',
+      (modifications, primKey, obj, trans) => {
+        modifications.updatedAt = new Date();
+      }
+    );
 
     this.appSettings.hook('creating', (primKey, obj, trans) => {
       obj.updatedAt = new Date();
@@ -437,12 +445,14 @@ export class NoteumDB extends Dexie {
    * Set up event handlers
    */
   private setupEventHandlers(): void {
-    this.on('error', (error) => {
+    this.on('error', error => {
       console.error('[NoteumDB] Database error:', error);
     });
 
     this.on('blocked', () => {
-      console.warn('[NoteumDB] Database blocked - another instance may be running');
+      console.warn(
+        '[NoteumDB] Database blocked - another instance may be running'
+      );
     });
 
     this.on('versionchange', () => {
@@ -507,7 +517,9 @@ export function getDatabase(options?: DatabaseOptions): NoteumDB {
 /**
  * Initialize the default database instance
  */
-export async function initializeDatabase(options?: DatabaseOptions): Promise<NoteumDB> {
+export async function initializeDatabase(
+  options?: DatabaseOptions
+): Promise<NoteumDB> {
   const db = getDatabase(options);
   await db.initialize();
   return db;

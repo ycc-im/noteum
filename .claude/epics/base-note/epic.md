@@ -4,7 +4,7 @@ status: backlog
 created: 2025-10-06T23:41:46Z
 progress: 0%
 prd: .claude/prds/base-note.md
-github: [Will be updated when synced to GitHub]
+github: https://github.com/ycc-im/noteum/issues/128
 ---
 
 # Epic: Base-Note 基础笔记功能

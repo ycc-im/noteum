@@ -1,50 +1,74 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!-- Sync Impact Report -->
+<!-- Version change: 0.0.0 → 1.0.0 -->
+<!-- Modified principles: None (new constitution) -->
+<!-- Added sections: Code Style Standards, Test-Driven Development, Monorepo Principles -->
+<!-- Removed sections: None -->
+<!-- Templates requiring updates: ✅ plan-template.md, ✅ spec-template.md, ✅ tasks-template.md, ⚠ agent-file-template.md, ⚠ checklist-template.md -->
+<!-- Follow-up TODOs: None -->
+
+# Noteum Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Test-Driven Development (NON-NEGOTIABLE)
+TDD is mandatory for all feature development. Tests MUST be written before any implementation code. The Red-Green-Refactor cycle is strictly enforced: write failing tests, get user approval, then implement minimal code to make tests pass. No production code may be written without corresponding tests that define its behavior.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Code Style Standards
+All code MUST follow the established Prettier configuration with 2-space indentation, no semicolons, single quotes, and trailing commas in ES5-compatible environments. Code MUST pass ESLint checks before any commit. Style violations are blocking issues that must be resolved immediately.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Monorepo Principles
+The project follows a monorepo structure with clear separation between applications (apps/) and shared libraries (packages/). All packages MUST be independently testable and buildable. Cross-package dependencies MUST be explicitly declared and versioned. No circular dependencies are allowed between packages.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Independent User Stories
+Every feature MUST be broken down into independently testable and deliverable user stories. Each user story should provide complete value when implemented in isolation. Stories are prioritized (P1, P2, P3) and can be developed in parallel after foundational infrastructure is complete.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. TypeScript-First Development
+All code MUST be written in TypeScript with strict type checking enabled. Implicit any types are prohibited. All interfaces and types must be explicitly defined. Code must pass TypeScript compilation without any type errors before merging.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Development Workflow
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### Code Review Process
+All pull requests require at least one code review. Reviews MUST verify:
+- Compliance with constitution principles
+- Test coverage and quality
+- TypeScript type safety
+- Code style adherence
+- Documentation completeness
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### Quality Gates
+Code must pass all automated checks before merging:
+- ESLint validation
+- TypeScript compilation
+- Unit tests (100% coverage for new code)
+- Integration tests (where applicable)
+- Build verification
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Technical Standards
+
+### Monorepo Structure
+The project uses pnpm workspaces with the following conventions:
+- `apps/` contains executable applications
+- `packages/` contains reusable libraries
+- Each package has its own package.json with explicit dependencies
+- Shared dependencies are managed at the root level
+- Build artifacts are excluded from version control
+
+### Testing Requirements
+- Unit tests are mandatory for all new code
+- Integration tests for cross-package interactions
+- Contract tests for external APIs
+- Tests MUST be written before implementation (TDD)
+- All tests must pass before code can be merged
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other development practices and guidelines. Amendments require:
+1. Documentation of proposed changes with rationale
+2. Team approval through pull request review
+3. Version update following semantic versioning
+4. Migration plan for existing code
+5. Communication to all team members
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+All pull requests and code reviews must verify compliance with constitution principles. Any complexity or deviation from these principles must be explicitly justified and approved. Violations of test-driven development and code style standards are immediate blocking issues.
+
+**Version**: 1.0.0 | **Ratified**: 2025-01-15 | **Last Amended**: 2025-01-15

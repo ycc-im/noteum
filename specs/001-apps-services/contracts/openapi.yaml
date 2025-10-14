@@ -1,0 +1,1761 @@
+openapi: 3.0.3
+info:
+  title: Noteum Services API
+  description: RESTful API for Noteum collaborative document platform
+  version: 1.0.0
+  contact:
+    name: Noteum Team
+    email: dev@noteum.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Development server
+  - url: https://api.noteum.com/v1
+    description: Production server
+
+paths:
+  # ============= Authentication =============
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - username
+                - password
+                - displayName
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                username:
+                  type: string
+                  pattern: '^[a-zA-Z0-9_]+$'
+                  minLength: 3
+                  maxLength: 30
+                  example: johndoe
+                password:
+                  type: string
+                  minLength: 8
+                  example: securePassword123
+                displayName:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                  example: John Doe
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  example: securePassword123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: User logout
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logged out successfully"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh access token
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  expiresAt:
+                    type: string
+                    format: date-time
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ============= Users =============
+  /users/profile:
+    get:
+      tags:
+        - Users
+      summary: Get current user profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      tags:
+        - Users
+      summary: Update current user profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                bio:
+                  type: string
+                  maxLength: 1000
+                avatar:
+                  type: string
+                  format: uri
+                preferences:
+                  type: object
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ============= Notebooks =============
+  /notebooks:
+    get:
+      tags:
+        - Notebooks
+      summary: List notebooks
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: visibility
+          in: query
+          schema:
+            type: string
+            enum: [PRIVATE, SHARED, PUBLIC]
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [createdAt, updatedAt, title]
+            default: updatedAt
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: Notebooks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotebooks'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - Notebooks
+      summary: Create a new notebook
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNotebook'
+      responses:
+        '201':
+          description: Notebook created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notebook'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /notebooks/{notebookId}:
+    get:
+      tags:
+        - Notebooks
+      summary: Get notebook by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: notebookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+      responses:
+        '200':
+          description: Notebook retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notebook'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    put:
+      tags:
+        - Notebooks
+      summary: Update notebook
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: notebookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNotebook'
+      responses:
+        '200':
+          description: Notebook updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notebook'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Notebooks
+      summary: Delete notebook
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: notebookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+      responses:
+        '200':
+          description: Notebook deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Notebook deleted successfully"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /notebooks/{notebookId}/notes:
+    get:
+      tags:
+        - Notebooks
+      summary: Get notes in notebook
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: notebookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [NOTE, DOCUMENT, WHITEBOARD, CODE, TODO, MINDMAP]
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Notes retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotes'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    post:
+      tags:
+        - Notebooks
+      summary: Create note in notebook
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: notebookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNote'
+      responses:
+        '201':
+          description: Note created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /notebooks/{notebookId}/collaborators:
+    get:
+      tags:
+        - Notebooks
+      summary: Get notebook collaborators
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: notebookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+      responses:
+        '200':
+          description: Collaborators retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotebookCollaborator'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    post:
+      tags:
+        - Notebooks
+      summary: Invite collaborator to notebook
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: notebookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteNotebookCollaborator'
+      responses:
+        '201':
+          description: Collaborator invited successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotebookCollaborator'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /notebooks/{notebookId}/collaborators/{userId}:
+    put:
+      tags:
+        - Notebooks
+      summary: Update notebook collaborator permission
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: notebookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNotebookCollaboratorPermission'
+      responses:
+        '200':
+          description: Permission updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotebookCollaborator'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Notebooks
+      summary: Remove collaborator from notebook
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: notebookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+      responses:
+        '200':
+          description: Collaborator removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Collaborator removed successfully"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ============= Notes =============
+  /notes:
+    get:
+      tags:
+        - Notes
+      summary: List notes
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [NOTE, DOCUMENT, WHITEBOARD, CODE]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [DRAFT, PUBLISHED, ARCHIVED]
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [createdAt, updatedAt, title]
+            default: updatedAt
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: Notes retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotes'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - Notes
+      summary: Create a new document
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNote'
+      responses:
+        '201':
+          description: Note created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /notes/{noteId}:
+    get:
+      tags:
+        - Notes
+      summary: Get document by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+            description: ULID identifier
+      responses:
+        '200':
+          description: Note retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    put:
+      tags:
+        - Notes
+      summary: Update document
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+            description: ULID identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNote'
+      responses:
+        '200':
+          description: Note updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Notes
+      summary: Delete document
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+            description: ULID identifier
+      responses:
+        '200':
+          description: Note deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Note deleted successfully"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ============= Collaboration =============
+  /notes/{noteId}/collaborators:
+    get:
+      tags:
+        - Collaboration
+      summary: Get document collaborators
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+            description: ULID identifier
+      responses:
+        '200':
+          description: Collaborators retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NoteCollaborator'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    post:
+      tags:
+        - Collaboration
+      summary: Invite collaborator to document
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+            description: ULID identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteCollaborator'
+      responses:
+        '201':
+          description: Collaborator invited successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoteCollaborator'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /notes/{noteId}/collaborators/{userId}:
+    put:
+      tags:
+        - Collaboration
+      summary: Update collaborator permission
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+            description: ULID identifier
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+            description: ULID identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCollaboratorPermission'
+      responses:
+        '200':
+          description: Permission updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoteCollaborator'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Collaboration
+      summary: Remove collaborator from document
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+            description: ULID identifier
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ulid
+            description: ULID identifier
+      responses:
+        '200':
+          description: Collaborator removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Collaborator removed successfully"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ============= Search =============
+  /search:
+    post:
+      tags:
+        - Search
+      summary: Search notes
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchQuery'
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ============= Activity =============
+  /activities:
+    get:
+      tags:
+        - Activity
+      summary: Get activity logs
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: userId
+          in: query
+          schema:
+            type: string
+            format: ulid
+            description: ULID identifier
+        - name: noteId
+          in: query
+          schema:
+            type: string
+            format: ulid
+            description: ULID identifier
+        - name: action
+          in: query
+          schema:
+            type: string
+            enum: [CREATE_DOCUMENT, UPDATE_DOCUMENT, DELETE_DOCUMENT, SHARE_DOCUMENT, LOGIN, LOGOUT, VIEW_DOCUMENT]
+        - name: fromDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: toDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Activity logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedActivities'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ============= Health Check =============
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      responses:
+        '200':
+          description: Service health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # ============= User Schemas =============
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: ulid
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        profile:
+          type: object
+          properties:
+            displayName:
+              type: string
+            avatar:
+              type: string
+              format: uri
+            bio:
+              type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        lastLoginAt:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+        role:
+          type: string
+          enum: [ADMIN, USER, VIEWER]
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+
+    # ============= Notebook Schemas =============
+    Notebook:
+      type: object
+      properties:
+        id:
+          type: string
+          format: ulid
+          description: ULID identifier
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 1000
+        ownerId:
+          type: string
+          format: ulid
+          description: ULID identifier
+        visibility:
+          type: string
+          enum: [PRIVATE, SHARED, PUBLIC]
+        settings:
+          type: object
+        metadata:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        version:
+          type: integer
+          minimum: 0
+        owner:
+          type: object
+          properties:
+            id:
+              type: string
+              format: ulid
+              description: ULID identifier
+            username:
+              type: string
+            profile:
+              type: object
+              properties:
+                displayName:
+                  type: string
+        collaboratorsCount:
+          type: integer
+          minimum: 0
+        notesCount:
+          type: integer
+          minimum: 0
+
+    CreateNotebook:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 1000
+        visibility:
+          type: string
+          enum: [PRIVATE, SHARED, PUBLIC]
+          default: PRIVATE
+        settings:
+          type: object
+        metadata:
+          type: object
+
+    UpdateNotebook:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 1000
+        visibility:
+          type: string
+          enum: [PRIVATE, SHARED, PUBLIC]
+        settings:
+          type: object
+        metadata:
+          type: object
+
+    NotebookCollaborator:
+      type: object
+      properties:
+        id:
+          type: string
+          format: ulid
+          description: ULID identifier
+        notebookId:
+          type: string
+          format: ulid
+          description: ULID identifier
+        userId:
+          type: string
+          format: ulid
+          description: ULID identifier
+        permission:
+          type: string
+          enum: [READ, WRITE, ADMIN, OWNER]
+        invitedBy:
+          type: string
+          format: ulid
+          description: ULID identifier
+        joinedAt:
+          type: string
+          format: date-time
+        lastActivityAt:
+          type: string
+          format: date-time
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+              format: ulid
+              description: ULID identifier
+            username:
+              type: string
+            profile:
+              type: object
+              properties:
+                displayName:
+                  type: string
+        invitedByUser:
+          type: object
+          properties:
+            id:
+              type: string
+              format: ulid
+              description: ULID identifier
+            username:
+              type: string
+            profile:
+              type: object
+              properties:
+                displayName:
+                  type: string
+
+    InviteNotebookCollaborator:
+      type: object
+      required:
+        - notebookId
+        - email
+        - permission
+      properties:
+        notebookId:
+          type: string
+          format: ulid
+          description: ULID identifier
+        email:
+          type: string
+          format: email
+        permission:
+          type: string
+          enum: [READ, WRITE, ADMIN]
+        message:
+          type: string
+          maxLength: 500
+
+    UpdateNotebookCollaboratorPermission:
+      type: object
+      required:
+        - notebookId
+        - userId
+        - permission
+      properties:
+        notebookId:
+          type: string
+          format: ulid
+          description: ULID identifier
+        userId:
+          type: string
+          format: ulid
+          description: ULID identifier
+        permission:
+          type: string
+          enum: [READ, WRITE, ADMIN]
+
+    # ============= Note Schemas =============
+    Note:
+      type: object
+      properties:
+        id:
+          type: string
+          format: ulid
+        title:
+          type: string
+        description:
+          type: string
+          maxLength: 1000
+        notebookId:
+          type: string
+          format: ulid
+          description: ULID identifier
+        ownerId:
+          type: string
+          format: ulid
+          description: ULID identifier
+        type:
+          type: string
+          enum: [NOTE, DOCUMENT, WHITEBOARD, CODE, TODO, MINDMAP]
+        status:
+          type: string
+          enum: [DRAFT, PUBLISHED, ARCHIVED, DELETED]
+        settings:
+          type: object
+        metadata:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        version:
+          type: integer
+          minimum: 0
+        inheritPermissions:
+          type: boolean
+          default: true
+        owner:
+          type: object
+          properties:
+            id:
+              type: string
+              format: ulid
+              description: ULID identifier
+            username:
+              type: string
+            profile:
+              type: object
+              properties:
+                displayName:
+                  type: string
+        notebook:
+          type: object
+          properties:
+            id:
+              type: string
+              format: ulid
+              description: ULID identifier
+            title:
+              type: string
+            visibility:
+              type: string
+              enum: [PRIVATE, SHARED, PUBLIC]
+        collaboratorsCount:
+          type: integer
+          minimum: 0
+
+    CreateNote:
+      type: object
+      required:
+        - title
+        - notebookId
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 1000
+        notebookId:
+          type: string
+          format: ulid
+          description: ULID identifier
+        type:
+          type: string
+          enum: [NOTE, DOCUMENT, WHITEBOARD, CODE, TODO, MINDMAP]
+          default: NOTE
+        settings:
+          type: object
+        metadata:
+          type: object
+
+    UpdateNote:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 1000
+        status:
+          type: string
+          enum: [DRAFT, PUBLISHED, ARCHIVED, DELETED]
+        settings:
+          type: object
+        metadata:
+          type: object
+
+    # ============= Collaboration Schemas =============
+    NoteCollaborator:
+      type: object
+      properties:
+        id:
+          type: string
+          format: ulid
+        noteId:
+          type: string
+          format: ulid
+        userId:
+          type: string
+          format: ulid
+        permission:
+          type: string
+          enum: [READ, WRITE, ADMIN, OWNER]
+        joinedAt:
+          type: string
+          format: date-time
+        lastActivityAt:
+          type: string
+          format: date-time
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+              format: ulid
+            username:
+              type: string
+            profile:
+              type: object
+              properties:
+                displayName:
+                  type: string
+
+    InviteCollaborator:
+      type: object
+      required:
+        - noteId
+        - email
+        - permission
+      properties:
+        noteId:
+          type: string
+          format: ulid
+        email:
+          type: string
+          format: email
+        permission:
+          type: string
+          enum: [READ, WRITE, ADMIN]
+        message:
+          type: string
+          maxLength: 500
+
+    UpdateCollaboratorPermission:
+      type: object
+      required:
+        - noteId
+        - userId
+        - permission
+      properties:
+        noteId:
+          type: string
+          format: ulid
+        userId:
+          type: string
+          format: ulid
+        permission:
+          type: string
+          enum: [READ, WRITE, ADMIN]
+
+    # ============= Search Schemas =============
+    SearchQuery:
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          minLength: 1
+          maxLength: 500
+        documentType:
+          type: string
+          enum: [NOTE, DOCUMENT, WHITEBOARD, CODE]
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 20
+        includeVectorSearch:
+          type: boolean
+          default: true
+
+    SearchResult:
+      type: object
+      properties:
+        document:
+          $ref: '#/components/schemas/Note'
+        relevanceScore:
+          type: number
+          minimum: 0
+          maximum: 1
+        matchedContent:
+          type: string
+        highlights:
+          type: array
+          items:
+            type: string
+
+    # ============= Activity Schemas =============
+    ActivityLog:
+      type: object
+      properties:
+        id:
+          type: string
+          format: ulid
+        userId:
+          type: string
+          format: ulid
+        noteId:
+          type: string
+          format: ulid
+        action:
+          type: string
+          enum: [CREATE_DOCUMENT, UPDATE_DOCUMENT, DELETE_DOCUMENT, SHARE_DOCUMENT, LOGIN, LOGOUT, VIEW_DOCUMENT]
+        details:
+          type: object
+        timestamp:
+          type: string
+          format: date-time
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+              format: ulid
+            username:
+              type: string
+            profile:
+              type: object
+              properties:
+                displayName:
+                  type: string
+        document:
+          type: object
+          properties:
+            id:
+              type: string
+              format: ulid
+            title:
+              type: string
+            type:
+              type: string
+
+    # ============= Health Check Schema =============
+    HealthCheck:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+        timestamp:
+          type: string
+          format: date-time
+        services:
+          type: object
+          properties:
+            database:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [healthy, unhealthy]
+                responseTime:
+                  type: number
+            redis:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [healthy, unhealthy]
+                responseTime:
+                  type: number
+            websockets:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [healthy, unhealthy]
+                activeConnections:
+                  type: integer
+        version:
+          type: string
+        uptime:
+          type: number
+
+    # ============= Pagination Schemas =============
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+        limit:
+          type: integer
+          minimum: 1
+        total:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+        hasNextPage:
+          type: boolean
+        hasPrevPage:
+          type: boolean
+
+    PaginatedNotebooks:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notebook'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedNotes:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Note'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedActivities:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityLog'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ============= Error Schemas =============
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+        timestamp:
+          type: string
+          format: date-time
+
+    ValidationError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            code:
+              type: string
+              enum: [VALIDATION_ERROR]
+            details:
+              type: object
+              properties:
+                field:
+                  type: string
+                message:
+                  type: string
+                value:
+                  type: any
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Error'
+              - type: object
+                properties:
+                  code:
+                    type: string
+                    enum: [UNAUTHORIZED]
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Error'
+              - type: object
+                properties:
+                  code:
+                    type: string
+                    enum: [FORBIDDEN]
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Error'
+              - type: object
+                properties:
+                  code:
+                    type: string
+                    enum: [NOT_FOUND]
+
+    Conflict:
+      description: Resource conflict
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Error'
+              - type: object
+                properties:
+                  code:
+                    type: string
+                    enum: [CONFLICT]
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Users
+    description: User profile management
+  - name: Notes
+    description: Note CRUD operations
+  - name: Notebooks
+    description: Notebook management and organization
+  - name: Collaboration
+    description: Note collaboration features
+  - name: Search
+    description: Note search functionality
+  - name: Activity
+    description: User activity logging
+  - name: Health
+    description: Service health checks

@@ -1,0 +1,15 @@
+{
+  "name": "@noteum/services",
+  "version": "0.0.1",
+  "description": "Noteum services application",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Services dev script to be defined'",
+    "build": "echo 'Services build script to be defined'",
+    "test": "echo 'Services test script to be defined'",
+    "lint": "eslint src --ext .ts,.tsx",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

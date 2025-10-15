@@ -1,0 +1,15 @@
+import { createRoute } from '@tanstack/react-router'
+import { rootRoute } from './index'
+
+export const notebooksRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/notebooks',
+  component: function Notebooks() {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Notebooks</h1>
+        <p>Your notebooks will appear here</p>
+      </div>
+    )
+  },
+})

@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for testing
+  postgres-test:
+    image: pgvector/pgvector:pg16
+    container_name: noteum-postgres-test
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: noteum_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    networks:
+      - noteum-test-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for testing
+  redis-test:
+    image: redis:7-alpine
+    container_name: noteum-redis-test
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    tmpfs:
+      - /data
+    networks:
+      - noteum-test-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Test runner
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: noteum-test-runner
+    environment:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://postgres:postgres@postgres-test:5432/noteum_test?schema=public
+      REDIS_URL: redis://redis-test:6379
+      JWT_SECRET: test-jwt-secret-key
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    networks:
+      - noteum-test-network
+    command: ["pnpm", "run", "test:e2e"]
+    profiles:
+      - test
+
+networks:
+  noteum-test-network:
+    driver: bridge

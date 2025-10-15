@@ -1,0 +1,85 @@
+// Prisma schema for Noteum Services
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Utility function for ULID generation
+// Note: ULID will be handled at application level
+// This schema uses String types for ULID fields
+
+// pgvector extension will be enabled via migration
+// CREATE EXTENSION IF NOT EXISTS vector;
+
+// User Roles Enum
+enum UserRole {
+  ADMIN
+  USER
+  VIEWER
+}
+
+// Permission Levels Enum
+enum Permission {
+  READ
+  WRITE
+  ADMIN
+  OWNER
+}
+
+// User Profile Model
+model UserProfile {
+  id           String   @id
+  userId       String   @unique
+  firstName    String
+  lastName     String
+  displayName  String
+  avatar       String?
+  bio          String?
+  preferences  Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+// User Model
+model User {
+  id           String      @id
+  email        String      @unique
+  username     String      @unique
+  passwordHash String
+  isActive     Boolean     @default(true)
+  role         UserRole    @default(USER)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  lastLoginAt  DateTime?
+
+  profile      UserProfile?
+  sessions     Session[]
+
+  @@map("users")
+}
+
+// Session Model
+model Session {
+  id          String   @id
+  userId      String
+  tokenHash   String
+  expiresAt   DateTime
+  deviceInfo  Json?
+  ipAddress   String
+  userAgent   String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}

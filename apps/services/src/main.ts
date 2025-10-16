@@ -29,7 +29,7 @@ async function bootstrap() {
 
   // CORS 配置
   app.enableCors({
-    origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
+    origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:9158'],
     credentials: true,
   })
 

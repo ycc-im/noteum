@@ -72,7 +72,7 @@ services:
       target: runner
     container_name: noteum-nestjs-prod
     ports:
-      - "${NESTJS_PORT:-3000}:3000"
+      - "${NESTJS_PORT:-9168}:3000"  # 默认使用标准化端口 9168
     volumes:
       - nestjs_logs_prod:/app/logs
       - ./uploads:/app/uploads
@@ -118,6 +118,38 @@ services:
         max-size: "10m"
         max-file: "5"
 
+  # Frontend (React + Vite)
+  frontend:
+    build:
+      context: ./apps/client
+      dockerfile: Dockerfile
+      target: production
+    container_name: noteum-frontend-prod
+    ports:
+      - "${FRONTEND_PORT:-9158}:80"
+    environment:
+      - NODE_ENV=production
+      - VITE_API_URL=http://localhost:${NESTJS_PORT:-9168}
+      - VITE_WS_URL=ws://localhost:${NESTJS_PORT:-9168}
+    networks:
+      - noteum-network
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   # Nginx 反向代理
   nginx:
     image: nginx:alpine
@@ -132,6 +164,7 @@ services:
       - nginx_logs_prod:/var/log/nginx
     depends_on:
       - nestjs-service
+      - frontend
     networks:
       - noteum-network
     restart: always

@@ -1,8 +1,9 @@
-# Research Report: Apps/Services 项目框架
+# Research Report: Vite + React + YJS + Tauri Frontend Framework
 
 **Date**: 2025-10-15
-**Feature**: Apps/Services 项目框架
-**Research Focus**: NestJS + y-websocket + tRPC + PostgreSQL + Docker 集成
+**Feature**: apps/client Frontend Framework
+**Version**: v1.2.0 Constitution Compliant
+**Research Focus**: Vite + React + YJS + Tauri + shadcn/ui Integration
 
 ## 技术决策和选择
 

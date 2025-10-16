@@ -17,23 +17,46 @@ RUN npm install -g pnpm@8.15.0
 # 设置工作目录
 WORKDIR /app
 
-# 复制配置文件
+# 复制根目录的配置文件
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
+
+# 复制各个包的 package.json
 COPY apps/services/package.json ./apps/services/
-COPY pnpm-lock.yaml ./
-COPY pnpm-workspace.yaml ./
+COPY packages/utils/package.json ./packages/utils/
+COPY packages/ui/package.json ./packages/ui/
 
 # 安装所有依赖（包括开发依赖）
 RUN pnpm install
 
-# 创建 Prisma 目录
-RUN mkdir -p apps/services/prisma
+# 复制Prisma schema文件和TypeScript配置
+COPY apps/services/prisma ./apps/services/prisma
+COPY apps/services/tsconfig.json ./apps/services/tsconfig.json
+COPY apps/services/tsconfig.build.json ./apps/services/tsconfig.build.json
+COPY apps/services/nest-cli.json ./apps/services/nest-cli.json
+
+# 生成 Prisma 客户端
+RUN pnpm --filter @noteum/services prisma:generate
 
 # 暴露端口
 EXPOSE 3000 9229
 
 # 添加健康检查
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
+  CMD node -e "require('http').get('http://localhost:3000/api/v1/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
+
+# 创建启动脚本来处理Prisma重新生成
+COPY <<EOF /app/start-services.sh
+#!/bin/sh
+# 确保Prisma客户端是最新的
+echo "Generating Prisma client..."
+cd /app/apps/services && pnpm prisma:generate
+
+# 启动开发服务器
+echo "Starting NestJS development server..."
+cd /app/apps/services && exec pnpm start:dev
+EOF
+
+RUN chmod +x /app/start-services.sh
 
 # 启动开发服务器（支持热重载）
-CMD ["pnpm", "--filter", "@noteum/services", "run", "start:dev"]
+CMD ["/app/start-services.sh"]

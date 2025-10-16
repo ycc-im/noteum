@@ -7,7 +7,7 @@
 
 ## Summary
 
-基于 NestJS LTS 版本构建 apps/services 基础框架，集成 y-websocket 协作支持、Prisma ORM、PostgreSQL 向量数据库、tRPC API 和 WebSocket 服务，为未来 AI 功能集成做好准备。重点关注基础框架搭建，数据库表设计将作为独立任务处理。
+基于新版章程要求构建 Vite + React + YJS + Tauri 前端应用框架，集成实时协作功能、桌面应用封装和与现有 services 的连接。重点关注前端框架搭建、YJS 协作逻辑和 Tauri 桌面应用配置，为未来的协作功能开发做好准备。
 
 ## Technical Context
 
@@ -17,34 +17,40 @@
   the iteration process.
 -->
 
-**Language/Version**: TypeScript 5.0+ (NestJS 10.x LTS)
-**Primary Dependencies**: NestJS, tRPC, Prisma, y-websocket, langchain.js
-**Storage**: PostgreSQL with vector extensions (pgvector)
-**Testing**: Jest (NestJS Testing), Supertest
-**Target Platform**: Linux server (Docker containerized)
-**Project Type**: web (API + WebSocket service)
-**Performance Goals**: <100ms API response, WebSocket real-time sync
-**Constraints**: Docker deployment, binary + structured data compatibility
-**Scale/Scope**: Team collaboration service, multi-client real-time sync
+**Language/Version**: TypeScript 5.0+ (React 18.x)
+**Primary Dependencies**: Vite, React 18, YJS, Tauri, React Testing Library
+**Storage**: YJS document storage + existing services integration
+**Testing**: Vitest, React Testing Library, YJS collaboration tests
+**Target Platform**: Web browsers + Desktop (Windows, macOS, Linux) via Tauri
+**Project Type**: web (Frontend application with desktop packaging)
+**Performance Goals**: <50ms UI interactions, real-time collaboration sync
+**Constraints**: Cross-platform desktop compatibility, YJS CRDT data structures
+**Scale/Scope**: Collaborative web application with desktop client capabilities
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 ### GATE 1: Test-Driven Development (NON-NEGOTIABLE)
-✅ **PASS**: Plan includes Jest testing framework with unit and integration tests. Will follow TDD principles during implementation.
+✅ **PASS**: Plan includes Vitest + React Testing Library with component and collaboration tests. Will follow TDD principles during implementation.
 
 ### GATE 2: Code Style Standards
 ✅ **PASS**: TypeScript with Prettier/ESLint configuration inherited from root monorepo.
 
 ### GATE 3: Monorepo Principles
-✅ **PASS**: Implementation fits within existing monorepo structure (apps/services), respects workspace boundaries.
+✅ **PASS**: Implementation fits within existing monorepo structure (apps/client), respects workspace boundaries and shares packages with services.
 
 ### GATE 4: Independent User Stories
-✅ **PASS**: Feature can be broken into independently testable user stories (P1:基础框架, P2:WebSocket协作, P3:AI集成准备).
+✅ **PASS**: Feature can be broken into independently testable user stories (P1:基础框架, P2:YJS协作, P3:Tauri桌面封装).
 
 ### GATE 5: TypeScript-First Development
-✅ **PASS**: Full TypeScript implementation with strict typing, using Prisma for type-safe database access.
+✅ **PASS**: Full TypeScript implementation with strict typing, using React component typing and YJS type definitions.
+
+### GATE 6: Frontend Framework Standards (Vite + React + YJS)
+✅ **PASS**: Implementation uses required Vite + React + YJS stack with functional components and proper TypeScript typing.
+
+### GATE 7: Tauri Desktop Application Support
+✅ **PASS**: Plan includes Tauri packaging for desktop deployment while maintaining web compatibility.
 
 ## Project Structure
 
@@ -69,37 +75,36 @@ specs/001-apps-services/
 -->
 
 ```
-apps/services/
+apps/client/
 ├── src/
-│   ├── main.ts          # NestJS application entry point
-│   ├── app.module.ts    # Root module
-│   ├── config/          # Configuration management
-│   ├── database/        # Database configuration
-│   ├── modules/
-│   │   ├── trpc/        # tRPC integration
-│   │   ├── websocket/   # WebSocket and y-websocket
-│   │   ├── ai/          # Langchain integration (future)
-│   │   └── core/        # Core functionality
-│   ├── common/          # Shared utilities
-│   └── types/           # TypeScript definitions
-├── test/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
-├── prisma/
-│   ├── schema.prisma    # Prisma schema
-│   └── migrations/      # Database migrations
-├── docker/
-│   ├── Dockerfile
-│   └── docker-compose.yml
-└── package.json
-
-# Database storage compatibility
-binary-storage/          # yjs binary data (if needed)
-structured-storage/     # Prisma/PostgreSQL structured data
+│   ├── main.tsx         # React application entry point
+│   ├── App.tsx          # Root component with YJS provider
+│   ├── components/      # React components
+│   │   ├── ui/          # Basic UI components
+│   │   ├── collaboration/ # YJS-enabled components
+│   │   └── layout/      # Layout components
+│   ├── providers/       # YJS providers and state management
+│   ├── hooks/           # Custom React hooks (including YJS)
+│   ├── services/        # API integration with existing services
+│   ├── types/           # TypeScript definitions
+│   └── utils/           # Utility functions
+├── public/              # Static assets
+├── src-tauri/           # Tauri Rust backend (minimal)
+│   ├── src/
+│   │   └── main.rs      # Tauri application entry point
+│   ├── Cargo.toml
+│   └── tauri.conf.json  # Tauri configuration
+├── tests/
+│   ├── unit/            # Component tests
+│   ├── integration/     # Collaboration tests
+│   └── e2e/             # End-to-end tests
+├── vite.config.ts       # Vite configuration
+├── tsconfig.json        # TypeScript configuration
+├── package.json
+└── tailwind.config.js   # Styling configuration
 ```
 
-**Structure Decision**: Monorepo web application with integrated API + WebSocket service. NestJS framework provides the foundation for modular development with separate modules for tRPC, WebSocket/y-websocket, and future AI capabilities. Database design accommodates both binary yjs data and structured relational data through PostgreSQL.
+**Structure Decision**: Monorepo frontend application with Vite + React + YJS + Tauri stack. The structure supports both web deployment and desktop packaging through Tauri, sharing the same React codebase. YJS providers and components are kept within the client project for simplicity, with potential to extract to shared packages when multiple applications need them.
 
 ## Complexity Tracking
 

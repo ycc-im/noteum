@@ -18,6 +18,7 @@ import { validateConfig } from './config/validation'
     // 配置模块
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env',
       load: [configuration],
       validate: validateConfig,
     }),

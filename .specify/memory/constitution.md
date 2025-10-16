@@ -1,9 +1,9 @@
 <!-- Sync Impact Report -->
-<!-- Version change: 0.0.0 → 1.0.0 -->
-<!-- Modified principles: None (new constitution) -->
-<!-- Added sections: Code Style Standards, Test-Driven Development, Monorepo Principles -->
+<!-- Version change: 1.1.0 → 1.2.0 -->
+<!-- Modified principles: VI (Frontend Framework Standards) -->
+<!-- Added sections: Tauri Desktop Application Support -->
 <!-- Removed sections: None -->
-<!-- Templates requiring updates: ✅ plan-template.md, ✅ spec-template.md, ✅ tasks-template.md, ⚠ agent-file-template.md, ⚠ checklist-template.md -->
+<!-- Templates requiring updates: ✅ plan-template.md, ✅ spec-template.md, ✅ tasks-template.md -->
 <!-- Follow-up TODOs: None -->
 
 # Noteum Constitution
@@ -24,6 +24,12 @@ Every feature MUST be broken down into independently testable and deliverable us
 
 ### V. TypeScript-First Development
 All code MUST be written in TypeScript with strict type checking enabled. Implicit any types are prohibited. All interfaces and types must be explicitly defined. Code must pass TypeScript compilation without any type errors before merging.
+
+### VI. Frontend Framework Standards (Vite + React + YJS)
+Frontend development MUST use the Vite + React + YJS technology stack for all collaborative and real-time applications. Vite provides the build tooling and development server, React serves as the UI framework with component-based architecture, and YJS enables real-time collaboration features with CRDT data structures. All React components MUST be written as functional components with hooks, use proper TypeScript typing for props and state, and follow established patterns for YJS provider integration and real-time data synchronization.
+
+### VII. Tauri Desktop Application Support
+Desktop applications MUST use Tauri framework to package the Vite + React + YJS frontend as native desktop applications. Tauri provides secure, lightweight packaging while maintaining the same frontend codebase. The frontend client communicates directly with backend services through existing APIs, with Tauri handling desktop-specific features like window management, system tray, and native integrations. All applications MUST maintain cross-platform compatibility (Windows, macOS, Linux) and follow Tauri security and packaging best practices.
 
 ## Development Workflow
 
@@ -47,16 +53,22 @@ Code must pass all automated checks before merging:
 
 ### Monorepo Structure
 The project uses pnpm workspaces with the following conventions:
-- `apps/` contains executable applications
-- `packages/` contains reusable libraries
+- `apps/` contains executable applications (Vite + React apps, Tauri desktop apps)
+- `packages/` contains reusable libraries and shared YJS providers
 - Each package has its own package.json with explicit dependencies
 - Shared dependencies are managed at the root level
 - Build artifacts are excluded from version control
+- Frontend applications use Vite configuration with React and TypeScript plugins
+- Tauri applications share the same frontend codebase with web applications
+- YJS providers and collaboration logic are encapsulated in shared packages
 
 ### Testing Requirements
 - Unit tests are mandatory for all new code
 - Integration tests for cross-package interactions
 - Contract tests for external APIs
+- React component tests using React Testing Library
+- YJS collaboration tests with simulated concurrent users
+- Tauri desktop application integration tests
 - Tests MUST be written before implementation (TDD)
 - All tests must pass before code can be merged
 
@@ -71,4 +83,4 @@ This constitution supersedes all other development practices and guidelines. Ame
 
 All pull requests and code reviews must verify compliance with constitution principles. Any complexity or deviation from these principles must be explicitly justified and approved. Violations of test-driven development and code style standards are immediate blocking issues.
 
-**Version**: 1.0.0 | **Ratified**: 2025-01-15 | **Last Amended**: 2025-01-15
+**Version**: 1.2.0 | **Ratified**: 2025-01-15 | **Last Amended**: 2025-10-15

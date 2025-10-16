@@ -1,10 +1,10 @@
 <!-- Sync Impact Report -->
-<!-- Version change: 1.1.0 → 1.2.0 -->
-<!-- Modified principles: VI (Frontend Framework Standards) -->
-<!-- Added sections: Tauri Desktop Application Support -->
+<!-- Version change: 1.2.0 → 1.3.0 -->
+<!-- Modified principles: VII (renamed to Branch Management Workflow), VIII (renamed from VII) -->
+<!-- Added sections: VII. Branch Management Workflow -->
 <!-- Removed sections: None -->
-<!-- Templates requiring updates: ✅ plan-template.md, ✅ spec-template.md, ✅ tasks-template.md -->
-<!-- Follow-up TODOs: None -->
+<!-- Templates requiring updates: ⚠ plan-template.md, ⚠ spec-template.md, ⚠ tasks-template.md -->
+<!-- Follow-up TODOs: Update templates to reference branch management workflow -->
 
 # Noteum Constitution
 
@@ -28,7 +28,10 @@ All code MUST be written in TypeScript with strict type checking enabled. Implic
 ### VI. Frontend Framework Standards (Vite + React + YJS)
 Frontend development MUST use the Vite + React + YJS technology stack for all collaborative and real-time applications. Vite provides the build tooling and development server, React serves as the UI framework with component-based architecture, and YJS enables real-time collaboration features with CRDT data structures. All React components MUST be written as functional components with hooks, use proper TypeScript typing for props and state, and follow established patterns for YJS provider integration and real-time data synchronization.
 
-### VII. Tauri Desktop Application Support
+### VII. Branch Management Workflow
+Every task or feature MUST begin with creating a new Git branch. Branch names MUST follow the format `[###-task-description]` where ### is the task number and task-description briefly describes the work. No development work may be performed on the main branch. All changes must be developed on feature branches and merged through pull requests. This ensures isolation of work, proper code review process, and maintainable Git history.
+
+### VIII. Tauri Desktop Application Support
 Desktop applications MUST use Tauri framework to package the Vite + React + YJS frontend as native desktop applications. Tauri provides secure, lightweight packaging while maintaining the same frontend codebase. The frontend client communicates directly with backend services through existing APIs, with Tauri handling desktop-specific features like window management, system tray, and native integrations. All applications MUST maintain cross-platform compatibility (Windows, macOS, Linux) and follow Tauri security and packaging best practices.
 
 ## Development Workflow
@@ -83,4 +86,4 @@ This constitution supersedes all other development practices and guidelines. Ame
 
 All pull requests and code reviews must verify compliance with constitution principles. Any complexity or deviation from these principles must be explicitly justified and approved. Violations of test-driven development and code style standards are immediate blocking issues.
 
-**Version**: 1.2.0 | **Ratified**: 2025-01-15 | **Last Amended**: 2025-10-15
+**Version**: 1.3.0 | **Ratified**: 2025-01-15 | **Last Amended**: 2025-10-16

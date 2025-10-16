@@ -1,0 +1,534 @@
+openapi: 3.0.3
+info:
+  title: Noteum Development Environment API
+  description: API for managing development environment configuration, port management, and service orchestration
+  version: 1.0.0
+  contact:
+    name: Noteum Development Team
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:9168
+    description: Development server
+
+paths:
+  /api/v1/environment/status:
+    get:
+      summary: Get development environment status
+      description: Retrieve the current status of all services in the development environment
+      tags:
+        - Environment
+      responses:
+        '200':
+          description: Environment status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentStatus'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/environment/start:
+    post:
+      summary: Start development environment
+      description: Start all services in the development environment
+      tags:
+        - Environment
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartEnvironmentRequest'
+      responses:
+        '200':
+          description: Environment started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentStatus'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Environment already running
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/environment/stop:
+    post:
+      summary: Stop development environment
+      description: Stop all services in the development environment
+      tags:
+        - Environment
+      responses:
+        '200':
+          description: Environment stopped successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentStatus'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/ports/check:
+    post:
+      summary: Check port availability
+      description: Check if specified ports are available for use
+      tags:
+        - Port Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PortCheckRequest'
+      responses:
+        '200':
+          description: Port check completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortCheckResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/ports/config:
+    get:
+      summary: Get port configuration
+      description: Retrieve current port configuration for all services
+      tags:
+        - Port Management
+      responses:
+        '200':
+          description: Port configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortConfiguration'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/ports/config:
+    put:
+      summary: Update port configuration
+      description: Update port configuration for services
+      tags:
+        - Port Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePortConfigRequest'
+      responses:
+        '200':
+          description: Port configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortConfiguration'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Port conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/services/{serviceName}/health:
+    get:
+      summary: Get service health status
+      description: Retrieve health status of a specific service
+      tags:
+        - Health
+      parameters:
+        - name: serviceName
+          in: path
+          required: true
+          description: Name of the service
+          schema:
+            type: string
+          examples:
+            frontend:
+              summary: Frontend service
+              value: frontend
+            backend:
+              summary: Backend service
+              value: backend
+      responses:
+        '200':
+          description: Service health status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceHealth'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/logs:
+    get:
+      summary: Get development environment logs
+      description: Retrieve logs from development environment services
+      tags:
+        - Logs
+      parameters:
+        - name: service
+          in: query
+          description: Filter logs by service name
+          schema:
+            type: string
+        - name: level
+          in: query
+          description: Filter logs by level
+          schema:
+            type: string
+            enum: [debug, info, warn, error]
+        - name: lines
+          in: query
+          description: Number of log lines to retrieve
+          schema:
+            type: integer
+            default: 100
+        - name: follow
+          in: query
+          description: Follow log stream
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    EnvironmentStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [stopped, starting, running, error, stopping]
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceStatus'
+        uptime:
+          type: number
+          description: Uptime in seconds
+        lastHealthCheck:
+          type: string
+          format: date-time
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnvironmentError'
+      required:
+        - status
+        - services
+
+    ServiceStatus:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+          enum: [stopped, starting, running, error, stopping]
+        port:
+          type: integer
+        healthCheckStatus:
+          type: string
+          enum: [healthy, unhealthy, unknown]
+        lastHealthCheck:
+          type: string
+          format: date-time
+        restartCount:
+          type: integer
+        uptime:
+          type: number
+          description: Uptime in seconds
+      required:
+        - name
+        - status
+        - port
+
+    PortConfiguration:
+      type: object
+      properties:
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServicePortConfig'
+        lastUpdated:
+          type: string
+          format: date-time
+      required:
+        - services
+
+    ServicePortConfig:
+      type: object
+      properties:
+        serviceName:
+          type: string
+        internalPort:
+          type: integer
+        externalPort:
+          type: integer
+        protocol:
+          type: string
+          enum: [tcp, udp]
+        description:
+          type: string
+        environment:
+          type: string
+          enum: [development, production, test]
+      required:
+        - serviceName
+        - internalPort
+        - externalPort
+        - protocol
+
+    ServiceHealth:
+      type: object
+      properties:
+        serviceName:
+          type: string
+        status:
+          type: string
+          enum: [healthy, unhealthy, unknown]
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/HealthCheck'
+        lastCheck:
+          type: string
+          format: date-time
+        uptime:
+          type: number
+          description: Uptime in seconds
+      required:
+        - serviceName
+        - status
+
+    HealthCheck:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+          enum: [pass, fail, warn]
+        message:
+          type: string
+        duration:
+          type: number
+          description: Check duration in milliseconds
+      required:
+        - name
+        - status
+
+    PortCheckRequest:
+      type: object
+      properties:
+        ports:
+          type: array
+          items:
+            type: integer
+          description: List of ports to check
+      required:
+        - ports
+
+    PortCheckResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PortCheckResult'
+        timestamp:
+          type: string
+          format: date-time
+      required:
+        - results
+        - timestamp
+
+    PortCheckResult:
+      type: object
+      properties:
+        port:
+          type: integer
+        isAvailable:
+          type: boolean
+        occupiedBy:
+          type: string
+          description: Process occupying the port, if any
+        conflictResolution:
+          type: string
+          description: Suggested resolution for port conflicts
+      required:
+        - port
+        - isAvailable
+
+    UpdatePortConfigRequest:
+      type: object
+      properties:
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServicePortConfig'
+      required:
+        - services
+
+    StartEnvironmentRequest:
+      type: object
+      properties:
+        services:
+          type: array
+          items:
+            type: string
+          description: List of services to start (empty = all services)
+        force:
+          type: boolean
+          default: false
+          description: Force restart if already running
+      required:
+        - []
+
+    LogResponse:
+      type: object
+      properties:
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEntry'
+        hasMore:
+          type: boolean
+        totalCount:
+          type: integer
+      required:
+        - logs
+        - hasMore
+
+    LogEntry:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        service:
+          type: string
+        level:
+          type: string
+          enum: [debug, info, warn, error]
+        message:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+      required:
+        - timestamp
+        - service
+        - level
+        - message
+
+    EnvironmentError:
+      type: object
+      properties:
+        type:
+          type: string
+        service:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        resolution:
+          type: string
+      required:
+        - type
+        - message
+        - timestamp
+        - severity
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        requestId:
+          type: string
+      required:
+        - error
+        - message
+        - timestamp
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []

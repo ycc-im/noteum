@@ -17,7 +17,15 @@
     "clean": "pnpm -r clean && rm -rf node_modules",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "pnpm build && changeset publish"
+    "release": "pnpm build && changeset publish",
+    "ports:check": "node -r esbuild-register scripts/check-ports.ts",
+    "ports:validate": "node -r esbuild-register scripts/validate-ports.ts",
+    "ports:test": "pnpm --filter @noteum/client test -- testPathPattern=port && pnpm --filter @noteum/services test -- testPathPattern=port",
+    "dev:setup": "pnpm ports:check && pnpm ports:validate && pnpm dev",
+    "docker:start": "./scripts/dev-start.sh",
+    "docker:stop": "./scripts/dev-stop.sh",
+    "docker:logs": "docker-compose -f docker-compose.dev.yml -p noteum-dev logs -f",
+    "docker:status": "docker-compose -f docker-compose.dev.yml -p noteum-dev ps"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",

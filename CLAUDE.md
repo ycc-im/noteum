@@ -11,6 +11,8 @@ This project follows strict development principles as defined in `.specify/memor
 
 ## Active Technologies
 - TypeScript 5.0+ (NestJS 10.x LTS) + NestJS, tRPC, Prisma, y-websocket, langchain.js (001-apps-services)
+- TypeScript 5.0+, Node.js 18+ + Vite 4.5+, React 18.2+, NestJS 10.x, Prisma 5.0+, Redis 4.6+, PostgreSQL 15+ (003-3000-1-9158)
+- PostgreSQL, Redis (003-3000-1-9158)
 
 ## Project Structure
 ```
@@ -41,6 +43,7 @@ npm test [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNO
 - All tests must pass before merging
 
 ## Recent Changes
+- 003-3000-1-9158: Added TypeScript 5.0+, Node.js 18+ + Vite 4.5+, React 18.2+, NestJS 10.x, Prisma 5.0+, Redis 4.6+, PostgreSQL 15+
 - 001-apps-services: Added TypeScript 5.0+ (NestJS 10.x LTS) + NestJS, tRPC, Prisma, y-websocket, langchain.js
 
 <!-- MANUAL ADDITIONS START -->

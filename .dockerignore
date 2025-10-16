@@ -1,0 +1,114 @@
+# Dependencies
+node_modules
+.pnpm-store
+.pnpm-debug.log*
+
+# Build artifacts
+out
+dist
+build
+*.tgz
+storybook-static
+.output
+.nitro
+
+# Desktop application builds
+src-tauri/target/
+src-tauri/release/
+
+# Code coverage
+coverage
+*.lcov
+.nyc_output
+
+# Logs
+logs
+*.log
+lerna-debug.log*
+pnpm-debug.log*
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+
+# Environment variables
+.env
+.env.development
+.env.test
+.env.production
+.env.local
+.env.*.local
+
+# Caches
+.eslintcache
+.cache
+*.tsbuildinfo
+.turbo
+.parcel-cache
+
+# IDE files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+*.tmp
+*.temp
+.temp
+.tmp
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Git
+.git
+.gitignore
+
+# Documentation
+docs
+*.md
+
+# Specs and tests
+.specify/
+specs/
+tests/
+**/*.test.ts
+**/*.test.js
+**/*.spec.ts
+**/*.spec.js
+
+# Tool configuration
+.eslintrc*
+.eslintignore
+.prettierrc*
+.prettierignore
+tsconfig.json
+jest.config.js
+vitest.config.*
+
+# Scripts and tools
+scripts/
+tools/

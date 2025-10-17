@@ -54,19 +54,48 @@ Noteum is a collaborative note-taking application built for real-time document e
 
 ### Testing Strategy
 - **Test-Driven Development**: Tests MUST be written before implementation (TDD)
+- **TDD Process**: MUST follow Red-Green-Refactor cycle
+  - Red: Write failing tests first
+  - Green: Write minimal code to make tests pass
+  - Refactor: Improve code while maintaining test coverage
 - **Unit Tests**: 100% coverage requirement for new code
 - **Integration Tests**: Cross-package interactions tested
 - **Component Tests**: React components with React Testing Library
 - **Collaboration Tests**: YJS scenarios with simulated concurrent users
 - **Test Framework**: Vitest for frontend, Jest for backend
-- **Test Organization**: `.spec.ts` suffix for test files
+- **Test Organization**: `.spec.ts` or `.test.ts` suffix for test files
+- **Exempt File Types**: The following files are exempt from TDD requirements:
+  - Configuration files (.env, .config.js, tsconfig.json)
+  - Constant definitions and enums
+  - Build scripts and deployment scripts
+  - Documentation files (.md, .txt)
+  - Type definition files (.d.ts) that only contain types
+  - Static asset files
 
 ### Git Workflow
 - **Branching**: Feature branches required, format `[###-task-description]`
+- **Main Branch Protection**: If currently on main branch, MUST create new feature branch before making any changes
 - **No Main Development**: All work on feature branches, no direct main commits
+- **Branch Creation**: All feature branches MUST be based on latest main branch
 - **Pull Requests**: Required for all changes with code review
 - **Commit Messages**: Conventional commits with Changesets for versioning
 - **Quality Gates**: All automated checks must pass before merging
+
+### Development Process Validation
+- **Pre-commit Validation**: All commits must pass:
+  - All tests pass
+  - Code linting checks pass
+  - TypeScript compilation without errors
+  - Branch is not main branch
+- **Code Review Requirements**: Pull requests must verify:
+  - Adherence to TDD practices
+  - Branch management compliance
+  - Test coverage requirements
+  - Code quality standards
+- **Exception Handling**: Workflow exceptions require:
+  - Documentation in commit messages
+  - Team lead approval
+  - Alternative quality assurance measures
 
 ## Domain Context
 

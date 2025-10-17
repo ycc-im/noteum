@@ -71,6 +71,11 @@ pids
 .temp
 .tmp
 
+# Vite/Vitest temporary files
+*.timestamp-*.mjs
+vitest.config.ts.timestamp-*.mjs
+vite.config.ts.timestamp-*.mjs
+
 # Optional npm cache directory
 .npm
 

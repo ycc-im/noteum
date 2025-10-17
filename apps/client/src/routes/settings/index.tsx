@@ -1,9 +1,6 @@
-import { createRoute } from '@tanstack/react-router'
-import { rootRoute } from './index'
+import { createFileRoute } from '@tanstack/react-router'
 
-export const settingsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/settings',
+export const Route = createFileRoute('/settings/')({
   component: function Settings() {
     return (
       <div className="p-6">

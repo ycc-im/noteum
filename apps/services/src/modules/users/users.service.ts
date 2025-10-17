@@ -12,6 +12,13 @@ export class UsersService {
     })
   }
 
+  async findByUsername(username: string) {
+    return this.prisma.user.findUnique({
+      where: { username },
+      include: { profile: true },
+    })
+  }
+
   async findById(id: string) {
     return this.prisma.user.findUnique({
       where: { id },
@@ -21,6 +28,7 @@ export class UsersService {
 
   async create(userData: {
     email: string
+    username?: string
     passwordHash: string
     profile?: {
       firstName: string
@@ -32,7 +40,7 @@ export class UsersService {
       data: {
         id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         email: userData.email,
-        username: userData.email.split('@')[0], // 使用 email 前缀作为 username
+        username: userData.username || userData.email.split('@')[0], // 使用指定 username 或 email 前缀
         passwordHash: userData.passwordHash,
         profile: userData.profile ? {
           create: {

@@ -1,12 +1,21 @@
 export interface User {
   id: string
   email: string
-  name: string
+  username: string
+  displayName?: string
+  role: 'ADMIN' | 'USER' | 'VIEWER'
   avatar?: string
   createdAt: Date
   updatedAt: Date
   isActive: boolean
-  preferences: UserPreferences
+  preferences?: UserPreferences
+  profile?: {
+    firstName?: string
+    lastName?: string
+    displayName?: string
+    bio?: string
+    avatar?: string
+  }
 }
 
 export interface UserPreferences {
@@ -36,4 +45,30 @@ export interface UpdateUserRequest {
 export interface ChangePasswordRequest {
   currentPassword: string
   newPassword: string
+}
+
+export interface LoginRequest {
+  username: string
+  password: string
+}
+
+export interface LoginResponse {
+  accessToken: string
+  refreshToken: string
+  user: {
+    id: string
+    email: string
+    username: string
+    displayName?: string
+    role: 'ADMIN' | 'USER' | 'VIEWER'
+  }
+}
+
+export interface RefreshTokenRequest {
+  refreshToken: string
+}
+
+export interface AuthError {
+  message: string
+  code?: string
 }

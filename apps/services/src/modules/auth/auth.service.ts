@@ -26,6 +26,33 @@ export class AuthService {
     return user
   }
 
+  async validateUserByUsername(username: string, password: string): Promise<any> {
+    const user = await this.usersService.findByUsername(username)
+    if (!user) {
+      return null
+    }
+
+    if (!user.isActive) {
+      return null
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash)
+    if (!isPasswordValid) {
+      return null
+    }
+
+    return user
+  }
+
+  async loginWithUsername(username: string, password: string) {
+    const user = await this.validateUserByUsername(username, password)
+    if (!user) {
+      throw new Error('Invalid username or password')
+    }
+
+    return this.login(user)
+  }
+
   async login(user: any) {
     const payload = {
       sub: user.id,

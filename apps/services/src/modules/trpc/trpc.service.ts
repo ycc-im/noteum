@@ -40,4 +40,43 @@ export class TrpcService {
   get router() {
     return this.t.router
   }
+
+  get procedure() {
+    return this.t.procedure
+  }
+
+  // 创建需要认证的程序
+  get authProcedure() {
+    return this.t.procedure.use(({ ctx, next }) => {
+      if (!ctx.user) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You must be logged in to access this resource',
+        })
+      }
+      return next({
+        ctx: {
+          ...ctx,
+          user: ctx.user,
+        },
+      })
+    })
+  }
+
+  // 创建管理员权限程序
+  get adminProcedure() {
+    return this.authProcedure.use(({ ctx, next }) => {
+      if (ctx.user?.role !== 'ADMIN') {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You must be an admin to access this resource',
+        })
+      }
+      return next({
+        ctx: {
+          ...ctx,
+        },
+      })
+    })
+  }
 }

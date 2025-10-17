@@ -44,11 +44,6 @@ pnpm dev:workspace
 pnpm dev
 ```
 
-从 apps 目录启动：
-```bash
-cd apps
-pnpm dev:all
-```
 
 #### 🔧 单独启动服务
 
@@ -71,6 +66,12 @@ pnpm dev:stop
 
 # 重启所有开发服务
 pnpm dev:restart
+
+# 仅重启后端服务
+pnpm dev:restart-services
+
+# 仅重启前端应用
+pnpm dev:restart-client
 ```
 
 #### 🐳 Docker 基础设施
@@ -167,23 +168,16 @@ pnpm ports:validate
 | `pnpm dev:health` | 健康检查 | 检查所有服务状态 |
 | `pnpm dev:stop` | 停止服务 | 停止所有开发服务 |
 | `pnpm dev:restart` | 重启服务 | 重启所有开发服务 |
+| `pnpm dev:restart-services` | 重启后端 | 仅重启后端服务 |
+| `pnpm dev:restart-client` | 重启前端 | 仅重启前端应用 |
 
 ### 高级用法
 
 #### 从不同目录启动
 
 ```bash
-# 从根目录启动
+# 统一从根目录启动所有服务
 pnpm dev:workspace
-
-# 从 apps 目录启动
-cd apps
-pnpm dev:all
-
-# 从 apps 目录单独启动服务
-cd apps
-pnpm dev:services  # 调用根目录脚本
-pnpm dev:client    # 调用根目录脚本
 ```
 
 #### 服务状态监控

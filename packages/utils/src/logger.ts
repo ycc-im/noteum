@@ -315,19 +315,29 @@ export function logPortValidation(
   errors: string[],
   warnings: string[]
 ): void {
-  const level = isValid ? LogLevel.INFO : LogLevel.WARN
-
-  logger.log(
-    level,
-    `Port validation completed for ${port}`,
-    LogCategory.PORT_VALIDATION,
-    {
-      port,
-      isValid,
-      errors,
-      warnings
-    }
-  )
+  if (isValid) {
+    logger.info(
+      `Port validation completed for ${port}`,
+      LogCategory.PORT_VALIDATION,
+      {
+        port,
+        isValid,
+        errors,
+        warnings
+      }
+    )
+  } else {
+    logger.warn(
+      `Port validation completed for ${port}`,
+      LogCategory.PORT_VALIDATION,
+      {
+        port,
+        isValid,
+        errors,
+        warnings
+      }
+    )
+  }
 }
 
 /**

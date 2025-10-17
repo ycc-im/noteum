@@ -17,9 +17,9 @@ export const BACKEND_PORT_CONFIG: PortConfiguration = STANDARD_PORTS[ServiceType
  * Database port configurations
  */
 export const DATABASE_PORT_CONFIG = {
-  postgresql: STANDARD_PORTS[ServiceType.POSTGRESQL],
-  redis: STANDARD_PORTS[ServiceType.REDIS],
-  pgAdmin: STANDARD_PORTS[ServiceType.PGADMIN],
+  postgresql: STANDARD_PORTS[ServiceType.DATABASE],
+  redis: STANDARD_PORTS[ServiceType.CACHE],
+  pgAdmin: STANDARD_PORTS[ServiceType.ADMIN],
 } as const
 
 /**

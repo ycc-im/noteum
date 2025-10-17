@@ -22,8 +22,8 @@
     "lint": "eslint src --ext .ts,.tsx",
     "type-check": "tsc --noEmit"
   },
-  "dependencies": {},
   "devDependencies": {
+    "esbuild-register": "^3.6.0",
     "tsup": "^7.0.0",
     "vitest": "^0.34.0"
   }

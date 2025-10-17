@@ -15,7 +15,11 @@
     "type-check": "tsc --noEmit",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
-    "tauri:build-debug": "tauri build --debug"
+    "tauri:build-debug": "tauri build --debug",
+    "tauri:test": "cargo test --manifest-path src-tauri/Cargo.toml",
+    "tauri:test:watch": "cargo test --manifest-path src-tauri/Cargo.toml -- --watch",
+    "tauri:test:unit": "cargo test --manifest-path src-tauri/Cargo.toml -- --lib",
+    "tauri:test:integration": "cargo test --manifest-path src-tauri/Cargo.toml -- --test '*'"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -29,7 +33,8 @@
     "clsx": "^2.0.0",
     "class-variance-authority": "^0.7.0",
     "lucide-react": "^0.292.0",
-    "tailwind-merge": "^2.0.0"
+    "tailwind-merge": "^2.0.0",
+    "@noteum/utils": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",

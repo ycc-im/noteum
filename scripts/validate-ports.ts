@@ -7,16 +7,16 @@
  * and no conflicts exist between services.
  */
 
-import { checkPortConflicts, ServiceType, STANDARD_PORTS } from '../packages/utils/src/port-config.js'
-import { validateBackendPortConfig } from '../apps/services/src/config/ports.js'
-import { validateFrontendPortConfig } from '../apps/client/src/config/ports.js'
+import { checkPortConflicts, ServiceType, STANDARD_PORTS } from '../packages/utils/src/port-config'
+import { validateBackendPortConfig } from '../apps/services/src/config/ports'
+import { validateFrontendPortConfig } from '../apps/client/src/config/ports'
 
 const PORTS = [
   STANDARD_PORTS[ServiceType.FRONTEND].externalPort,
   STANDARD_PORTS[ServiceType.BACKEND].externalPort,
-  STANDARD_PORTS[ServiceType.POSTGRESQL].externalPort,
-  STANDARD_PORTS[ServiceType.REDIS].externalPort,
-  STANDARD_PORTS[ServiceType.PGADMIN].externalPort,
+  STANDARD_PORTS[ServiceType.DATABASE].externalPort,
+  STANDARD_PORTS[ServiceType.CACHE].externalPort,
+  STANDARD_PORTS[ServiceType.ADMIN].externalPort,
 ]
 
 async function validatePorts() {

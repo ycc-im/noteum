@@ -1,0 +1,40 @@
+[package]
+name = "noteum"
+version = "0.1.0"
+description = "A Tauri App for note-taking"
+authors = ["you"]
+license = ""
+repository = ""
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "noteum_lib"
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[[bin]]
+name = "noteum"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "1.5", features = [] }
+
+[dependencies]
+tauri = { version = "1.5", features = ["dialog-open", "dialog-save", "fs-exists", "fs-read-dir", "fs-read-file", "fs-write-file", "notification-all", "shell-open"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[features]
+# by default Tauri runs in production mode
+# when `tauri dev` runs it is executed with `cargo run --no-default-features` if `devPath` is an URL
+default = ["custom-protocol"]
+# this feature is used for production builds where `devPath` points to the filesystem
+# DO NOT remove this
+custom-protocol = ["tauri/custom-protocol"]
+
+[dev-dependencies]
+# Test dependencies for Tauri
+tauri = { version = "1.5", features = ["dialog-open", "dialog-save", "fs-exists", "fs-read-dir", "fs-read-file", "fs-write-file", "notification-all", "shell-open"] }
+tokio-test = "0.4"
+serde_test = "1.0"

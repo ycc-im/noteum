@@ -15,6 +15,23 @@ storybook-static
 # desktop application builds
 src-tauri/target/
 src-tauri/release/
+apps/client/src-tauri/target/
+apps/client/src-tauri/release/
+
+# Tauri specific
+**/src-tauri/target/
+**/src-tauri/Cargo.lock
+**/src-tauri/.vscode/
+**/src-tauri/.idea/
+**/src-tauri/tauri.conf.json.bak
+
+# Tauri generated icons and assets
+**/src-tauri/icons/
+**/src-tauri/build/
+
+# Tauri debug builds
+**/src-tauri/target/debug/
+**/src-tauri/target/release/
 
 # code coverage
 coverage

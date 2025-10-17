@@ -25,7 +25,13 @@
     "docker:start": "./scripts/dev-start.sh",
     "docker:stop": "./scripts/dev-stop.sh",
     "docker:logs": "docker-compose -f docker-compose.dev.yml -p noteum-dev logs -f",
-    "docker:status": "docker-compose -f docker-compose.dev.yml -p noteum-dev ps"
+    "docker:status": "docker-compose -f docker-compose.dev.yml -p noteum-dev ps",
+    "dev:workspace": "./scripts/dev-workspace.sh",
+    "dev:services": "./scripts/dev-services.sh",
+    "dev:client": "./scripts/dev-client.sh",
+    "dev:health": "./scripts/dev-health.sh",
+    "dev:stop": "./scripts/dev-stop.sh",
+    "dev:restart": "./scripts/dev-restart.sh"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",

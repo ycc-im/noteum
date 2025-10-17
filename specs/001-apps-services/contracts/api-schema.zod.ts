@@ -53,10 +53,31 @@ export const LoginSchema = z.object({
   password: z.string().min(1),
 });
 
+export const UsernameLoginSchema = z.object({
+  username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_]+$/),
+  password: z.string().min(1),
+});
+
 export const AuthResponseSchema = z.object({
   user: UserSchema,
   token: z.string(),
   expiresAt: DateTimeSchema,
+});
+
+export const LoginResponseSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+  user: z.object({
+    id: ULIDSchema,
+    email: EmailSchema,
+    username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_]+$/),
+    displayName: z.string().optional(),
+    role: z.enum(['ADMIN', 'USER', 'VIEWER']),
+  }),
+});
+
+export const RefreshTokenSchema = z.object({
+  refreshToken: z.string(),
 });
 
 // ============= Note Schemas (Notebook-aware) =============
@@ -449,7 +470,10 @@ export const API_Schemas = {
   CreateUser: CreateUserSchema,
   UpdateUser: UpdateUserSchema,
   Login: LoginSchema,
+  UsernameLogin: UsernameLoginSchema,
   AuthResponse: AuthResponseSchema,
+  LoginResponse: LoginResponseSchema,
+  RefreshToken: RefreshTokenSchema,
 
   // Note schemas
   Note: NoteSchema,

@@ -12,7 +12,7 @@ export class SeedingService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   /**
    * 清空所有数据（保留表结构）
@@ -138,7 +138,7 @@ export class SeedingService {
         firstName: 'Guest',
         lastName: 'User',
         displayName: 'Guest',
-        role: UserRole.GUEST,
+        role: UserRole.USER,
       },
     ]
 
@@ -162,7 +162,7 @@ export class SeedingService {
           passwordHash: hashedPassword,
           role: userData.role as any,
           isActive: true,
-                    profile: {
+          profile: {
             create: {
               id: ulid(),
               firstName: userData.firstName,

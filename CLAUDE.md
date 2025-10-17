@@ -51,11 +51,8 @@ noteum/
 - `pnpm dev:health` - 检查开发环境健康状态
 - `pnpm dev:stop` - 停止所有开发服务
 - `pnpm dev:restart` - 重启所有开发服务
-
-### Apps Directory Commands
-- `cd apps && pnpm dev:all` - 从apps目录启动所有服务
-- `cd apps && pnpm dev:services` - 从apps目录启动后端
-- `cd apps && pnpm dev:client` - 从apps目录启动前端
+- `pnpm dev:restart-services` - 仅重启后端服务
+- `pnpm dev:restart-client` - 仅重启前端应用
 
 ### Infrastructure Commands
 - `pnpm docker:start` - 启动Docker开发环境

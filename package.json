@@ -15,6 +15,7 @@
     "lint": "pnpm -r lint",
     "type-check": "pnpm -r type-check",
     "clean": "pnpm -r clean && rm -rf node_modules",
+    "clean:temp": "./scripts/cleanup-temp-files.sh",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish",
@@ -34,16 +35,19 @@
     "dev:restart": "./scripts/dev-restart.sh",
     "dev:restart-services": "./scripts/dev-restart-services.sh",
     "dev:restart-client": "./scripts/dev-restart-client.sh",
-    "dev:log": "./scripts/dev-logs.sh"
+    "dev:log": "./scripts/dev-logs.sh",
+    "pre-commit-check": "./scripts/pre-commit-check.sh",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.45.0",
+    "husky": "^9.1.7",
     "prettier": "^3.0.0",
-    "typescript": "^5.0.0",
-    "turbo": "^1.10.0"
+    "turbo": "^1.10.0",
+    "typescript": "^5.0.0"
   },
   "packageManager": "pnpm@8.15.0"
 }

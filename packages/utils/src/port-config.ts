@@ -8,7 +8,7 @@ export enum ServiceType {
   BACKEND = 'backend',
   DATABASE = 'database',
   CACHE = 'cache',
-  ADMIN = 'admin'
+  ADMIN = 'admin',
 }
 
 export interface PortConfiguration {
@@ -41,7 +41,7 @@ export const STANDARD_PORTS: Record<ServiceType, PortConfiguration> = {
     externalPort: 9158,
     protocol: 'tcp',
     description: 'Vite development server',
-    environment: 'development'
+    environment: 'development',
   },
   [ServiceType.BACKEND]: {
     service: ServiceType.BACKEND,
@@ -49,7 +49,7 @@ export const STANDARD_PORTS: Record<ServiceType, PortConfiguration> = {
     externalPort: 9168,
     protocol: 'tcp',
     description: 'NestJS API server',
-    environment: 'development'
+    environment: 'development',
   },
   [ServiceType.DATABASE]: {
     service: ServiceType.DATABASE,
@@ -57,7 +57,7 @@ export const STANDARD_PORTS: Record<ServiceType, PortConfiguration> = {
     externalPort: 9198,
     protocol: 'tcp',
     description: 'PostgreSQL database',
-    environment: 'development'
+    environment: 'development',
   },
   [ServiceType.CACHE]: {
     service: ServiceType.CACHE,
@@ -65,7 +65,7 @@ export const STANDARD_PORTS: Record<ServiceType, PortConfiguration> = {
     externalPort: 9178,
     protocol: 'tcp',
     description: 'Redis cache',
-    environment: 'development'
+    environment: 'development',
   },
   [ServiceType.ADMIN]: {
     service: ServiceType.ADMIN,
@@ -73,8 +73,8 @@ export const STANDARD_PORTS: Record<ServiceType, PortConfiguration> = {
     externalPort: 9188,
     protocol: 'tcp',
     description: 'PgAdmin database management',
-    environment: 'development'
-  }
+    environment: 'development',
+  },
 }
 
 /**
@@ -82,7 +82,7 @@ export const STANDARD_PORTS: Record<ServiceType, PortConfiguration> = {
  */
 export const DEVELOPMENT_PORT_RANGE: PortRange = {
   min: 9150,
-  max: 9199
+  max: 9199,
 }
 
 /**
@@ -99,11 +99,11 @@ export const RESERVED_PORTS = [
   6379, // Default Redis
   27017, // Default MongoDB
   3306, // Default MySQL
-  22,   // SSH
-  80,   // HTTP
-  443,  // HTTPS
+  22, // SSH
+  80, // HTTP
+  443, // HTTPS
   3389, // RDP
-  5900  // VNC
+  5900, // VNC
 ]
 
 /**
@@ -124,7 +124,9 @@ export function getAllPortConfigs(): PortConfiguration[] {
  * Check if a port is in the development range
  */
 export function isDevelopmentPort(port: number): boolean {
-  return port >= DEVELOPMENT_PORT_RANGE.min && port <= DEVELOPMENT_PORT_RANGE.max
+  return (
+    port >= DEVELOPMENT_PORT_RANGE.min && port <= DEVELOPMENT_PORT_RANGE.max
+  )
 }
 
 /**
@@ -148,18 +150,22 @@ export function validatePort(port: number): ValidationResult {
 
   // Check system ports
   if (port < 1024) {
-    warnings.push(`Port ${port} is a system port (< 1024) and may require elevated privileges`)
+    warnings.push(
+      `Port ${port} is a system port (< 1024) and may require elevated privileges`
+    )
   }
 
   // Check if reserved
   if (isReservedPort(port)) {
-    warnings.push(`Port ${port} is commonly used by other services and may cause conflicts`)
+    warnings.push(
+      `Port ${port} is commonly used by other services and may cause conflicts`
+    )
   }
 
   return {
     isValid: errors.length === 0,
     errors,
-    warnings
+    warnings,
   }
 }
 
@@ -167,7 +173,9 @@ export function validatePort(port: number): ValidationResult {
  * Get service type by external port
  */
 export function getServiceByPort(port: number): ServiceType | null {
-  const config = Object.values(STANDARD_PORTS).find(config => config.externalPort === port)
+  const config = Object.values(STANDARD_PORTS).find(
+    (config) => config.externalPort === port
+  )
   return config ? config.service : null
 }
 

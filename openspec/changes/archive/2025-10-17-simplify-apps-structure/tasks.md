@@ -13,8 +13,8 @@
    - [x] 保留 apps/client/package.json 和 apps/services/package.json 应用级配置
 
 3. **保留应用级功能**
-   - [x] 确认 apps/client/package.json 中的所有脚本都可用（dev, tauri:*）
-   - [x] 确认 apps/services/package.json 中的所有脚本都可用（start:dev, prisma:*, db:*, build等）
+   - [x] 确认 apps/client/package.json 中的所有脚本都可用（dev, tauri:\*）
+   - [x] 确认 apps/services/package.json 中的所有脚本都可用（start:dev, prisma:_, db:_, build等）
    - [x] 验证应用级命令仍能正常工作
 
 4. **更新项目文档**
@@ -39,6 +39,7 @@
    - [x] 添加使用说明和错误处理
 
 ## 注意事项
+
 - 确保不破坏现有的构建和部署流程
 - 保持向后兼容性，避免影响团队协作
 - 测试所有常见的开发场景

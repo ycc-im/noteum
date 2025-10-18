@@ -2,14 +2,14 @@
 // Generated from feature specification
 // This file defines tRPC schemas for type-safe API
 
-import { z } from 'zod';
+import { z } from 'zod'
 
 // ============= Base Schemas =============
 
-export const ULIDSchema = z.string().ulid();
-export const DateTimeSchema = z.string().datetime();
-export const EmailSchema = z.string().email();
-export const JsonSchema = z.record(z.any());
+export const ULIDSchema = z.string().ulid()
+export const DateTimeSchema = z.string().datetime()
+export const EmailSchema = z.string().email()
+export const JsonSchema = z.record(z.any())
 
 // ============= User Schemas =============
 
@@ -20,49 +20,61 @@ export const UserProfileSchema = z.object({
   avatar: z.string().url().optional(),
   bio: z.string().max(1000).optional(),
   preferences: JsonSchema,
-});
+})
 
 export const UserSchema = z.object({
   id: ULIDSchema,
   email: EmailSchema,
-  username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_]+$/),
+  username: z
+    .string()
+    .min(3)
+    .max(30)
+    .regex(/^[a-zA-Z0-9_]+$/),
   profile: UserProfileSchema.omit({ userId: true }),
   createdAt: DateTimeSchema,
   updatedAt: DateTimeSchema,
   lastLoginAt: DateTimeSchema.optional(),
   isActive: z.boolean(),
   role: z.enum(['ADMIN', 'USER', 'VIEWER']),
-});
+})
 
 export const CreateUserSchema = z.object({
   email: EmailSchema,
-  username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_]+$/),
+  username: z
+    .string()
+    .min(3)
+    .max(30)
+    .regex(/^[a-zA-Z0-9_]+$/),
   password: z.string().min(8),
   displayName: z.string().min(1).max(255),
-});
+})
 
 export const UpdateUserSchema = z.object({
   displayName: z.string().min(1).max(255).optional(),
   bio: z.string().max(1000).optional(),
   avatar: z.string().url().optional(),
   preferences: JsonSchema.optional(),
-});
+})
 
 export const LoginSchema = z.object({
   email: EmailSchema,
   password: z.string().min(1),
-});
+})
 
 export const UsernameLoginSchema = z.object({
-  username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_]+$/),
+  username: z
+    .string()
+    .min(3)
+    .max(30)
+    .regex(/^[a-zA-Z0-9_]+$/),
   password: z.string().min(1),
-});
+})
 
 export const AuthResponseSchema = z.object({
   user: UserSchema,
   token: z.string(),
   expiresAt: DateTimeSchema,
-});
+})
 
 export const LoginResponseSchema = z.object({
   accessToken: z.string(),
@@ -70,15 +82,19 @@ export const LoginResponseSchema = z.object({
   user: z.object({
     id: ULIDSchema,
     email: EmailSchema,
-    username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_]+$/),
+    username: z
+      .string()
+      .min(3)
+      .max(30)
+      .regex(/^[a-zA-Z0-9_]+$/),
     displayName: z.string().optional(),
     role: z.enum(['ADMIN', 'USER', 'VIEWER']),
   }),
-});
+})
 
 export const RefreshTokenSchema = z.object({
   refreshToken: z.string(),
-});
+})
 
 // ============= Note Schemas (Notebook-aware) =============
 
@@ -102,7 +118,7 @@ export const NotebookSchema = z.object({
   }),
   collaboratorsCount: z.number().int().min(0),
   notesCount: z.number().int().min(0),
-});
+})
 
 export const CreateNotebookSchema = z.object({
   title: z.string().min(1).max(255),
@@ -110,7 +126,7 @@ export const CreateNotebookSchema = z.object({
   visibility: z.enum(['PRIVATE', 'SHARED', 'PUBLIC']).default('PRIVATE'),
   settings: JsonSchema.optional(),
   metadata: JsonSchema.optional(),
-});
+})
 
 export const UpdateNotebookSchema = z.object({
   title: z.string().min(1).max(255).optional(),
@@ -118,7 +134,7 @@ export const UpdateNotebookSchema = z.object({
   visibility: z.enum(['PRIVATE', 'SHARED', 'PUBLIC']).optional(),
   settings: JsonSchema.optional(),
   metadata: JsonSchema.optional(),
-});
+})
 
 export const NotebookListQuerySchema = z.object({
   page: z.number().int().min(1).default(1),
@@ -127,7 +143,7 @@ export const NotebookListQuerySchema = z.object({
   search: z.string().optional(),
   sortBy: z.enum(['createdAt', 'updatedAt', 'title']).default('updatedAt'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
-});
+})
 
 // 更新 Note Schema 以包含 notebookId
 export const NoteSchema = z.object({
@@ -155,16 +171,18 @@ export const NoteSchema = z.object({
     visibility: true,
   }),
   collaboratorsCount: z.number().int().min(0),
-});
+})
 
 export const CreateNoteSchema = z.object({
   title: z.string().min(1).max(255),
   description: z.string().max(1000).optional(),
   notebookId: ULIDSchema,
-  type: z.enum(['NOTE', 'DOCUMENT', 'WHITEBOARD', 'CODE', 'TODO', 'MINDMAP']).default('NOTE'),
+  type: z
+    .enum(['NOTE', 'DOCUMENT', 'WHITEBOARD', 'CODE', 'TODO', 'MINDMAP'])
+    .default('NOTE'),
   settings: JsonSchema.optional(),
   metadata: JsonSchema.optional(),
-});
+})
 
 export const UpdateNoteSchema = z.object({
   title: z.string().min(1).max(255).optional(),
@@ -174,18 +192,20 @@ export const UpdateNoteSchema = z.object({
   settings: JsonSchema.optional(),
   metadata: JsonSchema.optional(),
   inheritPermissions: z.boolean().optional(),
-});
+})
 
 export const NoteListQuerySchema = z.object({
   page: z.number().int().min(1).default(1),
   limit: z.number().int().min(1).max(100).default(20),
   notebookId: ULIDSchema.optional(),
-  type: z.enum(['NOTE', 'DOCUMENT', 'WHITEBOARD', 'CODE', 'TODO', 'MINDMAP']).optional(),
+  type: z
+    .enum(['NOTE', 'DOCUMENT', 'WHITEBOARD', 'CODE', 'TODO', 'MINDMAP'])
+    .optional(),
   status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']).optional(),
   search: z.string().optional(),
   sortBy: z.enum(['createdAt', 'updatedAt', 'title']).default('updatedAt'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
-});
+})
 
 // ============= Notebook Collaboration Schemas =============
 
@@ -207,20 +227,20 @@ export const NotebookCollaboratorSchema = z.object({
     username: true,
     profile: true,
   }),
-});
+})
 
 export const InviteNotebookCollaboratorSchema = z.object({
   notebookId: ULIDSchema,
   email: EmailSchema,
   permission: z.enum(['READ', 'WRITE', 'ADMIN']),
   message: z.string().max(500).optional(),
-});
+})
 
 export const UpdateNotebookCollaboratorPermissionSchema = z.object({
   notebookId: ULIDSchema,
   userId: ULIDSchema,
   permission: z.enum(['READ', 'WRITE', 'ADMIN']),
-});
+})
 
 // ============= Note Collaboration Schemas =============
 
@@ -236,20 +256,20 @@ export const NoteCollaboratorSchema = z.object({
     username: true,
     profile: true,
   }),
-});
+})
 
 export const InviteCollaboratorSchema = z.object({
   noteId: ULIDSchema,
   email: EmailSchema,
   permission: z.enum(['READ', 'WRITE', 'ADMIN']),
   message: z.string().max(500).optional(),
-});
+})
 
 export const UpdateCollaboratorPermissionSchema = z.object({
   noteId: ULIDSchema,
   userId: ULIDSchema,
   permission: z.enum(['READ', 'WRITE', 'ADMIN']),
-});
+})
 
 // ============= YJS Schemas =============
 
@@ -257,19 +277,19 @@ export const YjsUpdateSchema = z.object({
   noteId: ULIDSchema,
   update: z.string().base64(), // Base64 encoded binary data
   origin: z.string().optional(),
-});
+})
 
 export const YjsStateVectorSchema = z.object({
   noteId: ULIDSchema,
   stateVector: z.string().base64().optional(),
-});
+})
 
 export const NoteSnapshotSchema = z.object({
   id: ULIDSchema,
   noteId: ULIDSchema,
   version: z.number().int().min(0),
   createdAt: DateTimeSchema,
-});
+})
 
 // ============= User Awareness Schemas =============
 
@@ -287,14 +307,14 @@ export const UserAwarenessSchema = z.object({
     username: true,
     profile: true,
   }),
-});
+})
 
 export const UpdateAwarenessSchema = z.object({
   noteId: ULIDSchema,
   cursorPosition: z.number().int().min(0).optional(),
   selectionStart: z.number().int().min(0).optional(),
   selectionEnd: z.number().int().min(0).optional(),
-});
+})
 
 // ============= Search Schemas =============
 
@@ -303,14 +323,14 @@ export const SearchQuerySchema = z.object({
   documentType: z.enum(['NOTE', 'DOCUMENT', 'WHITEBOARD', 'CODE']).optional(),
   limit: z.number().int().min(1).max(50).default(20),
   includeVectorSearch: z.boolean().default(true),
-});
+})
 
 export const SearchResultSchema = z.object({
   document: NoteSchema,
   relevanceScore: z.number().min(0).max(1),
   matchedContent: z.string().optional(),
   highlights: z.array(z.string()).optional(),
-});
+})
 
 // ============= Activity Schemas =============
 
@@ -325,7 +345,7 @@ export const ActivityLogSchema = z.object({
     'SHARE_DOCUMENT',
     'LOGIN',
     'LOGOUT',
-    'VIEW_DOCUMENT'
+    'VIEW_DOCUMENT',
   ]),
   details: JsonSchema,
   timestamp: DateTimeSchema,
@@ -339,25 +359,27 @@ export const ActivityLogSchema = z.object({
     title: true,
     type: true,
   }).optional(),
-});
+})
 
 export const ActivityQuerySchema = z.object({
   page: z.number().int().min(1).default(1),
   limit: z.number().int().min(1).max(100).default(20),
   userId: ULIDSchema.optional(),
   noteId: ULIDSchema.optional(),
-  action: z.enum([
-    'CREATE_DOCUMENT',
-    'UPDATE_DOCUMENT',
-    'DELETE_DOCUMENT',
-    'SHARE_DOCUMENT',
-    'LOGIN',
-    'LOGOUT',
-    'VIEW_DOCUMENT'
-  ]).optional(),
+  action: z
+    .enum([
+      'CREATE_DOCUMENT',
+      'UPDATE_DOCUMENT',
+      'DELETE_DOCUMENT',
+      'SHARE_DOCUMENT',
+      'LOGIN',
+      'LOGOUT',
+      'VIEW_DOCUMENT',
+    ])
+    .optional(),
   fromDate: DateTimeSchema.optional(),
   toDate: DateTimeSchema.optional(),
-});
+})
 
 // ============= Health Check Schemas =============
 
@@ -380,7 +402,7 @@ export const HealthCheckSchema = z.object({
   }),
   version: z.string(),
   uptime: z.number(),
-});
+})
 
 // ============= WebSocket Event Schemas =============
 
@@ -391,22 +413,22 @@ export const WebSocketEventSchema = z.object({
     'user_left',
     'cursor_moved',
     'awareness_updated',
-    'document_saved'
+    'document_saved',
   ]),
   noteId: ULIDSchema,
   userId: ULIDSchema,
   data: JsonSchema,
   timestamp: DateTimeSchema,
-});
+})
 
 export const NoteJoinSchema = z.object({
   noteId: ULIDSchema,
   stateVector: z.string().base64().optional(),
-});
+})
 
 export const NoteLeaveSchema = z.object({
   noteId: ULIDSchema,
-});
+})
 
 // ============= Error Schemas =============
 
@@ -415,7 +437,7 @@ export const ErrorSchema = z.object({
   message: z.string(),
   details: JsonSchema.optional(),
   timestamp: DateTimeSchema,
-});
+})
 
 export const ValidationErrorSchema = ErrorSchema.extend({
   code: z.literal('VALIDATION_ERROR'),
@@ -424,7 +446,7 @@ export const ValidationErrorSchema = ErrorSchema.extend({
     message: z.string(),
     value: z.any(),
   }),
-});
+})
 
 export const NotFoundErrorSchema = ErrorSchema.extend({
   code: z.literal('NOT_FOUND'),
@@ -432,11 +454,11 @@ export const NotFoundErrorSchema = ErrorSchema.extend({
     resource: z.string(),
     id: z.string(),
   }),
-});
+})
 
 export const UnauthorizedErrorSchema = ErrorSchema.extend({
   code: z.literal('UNAUTHORIZED'),
-});
+})
 
 export const ForbiddenErrorSchema = ErrorSchema.extend({
   code: z.literal('FORBIDDEN'),
@@ -444,7 +466,7 @@ export const ForbiddenErrorSchema = ErrorSchema.extend({
     action: z.string(),
     resource: z.string(),
   }),
-});
+})
 
 // ============= Pagination Schemas =============
 
@@ -455,12 +477,12 @@ export const PaginationMetaSchema = z.object({
   totalPages: z.number().int().min(0),
   hasNextPage: z.boolean(),
   hasPrevPage: z.boolean(),
-});
+})
 
 export const PaginatedResponseSchema = z.object({
   data: z.array(z.any()),
   meta: PaginationMetaSchema,
-});
+})
 
 // ============= Export all schemas =============
 
@@ -521,6 +543,6 @@ export const API_Schemas = {
   // Pagination schemas
   PaginationMeta: PaginationMetaSchema,
   PaginatedResponse: PaginatedResponseSchema,
-} as const;
+} as const
 
-export type API_SchemaTypes = typeof API_Schemas;
+export type API_SchemaTypes = typeof API_Schemas

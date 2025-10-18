@@ -3,7 +3,7 @@ import { ConfigService as NestConfigService } from '@nestjs/config'
 
 @Injectable()
 export class ConfigService {
-  constructor(private readonly configService: NestConfigService) {}
+  constructor(private readonly configService: NestConfigService) { }
 
   // App Configuration
   get app() {
@@ -22,7 +22,9 @@ export class ConfigService {
       url: this.configService.get<string>('database.url'),
       ssl: this.configService.get<boolean>('database.ssl'),
       maxConnections: this.configService.get<number>('database.maxConnections'),
-      connectionTimeout: this.configService.get<number>('database.connectionTimeout'),
+      connectionTimeout: this.configService.get<number>(
+        'database.connectionTimeout'
+      ),
     }
   }
 
@@ -30,8 +32,12 @@ export class ConfigService {
   get redis() {
     return {
       url: this.configService.get<string>('redis.url'),
-      maxRetriesPerRequest: this.configService.get<number>('redis.maxRetriesPerRequest'),
-      retryDelayOnFailover: this.configService.get<number>('redis.retryDelayOnFailover'),
+      maxRetriesPerRequest: this.configService.get<number>(
+        'redis.maxRetriesPerRequest'
+      ),
+      retryDelayOnFailover: this.configService.get<number>(
+        'redis.retryDelayOnFailover'
+      ),
       host: this.configService.get<string>('redis.host'),
       port: this.configService.get<number>('redis.port'),
       password: this.configService.get<string>('redis.password'),
@@ -52,7 +58,9 @@ export class ConfigService {
     return {
       host: this.configService.get<string>('websocket.host'),
       port: this.configService.get<number>('websocket.port'),
-      maxConnections: this.configService.get<number>('websocket.maxConnections'),
+      maxConnections: this.configService.get<number>(
+        'websocket.maxConnections'
+      ),
     }
   }
 

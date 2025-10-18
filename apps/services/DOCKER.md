@@ -228,7 +228,7 @@ pnpm prisma studio --hostname 0.0.0.0
 
 ```yaml
 app:
-  command: ["node", "--inspect=0.0.0.0:9229", "apps/services/dist/main.js"]
+  command: ['node', '--inspect=0.0.0.0:9229', 'apps/services/dist/main.js']
 ```
 
 ## 故障排除
@@ -236,6 +236,7 @@ app:
 ### 常见问题
 
 1. **端口冲突**
+
    ```bash
    # 检查端口使用
    lsof -i :3000
@@ -244,12 +245,14 @@ app:
    ```
 
 2. **权限问题**
+
    ```bash
    # 修复文件权限
    sudo chown -R $USER:$USER .
    ```
 
 3. **数据库连接失败**
+
    ```bash
    # 检查数据库容器状态
    docker-compose ps

@@ -44,6 +44,7 @@ components:
 ### Authentication
 
 #### POST /auth/login
+
 ```yaml
 post:
   tags:
@@ -97,6 +98,7 @@ post:
 ```
 
 #### POST /auth/register
+
 ```yaml
 post:
   tags:
@@ -149,6 +151,7 @@ post:
 ```
 
 #### POST /auth/refresh
+
 ```yaml
 post:
   tags:
@@ -185,6 +188,7 @@ post:
 ```
 
 #### POST /auth/logout
+
 ```yaml
 post:
   tags:
@@ -201,6 +205,7 @@ post:
 ### Notebooks
 
 #### GET /notebooks
+
 ```yaml
 get:
   tags:
@@ -254,6 +259,7 @@ get:
 ```
 
 #### POST /notebooks
+
 ```yaml
 post:
   tags:
@@ -301,6 +307,7 @@ post:
 ```
 
 #### GET /notebooks/{notebookId}
+
 ```yaml
 get:
   tags:
@@ -328,6 +335,7 @@ get:
 ```
 
 #### PUT /notebooks/{notebookId}
+
 ```yaml
 put:
   tags:
@@ -380,6 +388,7 @@ put:
 ```
 
 #### DELETE /notebooks/{notebookId}
+
 ```yaml
 delete:
   tags:
@@ -405,6 +414,7 @@ delete:
 ### Notes
 
 #### GET /notes
+
 ```yaml
 get:
   tags:
@@ -447,7 +457,15 @@ get:
       in: query
       schema:
         type: string
-        enum: [createdAt_asc, createdAt_desc, updatedAt_asc, updatedAt_desc, title_asc, title_desc]
+        enum:
+          [
+            createdAt_asc,
+            createdAt_desc,
+            updatedAt_asc,
+            updatedAt_desc,
+            title_asc,
+            title_desc,
+          ]
         default: updatedAt_desc
     - name: isArchived
       in: query
@@ -476,6 +494,7 @@ get:
 ```
 
 #### POST /notes
+
 ```yaml
 post:
   tags:
@@ -537,6 +556,7 @@ post:
 ```
 
 #### GET /notes/{noteId}
+
 ```yaml
 get:
   tags:
@@ -570,6 +590,7 @@ get:
 ```
 
 #### PUT /notes/{noteId}
+
 ```yaml
 put:
   tags:
@@ -641,6 +662,7 @@ put:
 ```
 
 #### DELETE /notes/{noteId}
+
 ```yaml
 delete:
   tags:
@@ -666,6 +688,7 @@ delete:
 ### Collaboration
 
 #### POST /collaboration/documents/{noteId}/join
+
 ```yaml
 post:
   tags:
@@ -730,6 +753,7 @@ post:
 ```
 
 #### POST /collaboration/documents/{noteId}/sync
+
 ```yaml
 post:
   tags:
@@ -806,6 +830,7 @@ post:
 ```
 
 #### GET /collaboration/documents/{noteId}/presence
+
 ```yaml
 get:
   tags:
@@ -848,6 +873,7 @@ get:
 ### Search
 
 #### GET /search
+
 ```yaml
 get:
   tags:
@@ -962,6 +988,7 @@ get:
 ### Schemas
 
 #### User
+
 ```yaml
 components:
   schemas:
@@ -1003,618 +1030,631 @@ components:
 ```
 
 #### UserPreferences
+
 ```yaml
-    UserPreferences:
+UserPreferences:
+  type: object
+  properties:
+    theme:
+      type: string
+      enum: [light, dark, system]
+      default: system
+    language:
+      type: string
+      pattern: '^[a-z]{2}-[A-Z]{2}$'
+      default: en-US
+    fontSize:
+      type: string
+      enum: [small, medium, large]
+      default: medium
+    autoSave:
+      type: boolean
+      default: true
+    notifications:
       type: object
       properties:
-        theme:
+        desktop:
+          type: boolean
+        email:
+          type: boolean
+        collaboration:
+          type: boolean
+        system:
+          type: boolean
+    editor:
+      type: object
+      properties:
+        mode:
           type: string
-          enum: [light, dark, system]
-          default: system
-        language:
-          type: string
-          pattern: '^[a-z]{2}-[A-Z]{2}$'
-          default: en-US
-        fontSize:
-          type: string
-          enum: [small, medium, large]
-          default: medium
-        autoSave:
+          enum: [rich_text, markdown, code, plain_text]
+          default: rich_text
+        wordWrap:
           type: boolean
           default: true
-        notifications:
-          type: object
-          properties:
-            desktop:
-              type: boolean
-            email:
-              type: boolean
-            collaboration:
-              type: boolean
-            system:
-              type: boolean
-        editor:
-          type: object
-          properties:
-            mode:
-              type: string
-              enum: [rich_text, markdown, code, plain_text]
-              default: rich_text
-            wordWrap:
-              type: boolean
-              default: true
-            showLineNumbers:
-              type: boolean
-              default: false
-            autoComplete:
-              type: boolean
-              default: true
-            spellCheck:
-              type: boolean
-              default: true
-        collaboration:
-          type: object
-          properties:
-            showUserCursors:
-              type: boolean
-              default: true
-            showUserSelections:
-              type: boolean
-              default: true
-            enableNotifications:
-              type: boolean
-              default: true
-            conflictResolution:
-              type: string
-              enum: [manual, auto_merge, latest_wins]
-              default: manual
-            syncInterval:
-              type: integer
-              minimum: 1
-              maximum: 300
-              default: 5
-            offlineMode:
-              type: boolean
-              default: true
+        showLineNumbers:
+          type: boolean
+          default: false
+        autoComplete:
+          type: boolean
+          default: true
+        spellCheck:
+          type: boolean
+          default: true
+    collaboration:
+      type: object
+      properties:
+        showUserCursors:
+          type: boolean
+          default: true
+        showUserSelections:
+          type: boolean
+          default: true
+        enableNotifications:
+          type: boolean
+          default: true
+        conflictResolution:
+          type: string
+          enum: [manual, auto_merge, latest_wins]
+          default: manual
+        syncInterval:
+          type: integer
+          minimum: 1
+          maximum: 300
+          default: 5
+        offlineMode:
+          type: boolean
+          default: true
 ```
 
 #### UserProfile
+
 ```yaml
-    UserProfile:
+UserProfile:
+  type: object
+  properties:
+    bio:
+      type: string
+      maxLength: 500
+    location:
+      type: string
+      maxLength: 100
+    website:
+      type: string
+      format: uri
+    socialLinks:
+      type: array
+      items:
+        type: object
+        properties:
+          platform:
+            type: string
+          url:
+            type: string
+            format: uri
+    expertise:
+      type: array
+      items:
+        type: string
+        maxLength: 50
+```
+
+#### Notebook
+
+```yaml
+Notebook:
+  type: object
+  required:
+    - id
+    - title
+    - ownerId
+    - visibility
+    - createdAt
+    - updatedAt
+  properties:
+    id:
+      type: string
+      format: ulid
+    title:
+      type: string
+      minLength: 1
+      maxLength: 100
+    description:
+      type: string
+      maxLength: 500
+    ownerId:
+      type: string
+      format: ulid
+    visibility:
+      type: string
+      enum: [private, shared, public]
+    color:
+      type: string
+      pattern: '^#[0-9A-Fa-f]{6}$'
+      default: '#3B82F6'
+    icon:
+      type: string
+      maxLength: 50
+    stats:
       type: object
       properties:
-        bio:
+        noteCount:
+          type: integer
+          minimum: 0
+        collaboratorCount:
+          type: integer
+          minimum: 0
+        lastActivityAt:
           type: string
-          maxLength: 500
-        location:
-          type: string
-          maxLength: 100
-        website:
-          type: string
-          format: uri
-        socialLinks:
-          type: array
-          items:
-            type: object
-            properties:
-              platform:
-                type: string
-              url:
-                type: string
-                format: uri
-        expertise:
+          format: date-time
+        totalWords:
+          type: integer
+          minimum: 0
+    defaultPermissions:
+      $ref: '#/components/schemas/NotebookPermissions'
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time
+```
+
+#### NotebookPermissions
+
+```yaml
+NotebookPermissions:
+  type: object
+  properties:
+    canView:
+      type: boolean
+    canEdit:
+      type: boolean
+    canComment:
+      type: boolean
+    canShare:
+      type: boolean
+    canManage:
+      type: boolean
+```
+
+#### Note
+
+```yaml
+Note:
+  type: object
+  required:
+    - id
+    - title
+    - notebookId
+    - permissions
+    - createdAt
+    - updatedAt
+  properties:
+    id:
+      type: string
+      format: ulid
+    title:
+      type: string
+      minLength: 1
+      maxLength: 255
+    notebookId:
+      type: string
+      format: ulid
+    structuredData:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/NoteMetadata'
+        tags:
           type: array
           items:
             type: string
             maxLength: 50
-```
-
-#### Notebook
-```yaml
-    Notebook:
-      type: object
-      required:
-        - id
-        - title
-        - ownerId
-        - visibility
-        - createdAt
-        - updatedAt
-      properties:
-        id:
-          type: string
-          format: ulid
-        title:
-          type: string
-          minLength: 1
-          maxLength: 100
-        description:
-          type: string
-          maxLength: 500
-        ownerId:
-          type: string
-          format: ulid
-        visibility:
-          type: string
-          enum: [private, shared, public]
-        color:
-          type: string
-          pattern: '^#[0-9A-Fa-f]{6}$'
-          default: '#3B82F6'
-        icon:
+          maxItems: 10
+        category:
           type: string
           maxLength: 50
-        stats:
-          type: object
-          properties:
-            noteCount:
-              type: integer
-              minimum: 0
-            collaboratorCount:
-              type: integer
-              minimum: 0
-            lastActivityAt:
-              type: string
-              format: date-time
-            totalWords:
-              type: integer
-              minimum: 0
-        defaultPermissions:
-          $ref: '#/components/schemas/NotebookPermissions'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-```
-
-#### NotebookPermissions
-```yaml
-    NotebookPermissions:
-      type: object
-      properties:
-        canView:
+        isPublic:
           type: boolean
-        canEdit:
+        isArchived:
           type: boolean
-        canComment:
-          type: boolean
-        canShare:
-          type: boolean
-        canManage:
-          type: boolean
-```
-
-#### Note
-```yaml
-    Note:
-      type: object
-      required:
-        - id
-        - title
-        - notebookId
-        - permissions
-        - createdAt
-        - updatedAt
-      properties:
-        id:
-          type: string
-          format: ulid
-        title:
-          type: string
-          minLength: 1
-          maxLength: 255
-        notebookId:
-          type: string
-          format: ulid
-        structuredData:
-          type: object
-          properties:
-            metadata:
-              $ref: '#/components/schemas/NoteMetadata'
-            tags:
-              type: array
-              items:
-                type: string
-                maxLength: 50
-              maxItems: 10
-            category:
-              type: string
-              maxLength: 50
-            isPublic:
-              type: boolean
-            isArchived:
-              type: boolean
-            version:
-              type: integer
-              minimum: 1
-            wordCount:
-              type: integer
-              minimum: 0
-            readingTime:
-              type: integer
-              minimum: 0
-        collaborationData:
-          type: object
-          properties:
-            yjsState:
-              type: string
-              format: byte
-              description: Base64 encoded YJS state
-            lastSyncAt:
-              type: string
-              format: date-time
-            conflictResolved:
-              type: boolean
-            isCollaborative:
-              type: boolean
-        permissions:
-          $ref: '#/components/schemas/NotePermissions'
-        collaboration:
-          $ref: '#/components/schemas/CollaborationInfo'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-```
-
-#### NoteMetadata
-```yaml
-    NoteMetadata:
-      type: object
-      properties:
-        description:
-          type: string
-          maxLength: 500
-        authorId:
-          type: string
-          format: ulid
-        contributors:
-          type: array
-          items:
-            type: string
-            format: ulid
-        language:
-          type: string
-          pattern: '^[a-z]{2}-[A-Z]{2}$'
-        contentType:
-          type: string
-          enum: [markdown, rich_text, code, plain_text]
-        priority:
-          type: string
-          enum: [low, medium, high, urgent]
-```
-
-#### NotePermissions
-```yaml
-    NotePermissions:
-      type: object
-      properties:
-        canView:
-          type: boolean
-        canEdit:
-          type: boolean
-        canComment:
-          type: boolean
-        canShare:
-          type: boolean
-        canDelete:
-          type: boolean
-        sharedWith:
-          type: array
-          items:
-            type: object
-            properties:
-              userId:
-                type: string
-                format: ulid
-              permission:
-                type: string
-                enum: [read, write, admin]
-```
-
-#### CollaborationInfo
-```yaml
-    CollaborationInfo:
-      type: object
-      properties:
-        isActive:
-          type: boolean
-        collaboratorCount:
+        version:
+          type: integer
+          minimum: 1
+        wordCount:
           type: integer
           minimum: 0
+        readingTime:
+          type: integer
+          minimum: 0
+    collaborationData:
+      type: object
+      properties:
+        yjsState:
+          type: string
+          format: byte
+          description: Base64 encoded YJS state
         lastSyncAt:
           type: string
           format: date-time
-        conflicts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Conflict'
+        conflictResolved:
+          type: boolean
+        isCollaborative:
+          type: boolean
+    permissions:
+      $ref: '#/components/schemas/NotePermissions'
+    collaboration:
+      $ref: '#/components/schemas/CollaborationInfo'
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time
+```
+
+#### NoteMetadata
+
+```yaml
+NoteMetadata:
+  type: object
+  properties:
+    description:
+      type: string
+      maxLength: 500
+    authorId:
+      type: string
+      format: ulid
+    contributors:
+      type: array
+      items:
+        type: string
+        format: ulid
+    language:
+      type: string
+      pattern: '^[a-z]{2}-[A-Z]{2}$'
+    contentType:
+      type: string
+      enum: [markdown, rich_text, code, plain_text]
+    priority:
+      type: string
+      enum: [low, medium, high, urgent]
+```
+
+#### NotePermissions
+
+```yaml
+NotePermissions:
+  type: object
+  properties:
+    canView:
+      type: boolean
+    canEdit:
+      type: boolean
+    canComment:
+      type: boolean
+    canShare:
+      type: boolean
+    canDelete:
+      type: boolean
+    sharedWith:
+      type: array
+      items:
+        type: object
+        properties:
+          userId:
+            type: string
+            format: ulid
+          permission:
+            type: string
+            enum: [read, write, admin]
+```
+
+#### CollaborationInfo
+
+```yaml
+CollaborationInfo:
+  type: object
+  properties:
+    isActive:
+      type: boolean
+    collaboratorCount:
+      type: integer
+      minimum: 0
+    lastSyncAt:
+      type: string
+      format: date-time
+    conflicts:
+      type: array
+      items:
+        $ref: '#/components/schemas/Conflict'
 ```
 
 #### Conflict
+
 ```yaml
-    Conflict:
-      type: object
-      required:
-        - id
-        - type
-        - description
-        - resolved
-      properties:
-        id:
-          type: string
-          format: ulid
-        documentId:
-          type: string
-          format: ulid
-        type:
-          type: string
-          enum: [concurrent_edit, sync_failure, version_mismatch, offline_conflict]
-        description:
-          type: string
-          maxLength: 500
-        ourVersion:
-          type: integer
-          minimum: 1
-        theirVersion:
-          type: integer
-          minimum: 1
-        resolved:
-          type: boolean
-        resolvedAt:
-          type: string
-          format: date-time
-        resolvedBy:
-          type: string
-          format: ulid
+Conflict:
+  type: object
+  required:
+    - id
+    - type
+    - description
+    - resolved
+  properties:
+    id:
+      type: string
+      format: ulid
+    documentId:
+      type: string
+      format: ulid
+    type:
+      type: string
+      enum: [concurrent_edit, sync_failure, version_mismatch, offline_conflict]
+    description:
+      type: string
+      maxLength: 500
+    ourVersion:
+      type: integer
+      minimum: 1
+    theirVersion:
+      type: integer
+      minimum: 1
+    resolved:
+      type: boolean
+    resolvedAt:
+      type: string
+      format: date-time
+    resolvedBy:
+      type: string
+      format: ulid
 ```
 
 #### UserPresence
+
 ```yaml
-    UserPresence:
+UserPresence:
+  type: object
+  required:
+    - userId
+    - userName
+    - userColor
+    - status
+    - lastActivity
+    - isTyping
+  properties:
+    userId:
+      type: string
+      format: ulid
+    userName:
+      type: string
+      minLength: 1
+      maxLength: 50
+    userAvatar:
+      type: string
+      format: uri
+    userColor:
+      type: string
+      pattern: '^#[0-9A-Fa-f]{6}$'
+    status:
+      type: string
+      enum: [online, away, offline, busy]
+    cursor:
       type: object
-      required:
-        - userId
-        - userName
-        - userColor
-        - status
-        - lastActivity
-        - isTyping
       properties:
-        userId:
+        noteId:
           type: string
           format: ulid
-        userName:
-          type: string
-          minLength: 1
-          maxLength: 50
-        userAvatar:
-          type: string
-          format: uri
-        userColor:
-          type: string
-          pattern: '^#[0-9A-Fa-f]{6}$'
-        status:
-          type: string
-          enum: [online, away, offline, busy]
-        cursor:
-          type: object
-          properties:
-            noteId:
-              type: string
-              format: ulid
-            anchor:
-              type: integer
-              minimum: 0
-            head:
-              type: integer
-              minimum: 0
-            line:
-              type: integer
-              minimum: 0
-            column:
-              type: integer
-              minimum: 0
-        selection:
-          type: object
-          properties:
-            noteId:
-              type: string
-              format: ulid
-            start:
-              type: integer
-              minimum: 0
-            end:
-              type: integer
-              minimum: 0
-            text:
-              type: string
-              maxLength: 1000
-            context:
-              type: string
-              maxLength: 200
-        lastActivity:
-          type: string
-          format: date-time
-        isTyping:
-          type: boolean
-        currentNoteId:
+        anchor:
+          type: integer
+          minimum: 0
+        head:
+          type: integer
+          minimum: 0
+        line:
+          type: integer
+          minimum: 0
+        column:
+          type: integer
+          minimum: 0
+    selection:
+      type: object
+      properties:
+        noteId:
           type: string
           format: ulid
+        start:
+          type: integer
+          minimum: 0
+        end:
+          type: integer
+          minimum: 0
+        text:
+          type: string
+          maxLength: 1000
+        context:
+          type: string
+          maxLength: 200
+    lastActivity:
+      type: string
+      format: date-time
+    isTyping:
+      type: boolean
+    currentNoteId:
+      type: string
+      format: ulid
 ```
 
 #### Pagination
+
 ```yaml
-    Pagination:
-      type: object
-      required:
-        - page
-        - limit
-        - total
-        - totalPages
-        - hasNext
-        - hasPrev
-      properties:
-        page:
-          type: integer
-          minimum: 1
-        limit:
-          type: integer
-          minimum: 1
-          maximum: 100
-        total:
-          type: integer
-          minimum: 0
-        totalPages:
-          type: integer
-          minimum: 0
-        hasNext:
-          type: boolean
-        hasPrev:
-          type: boolean
+Pagination:
+  type: object
+  required:
+    - page
+    - limit
+    - total
+    - totalPages
+    - hasNext
+    - hasPrev
+  properties:
+    page:
+      type: integer
+      minimum: 1
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 100
+    total:
+      type: integer
+      minimum: 0
+    totalPages:
+      type: integer
+      minimum: 0
+    hasNext:
+      type: boolean
+    hasPrev:
+      type: boolean
 ```
 
 ### Responses
 
 #### Error Responses
+
 ```yaml
-    Unauthorized:
-      description: Unauthorized access
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - error
-            properties:
-              error:
-                type: string
-                example: Unauthorized
-              message:
-                type: string
-                example: Invalid or expired token
-              code:
-                type: string
-                example: UNAUTHORIZED
+Unauthorized:
+  description: Unauthorized access
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - error
+        properties:
+          error:
+            type: string
+            example: Unauthorized
+          message:
+            type: string
+            example: Invalid or expired token
+          code:
+            type: string
+            example: UNAUTHORIZED
 
-    Forbidden:
-      description: Access forbidden
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - error
-            properties:
-              error:
-                type: string
-                example: Forbidden
-              message:
-                type: string
-                example: You don't have permission to access this resource
-              code:
-                type: string
-                example: FORBIDDEN
+Forbidden:
+  description: Access forbidden
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - error
+        properties:
+          error:
+            type: string
+            example: Forbidden
+          message:
+            type: string
+            example: You don't have permission to access this resource
+          code:
+            type: string
+            example: FORBIDDEN
 
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - error
-            properties:
-              error:
-                type: string
-                example: Not Found
-              message:
-                type: string
-                example: The requested resource was not found
-              code:
-                type: string
-                example: NOT_FOUND
+NotFound:
+  description: Resource not found
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - error
+        properties:
+          error:
+            type: string
+            example: Not Found
+          message:
+            type: string
+            example: The requested resource was not found
+          code:
+            type: string
+            example: NOT_FOUND
 
-    Conflict:
-      description: Resource conflict
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - error
-            properties:
-              error:
-                type: string
-                example: Conflict
-              message:
-                type: string
-                example: Resource already exists or version conflict
-              code:
-                type: string
-                example: CONFLICT
+Conflict:
+  description: Resource conflict
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - error
+        properties:
+          error:
+            type: string
+            example: Conflict
+          message:
+            type: string
+            example: Resource already exists or version conflict
+          code:
+            type: string
+            example: CONFLICT
 
-    ValidationError:
-      description: Validation error
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - error
-              - details
-            properties:
-              error:
-                type: string
-                example: Validation Error
-              message:
-                type: string
-                example: Request validation failed
-              code:
-                type: string
-                example: VALIDATION_ERROR
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    field:
-                      type: string
-                    message:
-                      type: string
-                    code:
-                      type: string
+ValidationError:
+  description: Validation error
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - error
+          - details
+        properties:
+          error:
+            type: string
+            example: Validation Error
+          message:
+            type: string
+            example: Request validation failed
+          code:
+            type: string
+            example: VALIDATION_ERROR
+          details:
+            type: array
+            items:
+              type: object
+              properties:
+                field:
+                  type: string
+                message:
+                  type: string
+                code:
+                  type: string
 
-    InternalServerError:
-      description: Internal server error
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - error
-            properties:
-              error:
-                type: string
-                example: Internal Server Error
-              message:
-                type: string
-                example: An unexpected error occurred
-              code:
-                type: string
-                example: INTERNAL_ERROR
-              requestId:
-                type: string
-                example: req_1234567890
+InternalServerError:
+  description: Internal server error
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - error
+        properties:
+          error:
+            type: string
+            example: Internal Server Error
+          message:
+            type: string
+            example: An unexpected error occurred
+          code:
+            type: string
+            example: INTERNAL_ERROR
+          requestId:
+            type: string
+            example: req_1234567890
 ```
 
 ## Usage Examples
 
 ### Authentication Flow
+
 ```yaml
 # Login request
 POST /auth/login
@@ -1643,6 +1683,7 @@ Content-Type: application/json
 ```
 
 ### Create Note Flow
+
 ```yaml
 # Create note request
 POST /notes
@@ -1689,6 +1730,7 @@ Content-Type: application/json
 ```
 
 ### Collaboration Flow
+
 ```yaml
 # Join collaborative session
 POST /collaboration/documents/01H8X6PZ5Q8Y0Z0X0Z0X0Z0X0Z1/join
@@ -1715,6 +1757,7 @@ Content-Type: application/json
 ## Error Handling
 
 ### Error Response Format
+
 All error responses follow a consistent format:
 
 ```json
@@ -1734,6 +1777,7 @@ All error responses follow a consistent format:
 ```
 
 ### HTTP Status Codes
+
 - `200` - Success
 - `201` - Created
 - `204` - No Content
@@ -1756,6 +1800,7 @@ API endpoints are subject to rate limiting:
 - Collaboration: 1000 requests per minute
 
 Rate limit headers are included in responses:
+
 ```
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95

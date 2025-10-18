@@ -11,7 +11,8 @@ import { STANDARD_PORTS } from '@noteum/utils'
 /**
  * Backend port configuration
  */
-export const BACKEND_PORT_CONFIG: PortConfiguration = STANDARD_PORTS[ServiceType.BACKEND]
+export const BACKEND_PORT_CONFIG: PortConfiguration =
+  STANDARD_PORTS[ServiceType.BACKEND]
 
 /**
  * Database port configurations
@@ -86,8 +87,11 @@ export const getDatabasePorts = () => {
   const redisUrl = process.env[BACKEND_ENV_VARS.REDIS_URL] || ''
 
   // Extract ports from URLs
-  const postgresPort = extractPortFromUrl(databaseUrl) || DATABASE_PORT_CONFIG.postgresql.externalPort
-  const redisPort = extractPortFromUrl(redisUrl) || DATABASE_PORT_CONFIG.redis.externalPort
+  const postgresPort =
+    extractPortFromUrl(databaseUrl) ||
+    DATABASE_PORT_CONFIG.postgresql.externalPort
+  const redisPort =
+    extractPortFromUrl(redisUrl) || DATABASE_PORT_CONFIG.redis.externalPort
   const pgAdminPort = DATABASE_PORT_CONFIG.pgAdmin.externalPort
 
   return {
@@ -103,7 +107,10 @@ export const getDatabasePorts = () => {
 export const getWebSocketConfig = () => {
   const host = process.env[BACKEND_ENV_VARS.YJS_HOST] || 'localhost'
   const port = process.env[BACKEND_ENV_VARS.YJS_PORT] || '3001'
-  const maxConnections = parseInt(process.env[BACKEND_ENV_VARS.WS_MAX_CONNECTIONS] || '1000', 10)
+  const maxConnections = parseInt(
+    process.env[BACKEND_ENV_VARS.WS_MAX_CONNECTIONS] || '1000',
+    10
+  )
 
   return {
     host,
@@ -136,7 +143,9 @@ export const validateBackendPortConfig = (): {
 
   // Validate backend port range
   if (backendPort < 1024 || backendPort > 65535) {
-    errors.push(`Backend port ${backendPort} is outside valid range (1024-65535)`)
+    errors.push(
+      `Backend port ${backendPort} is outside valid range (1024-65535)`
+    )
   }
 
   // Validate database port ranges
@@ -148,10 +157,13 @@ export const validateBackendPortConfig = (): {
 
   // Check for port conflicts
   const allPorts = [backendPort, ...Object.values(databasePorts)]
-  const portCounts = allPorts.reduce((acc, port) => {
-    acc[port] = (acc[port] || 0) + 1
-    return acc
-  }, {} as Record<number, number>)
+  const portCounts = allPorts.reduce(
+    (acc, port) => {
+      acc[port] = (acc[port] || 0) + 1
+      return acc
+    },
+    {} as Record<number, number>
+  )
 
   Object.entries(portCounts).forEach(([port, count]) => {
     if (Number(count) > 1) {
@@ -161,13 +173,17 @@ export const validateBackendPortConfig = (): {
 
   // Validate reserved ports
   if (backendPort < 2048) {
-    warnings.push(`Backend port ${backendPort} is in the privileged range (<2048)`)
+    warnings.push(
+      `Backend port ${backendPort} is in the privileged range (<2048)`
+    )
   }
 
   // Check for common port conflicts
   const conflictPorts = [3000, 3001, 8080, 4200, 8000, 9000, 5432, 6379]
   if (conflictPorts.includes(backendPort)) {
-    warnings.push(`Backend port ${backendPort} is commonly used by other services`)
+    warnings.push(
+      `Backend port ${backendPort} is commonly used by other services`
+    )
   }
 
   return {

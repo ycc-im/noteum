@@ -272,6 +272,7 @@ pnpm db:health
 ### 常见问题
 
 1. **迁移失败**
+
    ```bash
    # 检查迁移状态
    pnpm db:status
@@ -281,6 +282,7 @@ pnpm db:health
    ```
 
 2. **数据库连接失败**
+
    ```bash
    # 检查连接
    pnpm db:health
@@ -290,12 +292,14 @@ pnpm db:health
    ```
 
 3. **Prisma 客户端生成失败**
+
    ```bash
    # 重新生成客户端
    pnpm prisma:generate --force
    ```
 
 4. **种子数据失败**
+
    ```bash
    # 检查种子数据状态
    node scripts/migration-cli.ts seed-check
@@ -307,6 +311,7 @@ pnpm db:health
 ### 调试技巧
 
 1. **启用详细日志**
+
    ```bash
    DEBUG="prisma:*" pnpm prisma:migrate
    ```
@@ -341,9 +346,9 @@ UPDATE "User" SET "settings" = '{"theme": "light", "language": "en"}' WHERE "set
 
 ```typescript
 if (process.env.NODE_ENV === 'development') {
-  await this.createDevelopmentData();
+  await this.createDevelopmentData()
 } else if (process.env.NODE_ENV === 'test') {
-  await this.createTestData();
+  await this.createTestData()
 }
 ```
 

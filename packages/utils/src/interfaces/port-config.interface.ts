@@ -39,7 +39,7 @@ export enum PortStatus {
   OCCUPIED = 'occupied',
   CONFLICTED = 'conflicted',
   RESERVED = 'reserved',
-  ERROR = 'error'
+  ERROR = 'error',
 }
 
 /**
@@ -140,7 +140,7 @@ export enum ConflictResolutionType {
   CHANGE_PORT = 'change_port',
   WAIT_FOR_RELEASE = 'wait_for_release',
   IGNORE = 'ignore',
-  MANUAL_INTERVENTION = 'manual_intervention'
+  MANUAL_INTERVENTION = 'manual_intervention',
 }
 
 /**
@@ -188,7 +188,7 @@ export enum MonitoringEventType {
   HEALTH_CHECK_FAILED = 'health_check_failed',
   HEALTH_CHECK_RESTORED = 'health_check_restored',
   CONFIGURATION_CHANGED = 'configuration_changed',
-  RESERVATION_EXPIRED = 'reservation_expired'
+  RESERVATION_EXPIRED = 'reservation_expired',
 }
 
 /**
@@ -239,7 +239,7 @@ export enum MigrationStrategy {
   IMMEDIATE = 'immediate',
   GRACEFUL = 'graceful',
   BLUE_GREEN = 'blue_green',
-  ROLLING = 'rolling'
+  ROLLING = 'rolling',
 }
 
 /**
@@ -269,7 +269,7 @@ export enum AuditAction {
   CONFLICT_DETECTED = 'conflict_detected',
   CONFLICT_RESOLVED = 'conflict_resolved',
   CONFIGURATION_IMPORTED = 'configuration_imported',
-  CONFIGURATION_EXPORTED = 'configuration_exported'
+  CONFIGURATION_EXPORTED = 'configuration_exported',
 }
 
 /**
@@ -322,7 +322,7 @@ export enum AllocationStrategy {
   SEQUENTIAL = 'sequential',
   RANDOM = 'random',
   LEAST_RECENTLY_USED = 'least_recently_used',
-  ROUND_ROBIN = 'round_robin'
+  ROUND_ROBIN = 'round_robin',
 }
 
 /**

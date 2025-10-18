@@ -42,14 +42,16 @@ export class UsersService {
         email: userData.email,
         username: userData.username || userData.email.split('@')[0], // 使用指定 username 或 email 前缀
         passwordHash: userData.passwordHash,
-        profile: userData.profile ? {
-          create: {
-            id: `profile_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-            firstName: userData.profile.firstName,
-            lastName: userData.profile.lastName,
-            displayName: userData.profile.displayName,
-          }
-        } : undefined,
+        profile: userData.profile
+          ? {
+              create: {
+                id: `profile_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                firstName: userData.profile.firstName,
+                lastName: userData.profile.lastName,
+                displayName: userData.profile.displayName,
+              },
+            }
+          : undefined,
       },
       include: { profile: true },
     })

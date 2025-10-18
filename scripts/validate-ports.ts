@@ -7,7 +7,11 @@
  * and no conflicts exist between services.
  */
 
-import { checkPortConflicts, ServiceType, STANDARD_PORTS } from '../packages/utils/src/port-config'
+import {
+  checkPortConflicts,
+  ServiceType,
+  STANDARD_PORTS,
+} from '../packages/utils/src/port-config'
 import { validateBackendPortConfig } from '../apps/services/src/config/ports'
 import { validateFrontendPortConfig } from '../apps/client/src/config/ports'
 
@@ -33,13 +37,15 @@ async function validatePorts() {
     console.log('✅ Frontend port configuration is valid')
   } else {
     console.log('❌ Frontend port configuration has errors:')
-    frontendValidation.errors.forEach(error => console.log(`   - ${error}`))
+    frontendValidation.errors.forEach((error) => console.log(`   - ${error}`))
     hasErrors = true
   }
 
   if (frontendValidation.warnings.length > 0) {
     console.log('⚠️  Frontend port configuration warnings:')
-    frontendValidation.warnings.forEach(warning => console.log(`   - ${warning}`))
+    frontendValidation.warnings.forEach((warning) =>
+      console.log(`   - ${warning}`)
+    )
     hasWarnings = true
   }
 
@@ -51,13 +57,15 @@ async function validatePorts() {
     console.log('✅ Backend port configuration is valid')
   } else {
     console.log('❌ Backend port configuration has errors:')
-    backendValidation.errors.forEach(error => console.log(`   - ${error}`))
+    backendValidation.errors.forEach((error) => console.log(`   - ${error}`))
     hasErrors = true
   }
 
   if (backendValidation.warnings.length > 0) {
     console.log('⚠️  Backend port configuration warnings:')
-    backendValidation.warnings.forEach(warning => console.log(`   - ${warning}`))
+    backendValidation.warnings.forEach((warning) =>
+      console.log(`   - ${warning}`)
+    )
     hasWarnings = true
   }
 
@@ -69,10 +77,12 @@ async function validatePorts() {
     console.log('✅ No port conflicts detected')
   } else {
     console.log('❌ Port conflicts detected:')
-    conflicts.forEach(conflict => {
+    conflicts.forEach((conflict) => {
       console.log(`   - Port ${conflict.port}: ${conflict.description}`)
       if (conflict.process) {
-        console.log(`     Process: ${conflict.process.name} (PID: ${conflict.process.pid})`)
+        console.log(
+          `     Process: ${conflict.process.name} (PID: ${conflict.process.pid})`
+        )
       }
     })
     hasErrors = true
@@ -81,8 +91,12 @@ async function validatePorts() {
   // Display port summary
   console.log('\n📊 Port Configuration Summary:')
   Object.entries(STANDARD_PORTS).forEach(([serviceType, config]) => {
-    const status = conflicts.some(c => c.port === config.externalPort) ? '❌' : '✅'
-    console.log(`   ${status} ${serviceType}: ${config.externalPort} (${config.description})`)
+    const status = conflicts.some((c) => c.port === config.externalPort)
+      ? '❌'
+      : '✅'
+    console.log(
+      `   ${status} ${serviceType}: ${config.externalPort} (${config.description})`
+    )
   })
 
   // Final result
@@ -90,7 +104,9 @@ async function validatePorts() {
 
   if (hasErrors) {
     console.log('❌ Port validation failed!')
-    console.log('Please resolve the errors above before starting the development environment.')
+    console.log(
+      'Please resolve the errors above before starting the development environment.'
+    )
     process.exit(1)
   } else if (hasWarnings) {
     console.log('⚠️  Port validation completed with warnings.')
@@ -105,7 +121,7 @@ async function validatePorts() {
 
 // Handle script execution
 if (import.meta.url === `file://${process.argv[1]}`) {
-  validatePorts().catch(error => {
+  validatePorts().catch((error) => {
     console.error('❌ Unexpected error during port validation:', error)
     process.exit(1)
   })

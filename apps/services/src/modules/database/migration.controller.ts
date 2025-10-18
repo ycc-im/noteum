@@ -17,12 +17,15 @@ import { SeedingService } from './seeding.service'
 export class MigrationController {
   constructor(
     private readonly migrationService: MigrationService,
-    private readonly seedingService: SeedingService,
+    private readonly seedingService: SeedingService
   ) {}
 
   @Get('status')
   @ApiOperation({ summary: 'Get migration status' })
-  @ApiResponse({ status: 200, description: 'Migration status retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Migration status retrieved successfully',
+  })
   async getMigrationStatus() {
     return this.migrationService.getMigrationStatus()
   }
@@ -39,7 +42,10 @@ export class MigrationController {
   @Post('generate-client')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Generate Prisma client' })
-  @ApiResponse({ status: 200, description: 'Prisma client generated successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Prisma client generated successfully',
+  })
   async generateClient() {
     await this.migrationService.generateClient()
     return { message: 'Prisma client generated successfully' }
@@ -47,7 +53,9 @@ export class MigrationController {
 
   @Post('push')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Push schema changes to database (development only)' })
+  @ApiOperation({
+    summary: 'Push schema changes to database (development only)',
+  })
   @ApiResponse({ status: 200, description: 'Schema pushed successfully' })
   async pushSchema() {
     await this.migrationService.pushSchema()
@@ -74,7 +82,10 @@ export class MigrationController {
 
   @Get('seed/check')
   @ApiOperation({ summary: 'Check if seed data exists' })
-  @ApiResponse({ status: 200, description: 'Seed data status retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Seed data status retrieved successfully',
+  })
   async checkSeedData() {
     return this.seedingService.checkSeedData()
   }
@@ -101,7 +112,10 @@ export class MigrationController {
 
   @Get('info')
   @ApiOperation({ summary: 'Get database information' })
-  @ApiResponse({ status: 200, description: 'Database information retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Database information retrieved successfully',
+  })
   async getDatabaseInfo() {
     return this.migrationService.getDatabaseInfo()
   }
@@ -120,7 +134,9 @@ export class MigrationController {
 
   @Post('rollback/:migration')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Rollback to specific migration (development only)' })
+  @ApiOperation({
+    summary: 'Rollback to specific migration (development only)',
+  })
   @ApiResponse({ status: 200, description: 'Rollback completed successfully' })
   async rollbackMigration(@Param('migration') migration: string) {
     await this.migrationService.rollbackToMigration(migration)

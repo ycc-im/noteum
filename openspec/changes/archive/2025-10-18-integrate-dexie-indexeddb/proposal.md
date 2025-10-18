@@ -7,6 +7,7 @@ This change introduces Dexie.js as the IndexedDB wrapper for Noteum and establis
 ## Why
 
 ### Current Limitations
+
 The application currently stores authentication data in localStorage, which has several significant limitations:
 
 1. **Storage Capacity**: localStorage is limited to 5-10MB, which restricts future data caching capabilities
@@ -15,6 +16,7 @@ The application currently stores authentication data in localStorage, which has 
 4. **Scalability Issues**: Cannot support future client-side data caching strategies
 
 ### Business Benefits
+
 - **Enhanced Security**: IndexedDB provides better isolation and follows modern web security best practices
 - **Future-Proof Architecture**: Establishes foundation for advanced client-side data management
 - **Performance Improvements**: Asynchronous operations prevent UI blocking
@@ -23,18 +25,21 @@ The application currently stores authentication data in localStorage, which has 
 ## What Changes
 
 ### Core Infrastructure Changes
+
 1. **Add Dexie.js dependency** - Modern IndexedDB wrapper library
 2. **Create database schema** - Authentication and cache tables with proper indexing
 3. **Implement connection management** - Retry logic and error handling
 4. **Type safety** - Complete TypeScript integration
 
 ### Authentication System Updates
+
 1. **Replace localStorage usage** in login flow with IndexedDB operations
 2. **Update Zustand persistence** to use IndexedDB instead of localStorage
 3. **Implement automatic migration** from existing localStorage data
 4. **Add token expiration handling** with automatic cleanup
 
 ### Migration and Compatibility
+
 1. **Seamless data migration** - Existing users will be migrated automatically
 2. **Backward compatibility** - Graceful fallback for browsers without IndexedDB
 3. **Data validation** - Ensure integrity during migration process
@@ -43,6 +48,7 @@ The application currently stores authentication data in localStorage, which has 
 ## Background
 
 Currently, the application stores authentication tokens and user data in localStorage:
+
 - `login.tsx` stores `auth_token`, `refresh_token`, and `user` data in localStorage
 - The authentication specification already requires IndexedDB usage but implementation is incomplete
 - Zustand persist middleware uses localStorage by default
@@ -51,17 +57,20 @@ Currently, the application stores authentication tokens and user data in localSt
 ## Proposed Solution
 
 ### Phase 1: Dexie.js Integration
+
 1. Add Dexie.js as a dependency to the client application
 2. Create a centralized database service with proper schema design
 3. Establish database connection management and error handling
 
 ### Phase 2: Authentication Data Migration
+
 1. Replace localStorage usage in login flow with IndexedDB operations
 2. Update Zustand auth store to use IndexedDB persistence
 3. Implement migration logic for existing localStorage data
 4. Update authentication specifications to reflect implementation changes
 
 ### Phase 3: Large-Scale Data Best Practices
+
 1. Implement indexing strategies for optimal query performance
 2. Add data pagination and virtualization support
 3. Create data cleanup and maintenance utilities

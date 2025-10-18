@@ -9,7 +9,7 @@ export class TrpcMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
     // Add trpc context to request
-    (req as any).trpcContext = {
+    ;(req as any).trpcContext = {
       req,
       prisma: this.prisma,
       user: (req as any).user, // Will be populated by auth middleware

@@ -273,61 +273,61 @@ curl -X POST http://localhost:3000/api/v1/notebooks/{NOTEBOOK_ID}/collaborators 
 ### 1. 连接到 y-websocket
 
 ```javascript
-import * as Y from 'yjs';
-import { WebsocketProvider } from 'y-websocket';
+import * as Y from 'yjs'
+import { WebsocketProvider } from 'y-websocket'
 
 // 创建 Yjs 文档
-const ydoc = new Y.Doc();
+const ydoc = new Y.Doc()
 
 // 连接到 WebSocket
 const wsProvider = new WebsocketProvider(
-  'ws://localhost:3001',  // WebSocket 服务器地址
-  'note-id',           // 文档 ID
+  'ws://localhost:3001', // WebSocket 服务器地址
+  'note-id', // 文档 ID
   ydoc
-);
+)
 
 // 监听连接事件
 wsProvider.on('sync', (isSynced) => {
-  console.log('文档同步状态:', isSynced);
-});
+  console.log('文档同步状态:', isSynced)
+})
 
 // 监听文档变化
 ydoc.on('update', (update) => {
-  console.log('文档更新:', update);
-});
+  console.log('文档更新:', update)
+})
 
 // 获取文档内容
-const ytext = ydoc.getText('content');
-console.log('文档内容:', ytext.toString());
+const ytext = ydoc.getText('content')
+console.log('文档内容:', ytext.toString())
 ```
 
 ### 2. 用户感知
 
 ```javascript
 // 获取感知信息
-const awareness = wsProvider.awareness;
+const awareness = wsProvider.awareness
 
 // 设置本地用户信息
 awareness.setLocalState({
   user: {
     id: 'user-id',
     name: '用户名',
-    color: '#ff6b6b'
+    color: '#ff6b6b',
   },
   cursor: {
     position: 100,
-    selection: { start: 100, end: 110 }
-  }
-});
+    selection: { start: 100, end: 110 },
+  },
+})
 
 // 监听其他用户变化
 awareness.on('change', (changes) => {
-  console.log('用户感知变化:', changes);
+  console.log('用户感知变化:', changes)
 
   // 获取所有在线用户
-  const users = Array.from(awareness.getStates().values());
-  console.log('在线用户:', users);
-});
+  const users = Array.from(awareness.getStates().values())
+  console.log('在线用户:', users)
+})
 ```
 
 ## 测试
@@ -439,7 +439,7 @@ model User {
 在 `src/modules/trpc/trpc.module.ts` 中配置 tRPC：
 
 ```typescript
-import { TRPCModule } from 'nestjs-trpc';
+import { TRPCModule } from 'nestjs-trpc'
 
 @Module({
   imports: [
@@ -469,10 +469,10 @@ export class TrpcModule {}
 })
 export class NoteGateway implements OnGatewayConnection {
   @WebSocketServer()
-  server: Server;
+  server: Server
 
   handleConnection(client: Socket) {
-    console.log('客户端连接:', client.id);
+    console.log('客户端连接:', client.id)
   }
 }
 ```
@@ -483,6 +483,7 @@ export class NoteGateway implements OnGatewayConnection {
 
 **问题**: 无法连接到 PostgreSQL
 **解决方案**:
+
 - 确保 PostgreSQL 服务正在运行
 - 检查 `.env` 文件中的 `DATABASE_URL` 配置
 - 验证数据库用户权限
@@ -496,6 +497,7 @@ psql $DATABASE_URL
 
 **问题**: 无法连接到 Redis
 **解决方案**:
+
 - 确保 Redis 服务正在运行
 - 检查 `.env` 文件中的 `REDIS_URL` 配置
 
@@ -508,6 +510,7 @@ redis-cli -u $REDIS_URL ping
 
 **问题**: WebSocket 连接失败
 **解决方案**:
+
 - 检查 CORS 配置
 - 确保 WebSocket 端口未被占用
 - 验证防火墙设置
@@ -516,6 +519,7 @@ redis-cli -u $REDIS_URL ping
 
 **问题**: TypeScript 编译错误
 **解决方案**:
+
 - 运行 `pnpm type-check` 检查类型错误
 - 确保 Prisma 客户端已生成：`pnpm prisma generate`
 - 检查依赖版本兼容性

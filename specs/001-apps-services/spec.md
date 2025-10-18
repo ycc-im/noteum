@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: User description: "让我们创建基础的apps/services 项目框架"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - 项目基础结构配置 (Priority: P1)
 
@@ -28,7 +28,7 @@
 - 依赖安装失败时的处理
 - 构建配置错误时的回滚
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -38,13 +38,13 @@
 - **FR-004**: 必须配置代码质量检查工具
 - **FR-005**: 必须配置测试框架
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Monorepo Workspace**: pnpm 工作区配置
 - **Service Application**: apps/services 应用
 - **Build Configuration**: 构建和开发配置
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

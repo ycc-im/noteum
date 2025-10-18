@@ -4,12 +4,22 @@
  */
 
 import { plainToInstance, Transform } from 'class-transformer'
-import { IsString, IsNumber, IsOptional, IsUrl, IsIn, IsInt, Min, Max, validateSync } from 'class-validator'
+import {
+  IsString,
+  IsNumber,
+  IsOptional,
+  IsUrl,
+  IsIn,
+  IsInt,
+  Min,
+  Max,
+  validateSync,
+} from 'class-validator'
 
 export enum Environment {
   DEVELOPMENT = 'development',
   PRODUCTION = 'production',
-  TEST = 'test'
+  TEST = 'test',
 }
 
 export class DatabaseConfig {
@@ -25,7 +35,10 @@ export class DatabaseConfig {
   @IsInt()
   @Min(1)
   @Max(65535)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.DATABASE_PORT || '5432'))
+  @Transform(
+    ({ value }) =>
+      parseInt(value) || parseInt(process.env.DATABASE_PORT || '5432')
+  )
   port!: number
 
   @IsString()
@@ -37,7 +50,9 @@ export class DatabaseConfig {
   username!: string
 
   @IsString()
-  @Transform(({ value }) => value || process.env.DATABASE_PASSWORD || 'postgres')
+  @Transform(
+    ({ value }) => value || process.env.DATABASE_PASSWORD || 'postgres'
+  )
   password!: string
 
   @IsOptional()
@@ -58,7 +73,9 @@ export class RedisConfig {
   @IsInt()
   @Min(1)
   @Max(65535)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.REDIS_PORT || '6379'))
+  @Transform(
+    ({ value }) => parseInt(value) || parseInt(process.env.REDIS_PORT || '6379')
+  )
   port!: number
 
   @IsOptional()
@@ -71,7 +88,9 @@ export class RedisConfig {
   @IsInt()
   @Min(0)
   @Max(15)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.REDIS_DB || '0'))
+  @Transform(
+    ({ value }) => parseInt(value) || parseInt(process.env.REDIS_DB || '0')
+  )
   db?: number = 0
 }
 
@@ -80,12 +99,16 @@ export class ServerConfig {
   @IsInt()
   @Min(1)
   @Max(65535)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.PORT || '9168'))
+  @Transform(
+    ({ value }) => parseInt(value) || parseInt(process.env.PORT || '9168')
+  )
   port!: number
 
   @IsString()
   @IsIn([Environment.DEVELOPMENT, Environment.PRODUCTION, Environment.TEST])
-  @Transform(({ value }) => value || process.env.NODE_ENV || Environment.DEVELOPMENT)
+  @Transform(
+    ({ value }) => value || process.env.NODE_ENV || Environment.DEVELOPMENT
+  )
   environment!: Environment
 
   @IsOptional()
@@ -95,12 +118,16 @@ export class ServerConfig {
 
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => value || process.env.FRONTEND_URL || 'http://localhost:9158')
+  @Transform(
+    ({ value }) => value || process.env.FRONTEND_URL || 'http://localhost:9158'
+  )
   frontendUrl?: string
 
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => value || process.env.CORS_ORIGIN || 'http://localhost:9158')
+  @Transform(
+    ({ value }) => value || process.env.CORS_ORIGIN || 'http://localhost:9158'
+  )
   corsOrigin?: string
 
   @IsOptional()
@@ -126,7 +153,9 @@ export class SecurityConfig {
   jwtRefreshSecret!: string
 
   @IsString()
-  @Transform(({ value }) => value || process.env.JWT_REFRESH_EXPIRES_IN || '30d')
+  @Transform(
+    ({ value }) => value || process.env.JWT_REFRESH_EXPIRES_IN || '30d'
+  )
   jwtRefreshExpiresIn!: string
 
   @IsOptional()
@@ -134,7 +163,10 @@ export class SecurityConfig {
   @IsInt()
   @Min(10)
   @Max(20)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.BCRYPT_ROUNDS || '12'))
+  @Transform(
+    ({ value }) =>
+      parseInt(value) || parseInt(process.env.BCRYPT_ROUNDS || '12')
+  )
   bcryptRounds?: number = 12
 
   @IsOptional()
@@ -142,7 +174,10 @@ export class SecurityConfig {
   @IsInt()
   @Min(30000)
   @Max(3600000)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'))
+  @Transform(
+    ({ value }) =>
+      parseInt(value) || parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000')
+  )
   rateLimitWindowMs?: number = 900000
 
   @IsOptional()
@@ -150,7 +185,10 @@ export class SecurityConfig {
   @IsInt()
   @Min(1)
   @Max(1000)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'))
+  @Transform(
+    ({ value }) =>
+      parseInt(value) || parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100')
+  )
   rateLimitMaxRequests?: number = 100
 }
 
@@ -181,7 +219,9 @@ export class CacheConfig {
   @IsInt()
   @Min(60)
   @Max(86400)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.CACHE_TTL || '3600'))
+  @Transform(
+    ({ value }) => parseInt(value) || parseInt(process.env.CACHE_TTL || '3600')
+  )
   ttl?: number = 3600
 
   @IsOptional()
@@ -189,7 +229,10 @@ export class CacheConfig {
   @IsInt()
   @Min(10)
   @Max(10000)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.CACHE_MAX_SIZE || '1000'))
+  @Transform(
+    ({ value }) =>
+      parseInt(value) || parseInt(process.env.CACHE_MAX_SIZE || '1000')
+  )
   maxSize?: number = 1000
 }
 
@@ -199,23 +242,33 @@ export class PgAdminConfig {
   @IsInt()
   @Min(1)
   @Max(65535)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.PGADMIN_PORT || '9188'))
+  @Transform(
+    ({ value }) =>
+      parseInt(value) || parseInt(process.env.PGADMIN_PORT || '9188')
+  )
   port?: number = 9188
 
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => value || process.env.PGADMIN_DEFAULT_EMAIL || 'admin@noteum.dev')
+  @Transform(
+    ({ value }) =>
+      value || process.env.PGADMIN_DEFAULT_EMAIL || 'admin@noteum.dev'
+  )
   defaultEmail?: string
 
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => value || process.env.PGADMIN_DEFAULT_PASSWORD || 'admin123')
+  @Transform(
+    ({ value }) => value || process.env.PGADMIN_DEFAULT_PASSWORD || 'admin123'
+  )
   defaultPassword?: string
 }
 
 export class AppConfig {
   @IsString()
-  @Transform(({ value }) => value || process.env.npm_package_name || 'noteum-services')
+  @Transform(
+    ({ value }) => value || process.env.npm_package_name || 'noteum-services'
+  )
   name!: string
 
   @IsString()
@@ -223,7 +276,9 @@ export class AppConfig {
   version!: string
 
   @IsString()
-  @Transform(({ value }) => value || process.env.COMPOSE_PROJECT_NAME || 'noteum')
+  @Transform(
+    ({ value }) => value || process.env.COMPOSE_PROJECT_NAME || 'noteum'
+  )
   composeProjectName!: string
 
   database!: DatabaseConfig
@@ -244,13 +299,19 @@ export class AppConfig {
 
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => value || process.env.OPENAI_MODEL || 'text-embedding-ada-002')
+  @Transform(
+    ({ value }) => value || process.env.OPENAI_MODEL || 'text-embedding-ada-002'
+  )
   openaiModel?: string
 
   // Vector Search Configuration
   @IsOptional()
   @IsNumber()
-  @Transform(({ value }) => parseFloat(value) || parseFloat(process.env.VECTOR_SIMILARITY_THRESHOLD || '0.7'))
+  @Transform(
+    ({ value }) =>
+      parseFloat(value) ||
+      parseFloat(process.env.VECTOR_SIMILARITY_THRESHOLD || '0.7')
+  )
   vectorSimilarityThreshold?: number
 
   @IsOptional()
@@ -258,14 +319,20 @@ export class AppConfig {
   @IsInt()
   @Min(1)
   @Max(100)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.VECTOR_SEARCH_LIMIT || '10'))
+  @Transform(
+    ({ value }) =>
+      parseInt(value) || parseInt(process.env.VECTOR_SEARCH_LIMIT || '10')
+  )
   vectorSearchLimit?: number
 
   @IsOptional()
   @IsNumber()
   @IsInt()
   @Min(1)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.VECTOR_DIMENSION || '1536'))
+  @Transform(
+    ({ value }) =>
+      parseInt(value) || parseInt(process.env.VECTOR_DIMENSION || '1536')
+  )
   vectorDimension?: number
 
   // Monitoring Configuration
@@ -278,7 +345,10 @@ export class AppConfig {
   @IsInt()
   @Min(1)
   @Max(65535)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.METRICS_PORT || '9464'))
+  @Transform(
+    ({ value }) =>
+      parseInt(value) || parseInt(process.env.METRICS_PORT || '9464')
+  )
   metricsPort?: number = 9464
 
   // Health Check Configuration
@@ -291,27 +361,32 @@ export class AppConfig {
   @IsInt()
   @Min(5000)
   @Max(300000)
-  @Transform(({ value }) => parseInt(value) || parseInt(process.env.HEALTH_CHECK_INTERVAL || '30000'))
+  @Transform(
+    ({ value }) =>
+      parseInt(value) || parseInt(process.env.HEALTH_CHECK_INTERVAL || '30000')
+  )
   healthCheckInterval?: number = 30000
 }
 
 export function validateConfig(config: Record<string, unknown>): AppConfig {
   const validatedConfig = plainToInstance(AppConfig, config, {
     enableImplicitConversion: true,
-    excludeExtraneousValues: true
+    excludeExtraneousValues: true,
   })
 
   const errors = validateSync(validatedConfig, {
     whitelist: true,
     forbidNonWhitelisted: true,
-    skipMissingProperties: false
+    skipMissingProperties: false,
   })
 
   if (errors.length > 0) {
-    const errorMessages = errors.map(error => {
-      const constraints = Object.values(error.constraints || {})
-      return `${error.property}: ${constraints.join(', ')}`
-    }).join('; ')
+    const errorMessages = errors
+      .map(error => {
+        const constraints = Object.values(error.constraints || {})
+        return `${error.property}: ${constraints.join(', ')}`
+      })
+      .join('; ')
 
     throw new Error(`Configuration validation failed: ${errorMessages}`)
   }
@@ -325,18 +400,21 @@ export type ConfigValidationResult = {
   errors?: string[]
 }
 
-export function validateEnvironmentVariables(envVars: NodeJS.ProcessEnv): ConfigValidationResult {
+export function validateEnvironmentVariables(
+  envVars: NodeJS.ProcessEnv
+): ConfigValidationResult {
   try {
     const config = validateConfig(envVars)
     return {
       isValid: true,
-      config
+      config,
     }
   } catch (error) {
     return {
       isValid: false,
       config: {} as AppConfig,
-      errors: error instanceof Error ? [error.message] : ['Unknown validation error']
+      errors:
+        error instanceof Error ? [error.message] : ['Unknown validation error'],
     }
   }
 }

@@ -7,27 +7,36 @@ export function createAuthRouter(trpc: TrpcService, authService: AuthService) {
   return trpc.router({
     // 用户名登录
     login: trpc.publicProcedure
-      .input(z.object({
-        username: z.string().min(3).max(30),
-        password: z.string().min(1),
-      }))
+      .input(
+        z.object({
+          username: z.string().min(3).max(30),
+          password: z.string().min(1),
+        })
+      )
       .mutation(async ({ input }) => {
         try {
-          const result = await authService.loginWithUsername(input.username, input.password)
+          const result = await authService.loginWithUsername(
+            input.username,
+            input.password
+          )
           return {
             success: true,
             data: result,
           }
         } catch (error) {
-          throw new Error(error instanceof Error ? error.message : 'Login failed')
+          throw new Error(
+            error instanceof Error ? error.message : 'Login failed'
+          )
         }
       }),
 
     // Token 刷新
     refreshToken: trpc.publicProcedure
-      .input(z.object({
-        refreshToken: z.string(),
-      }))
+      .input(
+        z.object({
+          refreshToken: z.string(),
+        })
+      )
       .mutation(async ({ input }) => {
         try {
           const result = await authService.refreshToken(input.refreshToken)
@@ -36,7 +45,9 @@ export function createAuthRouter(trpc: TrpcService, authService: AuthService) {
             data: result,
           }
         } catch (error) {
-          throw new Error(error instanceof Error ? error.message : 'Token refresh failed')
+          throw new Error(
+            error instanceof Error ? error.message : 'Token refresh failed'
+          )
         }
       }),
 

@@ -11,11 +11,15 @@ const execAsync = promisify(exec)
 @Injectable()
 export class MigrationService {
   private readonly logger = new Logger(MigrationService.name)
-  private readonly migrationsPath = path.join(process.cwd(), 'prisma', 'migrations')
+  private readonly migrationsPath = path.join(
+    process.cwd(),
+    'prisma',
+    'migrations'
+  )
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService
   ) {}
 
   /**
@@ -88,10 +92,13 @@ export class MigrationService {
    * 重置数据库
    */
   async resetDatabase(): Promise<void> {
-    const isDevelopment = this.configService.get<string>('NODE_ENV') === 'development'
+    const isDevelopment =
+      this.configService.get<string>('NODE_ENV') === 'development'
 
     if (!isDevelopment) {
-      throw new Error('Database reset is only allowed in development environment')
+      throw new Error(
+        'Database reset is only allowed in development environment'
+      )
     }
 
     try {
@@ -113,11 +120,11 @@ export class MigrationService {
   }> {
     try {
       // 获取已应用的迁移
-      const appliedMigrations = await this.prisma.$queryRaw`
+      const appliedMigrations = (await this.prisma.$queryRaw`
         SELECT migration_name, finished_at
         FROM _prisma_migrations
         ORDER BY started_at
-      ` as Array<{
+      `) as Array<{
         migration_name: string
         finished_at: Date | null
       }>
@@ -144,8 +151,11 @@ export class MigrationService {
     }
 
     const appliedNames = new Set(appliedMigrations.map(m => m.migration_name))
-    const migrationFiles = fs.readdirSync(this.migrationsPath)
-      .filter(file => fs.statSync(path.join(this.migrationsPath, file)).isDirectory())
+    const migrationFiles = fs
+      .readdirSync(this.migrationsPath)
+      .filter(file =>
+        fs.statSync(path.join(this.migrationsPath, file)).isDirectory()
+      )
 
     return migrationFiles
       .filter(name => !appliedNames.has(name))
@@ -159,10 +169,13 @@ export class MigrationService {
    * 回滚到指定迁移（开发环境）
    */
   async rollbackToMigration(targetMigration: string): Promise<void> {
-    const isDevelopment = this.configService.get<string>('NODE_ENV') === 'development'
+    const isDevelopment =
+      this.configService.get<string>('NODE_ENV') === 'development'
 
     if (!isDevelopment) {
-      throw new Error('Migration rollback is only allowed in development environment')
+      throw new Error(
+        'Migration rollback is only allowed in development environment'
+      )
     }
 
     try {
@@ -231,12 +244,14 @@ export class MigrationService {
     size?: string
   }> {
     try {
-      const version = await this.prisma.$queryRaw`SELECT version()` as Array<{ version: string }>
-      const tables = await this.prisma.$queryRaw`
+      const version = (await this.prisma.$queryRaw`SELECT version()`) as Array<{
+        version: string
+      }>
+      const tables = (await this.prisma.$queryRaw`
         SELECT table_name
         FROM information_schema.tables
         WHERE table_schema = 'public'
-      ` as Array<{ table_name: string }>
+      `) as Array<{ table_name: string }>
 
       return {
         version: version[0]?.version || 'Unknown',

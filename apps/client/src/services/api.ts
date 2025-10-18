@@ -25,7 +25,9 @@ class ApiClient {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+      throw new Error(
+        errorData.message || `HTTP error! status: ${response.status}`
+      )
     }
 
     return response.json()
@@ -34,9 +36,14 @@ class ApiClient {
   // 认证相关 API
   async login(data: LoginRequest): Promise<LoginResponse> {
     // 将用户名转换为邮箱，因为当前后端只支持邮箱登录
-    const email = data.username.includes('@') ? data.username : `${data.username}@noteum.dev`
+    const email = data.username.includes('@')
+      ? data.username
+      : `${data.username}@noteum.dev`
 
-    const response = await this.request<{ success: boolean; data: LoginResponse }>('/api/v1/auth/login', {
+    const response = await this.request<{
+      success: boolean
+      data: LoginResponse
+    }>('/api/v1/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password: data.password }),
     })
@@ -49,7 +56,10 @@ class ApiClient {
   }
 
   async refreshToken(data: RefreshTokenRequest): Promise<LoginResponse> {
-    const response = await this.request<{ success: boolean; data: LoginResponse }>('/api/v1/auth/refresh', {
+    const response = await this.request<{
+      success: boolean
+      data: LoginResponse
+    }>('/api/v1/auth/refresh', {
       method: 'POST',
       body: JSON.stringify(data),
     })

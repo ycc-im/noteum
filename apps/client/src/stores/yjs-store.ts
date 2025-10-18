@@ -94,7 +94,11 @@ export const useYjsStore = create<YjsState>()(
       const { presence } = get()
       const current = presence.get(userId)
       if (current) {
-        const updated = { ...current, ...presenceUpdate, lastActivity: new Date() }
+        const updated = {
+          ...current,
+          ...presenceUpdate,
+          lastActivity: new Date(),
+        }
         const newPresence = new Map(presence)
         newPresence.set(userId, updated)
         set({ presence: newPresence })
@@ -109,7 +113,7 @@ export const useYjsStore = create<YjsState>()(
     },
 
     clearConflicts: () => set({ conflicts: [] }),
-    setIsConnected: connected => set({ isConnected: connected }),
-    setIsSynced: synced => set({ isSynced: synced }),
+    setIsConnected: (connected) => set({ isConnected: connected }),
+    setIsSynced: (synced) => set({ isSynced: synced }),
   }))
 )

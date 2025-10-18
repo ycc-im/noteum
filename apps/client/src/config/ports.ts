@@ -11,7 +11,8 @@ import { STANDARD_PORTS } from '@noteum/utils'
 /**
  * Frontend port configuration
  */
-export const FRONTEND_PORT_CONFIG: PortConfiguration = STANDARD_PORTS[ServiceType.FRONTEND]
+export const FRONTEND_PORT_CONFIG: PortConfiguration =
+  STANDARD_PORTS[ServiceType.FRONTEND]
 
 /**
  * Frontend environment variable names
@@ -86,7 +87,9 @@ export const validateFrontendPortConfig = (): {
   // Check for common port conflicts
   const conflictPorts = [3000, 3001, 8080, 4200, 8000, 9000]
   if (conflictPorts.includes(port)) {
-    warnings.push(`Frontend port ${port} is commonly used by other development tools`)
+    warnings.push(
+      `Frontend port ${port} is commonly used by other development tools`
+    )
   }
 
   return {

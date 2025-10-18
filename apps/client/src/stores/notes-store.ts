@@ -20,7 +20,7 @@ interface NotesState {
 }
 
 export const useNotesStore = create<NotesState>()(
-  devtools(set => ({
+  devtools((set) => ({
     // Initial state
     notes: [],
     currentNote: null,
@@ -31,7 +31,9 @@ export const useNotesStore = create<NotesState>()(
     fetchNotes: async (notebookId?: string) => {
       set({ isLoading: true, error: null })
       try {
-        const url = notebookId ? `/api/notes?notebookId=${notebookId}` : '/api/notes'
+        const url = notebookId
+          ? `/api/notes?notebookId=${notebookId}`
+          : '/api/notes'
         const response = await fetch(url)
 
         if (!response.ok) {
@@ -41,7 +43,10 @@ export const useNotesStore = create<NotesState>()(
         const notes = await response.json()
         set({ notes })
       } catch (error) {
-        set({ error: error instanceof Error ? error.message : 'Failed to fetch notes' })
+        set({
+          error:
+            error instanceof Error ? error.message : 'Failed to fetch notes',
+        })
       } finally {
         set({ isLoading: false })
       }
@@ -59,7 +64,10 @@ export const useNotesStore = create<NotesState>()(
         const note = await response.json()
         set({ currentNote: note })
       } catch (error) {
-        set({ error: error instanceof Error ? error.message : 'Failed to fetch note' })
+        set({
+          error:
+            error instanceof Error ? error.message : 'Failed to fetch note',
+        })
       } finally {
         set({ isLoading: false })
       }
@@ -81,13 +89,16 @@ export const useNotesStore = create<NotesState>()(
         }
 
         const newNote = await response.json()
-        set(state => ({
+        set((state) => ({
           notes: [...state.notes, newNote],
-          currentNote: newNote
+          currentNote: newNote,
         }))
         return newNote
       } catch (error) {
-        set({ error: error instanceof Error ? error.message : 'Failed to create note' })
+        set({
+          error:
+            error instanceof Error ? error.message : 'Failed to create note',
+        })
         throw error
       } finally {
         set({ isLoading: false })
@@ -110,15 +121,19 @@ export const useNotesStore = create<NotesState>()(
         }
 
         const updatedNote = await response.json()
-        set(state => ({
-          notes: state.notes.map(note =>
+        set((state) => ({
+          notes: state.notes.map((note) =>
             note.id === id ? updatedNote : note
           ),
-          currentNote: state.currentNote?.id === id ? updatedNote : state.currentNote
+          currentNote:
+            state.currentNote?.id === id ? updatedNote : state.currentNote,
         }))
         return updatedNote
       } catch (error) {
-        set({ error: error instanceof Error ? error.message : 'Failed to update note' })
+        set({
+          error:
+            error instanceof Error ? error.message : 'Failed to update note',
+        })
         throw error
       } finally {
         set({ isLoading: false })
@@ -136,19 +151,22 @@ export const useNotesStore = create<NotesState>()(
           throw new Error('Failed to delete note')
         }
 
-        set(state => ({
-          notes: state.notes.filter(note => note.id !== id),
-          currentNote: state.currentNote?.id === id ? null : state.currentNote
+        set((state) => ({
+          notes: state.notes.filter((note) => note.id !== id),
+          currentNote: state.currentNote?.id === id ? null : state.currentNote,
         }))
       } catch (error) {
-        set({ error: error instanceof Error ? error.message : 'Failed to delete note' })
+        set({
+          error:
+            error instanceof Error ? error.message : 'Failed to delete note',
+        })
       } finally {
         set({ isLoading: false })
       }
     },
 
-    setCurrentNote: note => set({ currentNote: note }),
+    setCurrentNote: (note) => set({ currentNote: note }),
     clearError: () => set({ error: null }),
-    setLoading: loading => set({ isLoading: loading }),
+    setLoading: (loading) => set({ isLoading: loading }),
   }))
 )

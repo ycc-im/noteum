@@ -29,8 +29,22 @@ export const Route = createFileRoute('/dashboard')({
 
     return (
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-          <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', margin: 0 }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '32px',
+          }}
+        >
+          <h1
+            style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#111827',
+              margin: 0,
+            }}
+          >
             Dashboard
           </h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -54,28 +68,47 @@ export const Route = createFileRoute('/dashboard')({
           </div>
         </div>
 
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          padding: '32px',
-          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-        }}>
-          <h2 style={{ fontSize: '18px', fontWeight: '600', color: '#111827', marginBottom: '16px' }}>
+        <div
+          style={{
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            padding: '32px',
+            boxShadow:
+              '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+          }}
+        >
+          <h2
+            style={{
+              fontSize: '18px',
+              fontWeight: '600',
+              color: '#111827',
+              marginBottom: '16px',
+            }}
+          >
             Welcome to Noteum Dashboard
           </h2>
           <p style={{ color: '#6b7280', marginBottom: '8px' }}>
             🎉 You are successfully logged in!
           </p>
-          <div style={{
-            backgroundColor: '#f3f4f6',
-            borderRadius: '6px',
-            padding: '16px',
-            marginTop: '16px'
-          }}>
+          <div
+            style={{
+              backgroundColor: '#f3f4f6',
+              borderRadius: '6px',
+              padding: '16px',
+              marginTop: '16px',
+            }}
+          >
             <p style={{ fontSize: '14px', color: '#374151', margin: '0' }}>
               <strong>User Details:</strong>
             </p>
-            <ul style={{ fontSize: '14px', color: '#6b7280', margin: '8px 0 0 16px', paddingLeft: '20px' }}>
+            <ul
+              style={{
+                fontSize: '14px',
+                color: '#6b7280',
+                margin: '8px 0 0 16px',
+                paddingLeft: '20px',
+              }}
+            >
               <li>ID: {user.id}</li>
               <li>Username: {user.username}</li>
               <li>Email: {user.email}</li>

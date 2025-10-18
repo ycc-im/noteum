@@ -25,7 +25,7 @@ interface AppState {
 export const useAppStore = create<AppState>()(
   devtools(
     persist(
-      set => ({
+      (set) => ({
         // Initial state
         sidebarOpen: true,
         theme: 'system',
@@ -35,17 +35,18 @@ export const useAppStore = create<AppState>()(
         currentUser: null,
 
         // Actions
-        setSidebarOpen: open => set({ sidebarOpen: open }),
-        setTheme: theme => set({ theme }),
-        setLoading: loading => set({ loading }),
-        setError: error => set({ error }),
-        setAuthenticated: authenticated => set({ isAuthenticated: authenticated }),
-        setCurrentUser: user => set({ currentUser: user }),
+        setSidebarOpen: (open) => set({ sidebarOpen: open }),
+        setTheme: (theme) => set({ theme }),
+        setLoading: (loading) => set({ loading }),
+        setError: (error) => set({ error }),
+        setAuthenticated: (authenticated) =>
+          set({ isAuthenticated: authenticated }),
+        setCurrentUser: (user) => set({ currentUser: user }),
         clearError: () => set({ error: null }),
       }),
       {
         name: 'app-store',
-        partialize: state => ({
+        partialize: (state) => ({
           sidebarOpen: state.sidebarOpen,
           theme: state.theme,
           isAuthenticated: state.isAuthenticated,

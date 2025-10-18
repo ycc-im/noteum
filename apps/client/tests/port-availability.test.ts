@@ -6,7 +6,10 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals'
-import { getFrontendPort, validateFrontendPortConfig } from '../src/config/ports'
+import {
+  getFrontendPort,
+  validateFrontendPortConfig,
+} from '../src/config/ports'
 import { checkPortAvailability, checkPortConflicts } from '@noteum/utils'
 
 describe('Frontend Port Configuration', () => {
@@ -63,13 +66,15 @@ describe('Frontend Port Configuration', () => {
     it('should detect privileged port warnings', () => {
       process.env.FRONTEND_PORT = '80'
       const result = validateFrontendPortConfig()
-      expect(result.warnings.some(w => w.includes('privileged'))).toBe(true)
+      expect(result.warnings.some((w) => w.includes('privileged'))).toBe(true)
     })
 
     it('should detect common port conflicts', () => {
       process.env.FRONTEND_PORT = '3000'
       const result = validateFrontendPortConfig()
-      expect(result.warnings.some(w => w.includes('commonly used'))).toBe(true)
+      expect(result.warnings.some((w) => w.includes('commonly used'))).toBe(
+        true
+      )
     })
   })
 
@@ -120,13 +125,9 @@ describe('Frontend Port Configuration', () => {
 
   describe('Environment Variables', () => {
     it('should have required frontend environment variables', () => {
-      const requiredVars = [
-        'FRONTEND_PORT',
-        'VITE_API_URL',
-        'VITE_WS_URL',
-      ]
+      const requiredVars = ['FRONTEND_PORT', 'VITE_API_URL', 'VITE_WS_URL']
 
-      requiredVars.forEach(varName => {
+      requiredVars.forEach((varName) => {
         expect(process.env[varName]).toBeDefined()
       })
     })

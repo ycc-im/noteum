@@ -7,7 +7,7 @@ import { createTrpcRouter } from './trpc.router'
 export class TrpcController {
   constructor(
     private readonly trpcService: TrpcService,
-    private readonly authService: AuthService,
+    private readonly authService: AuthService
   ) {}
 
   private router = createTrpcRouter(this.trpcService, this.authService)

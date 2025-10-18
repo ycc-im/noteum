@@ -21,15 +21,6 @@
       "@noteum/utils": ["./packages/utils/src"]
     }
   },
-  "include": [
-    "packages/*/src/**/*",
-    "apps/*/src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    "**/*.js",
-    "**/*.cjs"
-  ]
+  "include": ["packages/*/src/**/*", "apps/*/src/**/*"],
+  "exclude": ["node_modules", "dist", "build", "**/*.js", "**/*.cjs"]
 }

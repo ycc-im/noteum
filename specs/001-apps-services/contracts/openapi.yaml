@@ -117,7 +117,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Logged out successfully"
+                    example: 'Logged out successfully'
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -362,7 +362,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Notebook deleted successfully"
+                    example: 'Notebook deleted successfully'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -591,7 +591,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Collaborator removed successfully"
+                    example: 'Collaborator removed successfully'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -770,7 +770,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Note deleted successfully"
+                    example: 'Note deleted successfully'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -921,7 +921,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Collaborator removed successfully"
+                    example: 'Collaborator removed successfully'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -995,7 +995,16 @@ paths:
           in: query
           schema:
             type: string
-            enum: [CREATE_DOCUMENT, UPDATE_DOCUMENT, DELETE_DOCUMENT, SHARE_DOCUMENT, LOGIN, LOGOUT, VIEW_DOCUMENT]
+            enum:
+              [
+                CREATE_DOCUMENT,
+                UPDATE_DOCUMENT,
+                DELETE_DOCUMENT,
+                SHARE_DOCUMENT,
+                LOGIN,
+                LOGOUT,
+                VIEW_DOCUMENT,
+              ]
         - name: fromDate
           in: query
           schema:
@@ -1520,7 +1529,16 @@ components:
           format: ulid
         action:
           type: string
-          enum: [CREATE_DOCUMENT, UPDATE_DOCUMENT, DELETE_DOCUMENT, SHARE_DOCUMENT, LOGIN, LOGOUT, VIEW_DOCUMENT]
+          enum:
+            [
+              CREATE_DOCUMENT,
+              UPDATE_DOCUMENT,
+              DELETE_DOCUMENT,
+              SHARE_DOCUMENT,
+              LOGIN,
+              LOGOUT,
+              VIEW_DOCUMENT,
+            ]
         details:
           type: object
         timestamp:

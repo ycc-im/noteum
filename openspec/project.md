@@ -1,11 +1,13 @@
 # Project Context
 
 ## Purpose
+
 Noteum is a collaborative note-taking application built for real-time document editing and knowledge management. The platform enables users to create, organize, and collaborate on notes and notebooks with seamless real-time synchronization, powered by YJS CRDT technology.
 
 ## Tech Stack
 
 ### Frontend (Client)
+
 - **Framework**: React 18.2+ with TypeScript 5.0+
 - **Build Tool**: Vite 4.5+ for fast development and building
 - **State Management**: Zustand for local state, YJS for collaborative state
@@ -16,6 +18,7 @@ Noteum is a collaborative note-taking application built for real-time document e
 - **Testing**: Vitest with React Testing Library and jsdom
 
 ### Backend (Services)
+
 - **Framework**: NestJS 10.x LTS with TypeScript 5.0+
 - **API**: tRPC 10.x for type-safe API communication
 - **Database**: PostgreSQL 15+ with pgvector extension for vector search
@@ -27,6 +30,7 @@ Noteum is a collaborative note-taking application built for real-time document e
 - **Testing**: Jest with NestJS testing utilities
 
 ### Infrastructure
+
 - **Package Manager**: pnpm 8.15.0 with workspace support
 - **Monorepo**: pnpm workspaces with apps/ and packages/ structure
 - **Development**: Docker Compose for local development environment
@@ -36,6 +40,7 @@ Noteum is a collaborative note-taking application built for real-time document e
 ## Project Conventions
 
 ### Code Style
+
 - **Indentation**: 2 spaces (no tabs)
 - **Semicolons**: Disabled (no semicolons)
 - **Quotes**: Single quotes for strings
@@ -45,6 +50,7 @@ Noteum is a collaborative note-taking application built for real-time document e
 - **ESLint**: Strict mode enforced, zero warnings policy
 
 ### Architecture Patterns
+
 - **Monorepo Structure**: Clear separation between apps/ (executables) and packages/ (shared libraries)
 - **Modular Design**: Independent modules with clear boundaries
 - **Dependency Injection**: NestJS DI pattern throughout services
@@ -53,6 +59,7 @@ Noteum is a collaborative note-taking application built for real-time document e
 - **API Design**: tRPC procedures for end-to-end type safety
 
 ### Testing Strategy
+
 - **Test-Driven Development**: Tests MUST be written before implementation (TDD)
 - **TDD Process**: MUST follow Red-Green-Refactor cycle
   - Red: Write failing tests first
@@ -73,6 +80,7 @@ Noteum is a collaborative note-taking application built for real-time document e
   - Static asset files
 
 ### Git Workflow
+
 - **Branching**: Feature branches required, format `[###-task-description]`
 - **Main Branch Protection**: If currently on main branch, MUST create new feature branch before making any changes
 - **No Main Development**: All work on feature branches, no direct main commits
@@ -82,6 +90,7 @@ Noteum is a collaborative note-taking application built for real-time document e
 - **Quality Gates**: All automated checks must pass before merging
 
 ### Development Process Validation
+
 - **Pre-commit Validation**: All commits must pass:
   - All tests pass
   - Code linting checks pass
@@ -100,6 +109,7 @@ Noteum is a collaborative note-taking application built for real-time document e
 ## Domain Context
 
 ### Core Concepts
+
 - **Notebooks**: Hierarchical organization containers for notes
 - **Notes**: Individual documents with rich text editing capabilities
 - **Real-time Collaboration**: Multiple users editing simultaneously via YJS CRDT
@@ -107,6 +117,7 @@ Noteum is a collaborative note-taking application built for real-time document e
 - **Persistence**: Automatic saving with document versioning
 
 ### Business Rules
+
 - Users can create multiple notebooks with nested organization
 - Notes support rich text formatting and real-time collaboration
 - All changes are automatically synchronized and persisted
@@ -116,6 +127,7 @@ Noteum is a collaborative note-taking application built for real-time document e
 ## Important Constraints
 
 ### Technical Constraints
+
 - **Node.js 18+**: Minimum runtime requirement
 - **TypeScript Strict**: No implicit any types allowed
 - **Test Coverage**: 100% coverage mandatory for new code
@@ -123,12 +135,14 @@ Noteum is a collaborative note-taking application built for real-time document e
 - **Port Standardization**: Specific port ranges for different services (9158 for frontend, 9168 for backend API)
 
 ### Performance Requirements
+
 - **Real-time Sync**: Sub-100ms collaboration latency
 - **Document Loading**: Sub-500ms initial load time
 - **Search Response**: Sub-200ms vector search queries
 - **Concurrent Users**: Support for 100+ simultaneous users per document
 
 ### Security Requirements
+
 - **Authentication**: JWT-based secure authentication
 - **Authorization**: Role-based access control for notebooks
 - **Data Validation**: Zod schemas for all API inputs
@@ -138,6 +152,7 @@ Noteum is a collaborative note-taking application built for real-time document e
 ## External Dependencies
 
 ### Development Infrastructure
+
 - **PostgreSQL 15+**: Primary database with pgvector extension
 - **Redis 4.6+**: Session storage and application caching
 - **Docker & Docker Compose**: Local development environment
@@ -145,11 +160,13 @@ Noteum is a collaborative note-taking application built for real-time document e
 - **Redis Commander**: Redis management interface (port 9189)
 
 ### Third-party Services
+
 - **OpenAI API**: AI-powered features and content analysis
 - **Hocuspocus**: YJS WebSocket provider for real-time collaboration
 - **Cloud Storage**: Configurable for file uploads (AWS S3, etc.)
 
 ### Standardized Ports
+
 - **Frontend**: 9158 (web), varies for Tauri desktop apps
 - **Backend API**: 9168 (NestJS + tRPC)
 - **Database**: 9198 (PostgreSQL)

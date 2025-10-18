@@ -29,27 +29,34 @@
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 ### GATE 1: Test-Driven Development (NON-NEGOTIABLE)
+
 ✅ **PASS**: Plan includes Vitest + React Testing Library with component and collaboration tests. Will follow TDD principles during implementation.
 
 ### GATE 2: Code Style Standards
+
 ✅ **PASS**: TypeScript with Prettier/ESLint configuration inherited from root monorepo.
 
 ### GATE 3: Monorepo Principles
+
 ✅ **PASS**: Implementation fits within existing monorepo structure (apps/client), respects workspace boundaries and shares packages with services.
 
 ### GATE 4: Independent User Stories
+
 ✅ **PASS**: Feature can be broken into independently testable user stories (P1:基础框架, P2:YJS协作, P3:Tauri桌面封装).
 
 ### GATE 5: TypeScript-First Development
+
 ✅ **PASS**: Full TypeScript implementation with strict typing, using React component typing and YJS type definitions.
 
 ### GATE 6: Frontend Framework Standards (Vite + React + YJS)
+
 ✅ **PASS**: Implementation uses required Vite + React + YJS stack with functional components and proper TypeScript typing.
 
 ### GATE 7: Tauri Desktop Application Support
+
 ✅ **PASS**: Plan includes Tauri packaging for desktop deployment while maintaining web compatibility.
 
 ## Project Structure
@@ -67,6 +74,7 @@ specs/001-apps-services/
 ```
 
 ### Source Code (repository root)
+
 <!--
   ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
   for this feature. Delete unused options and expand the chosen structure with
@@ -108,9 +116,9 @@ apps/client/
 
 ## Complexity Tracking
 
-*Fill ONLY if Constitution Check has violations that must be justified*
+_Fill ONLY if Constitution Check has violations that must be justified_
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| Violation                  | Why Needed         | Simpler Alternative Rejected Because |
+| -------------------------- | ------------------ | ------------------------------------ |
+| [e.g., 4th project]        | [current need]     | [why 3 projects insufficient]        |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient]  |

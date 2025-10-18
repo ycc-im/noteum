@@ -32,7 +32,10 @@ export class EnvUtils {
   /**
    * Parse a boolean environment variable
    */
-  static parseBoolean(value: string | undefined, defaultValue = false): boolean {
+  static parseBoolean(
+    value: string | undefined,
+    defaultValue = false
+  ): boolean {
     if (!value) return defaultValue
     return value.toLowerCase() === 'true'
   }
@@ -49,9 +52,15 @@ export class EnvUtils {
   /**
    * Parse a string array environment variable (comma-separated)
    */
-  static parseStringArray(value: string | undefined, defaultValue: string[] = []): string[] {
+  static parseStringArray(
+    value: string | undefined,
+    defaultValue: string[] = []
+  ): string[] {
     if (!value) return defaultValue
-    return value.split(',').map(item => item.trim()).filter(Boolean)
+    return value
+      .split(',')
+      .map(item => item.trim())
+      .filter(Boolean)
   }
 
   /**
@@ -78,7 +87,9 @@ export class EnvUtils {
   static validateRequired(keys: string[]): void {
     const missing = keys.filter(key => !process.env[key])
     if (missing.length > 0) {
-      throw new Error(`Missing required environment variables: ${missing.join(', ')}`)
+      throw new Error(
+        `Missing required environment variables: ${missing.join(', ')}`
+      )
     }
   }
 
@@ -135,7 +146,9 @@ export class EnvUtils {
    * Check if CORS should be enabled
    */
   static isCorsEnabled(): boolean {
-    return this.isDevelopment() || this.parseBoolean(process.env.CORS_ENABLED, true)
+    return (
+      this.isDevelopment() || this.parseBoolean(process.env.CORS_ENABLED, true)
+    )
   }
 
   /**
@@ -152,7 +165,9 @@ export class EnvUtils {
   static getPort(defaultPort = 3000): number {
     const port = this.parseNumber(process.env.PORT, defaultPort)
     if (port < 1 || port > 65535) {
-      throw new Error(`Invalid port number: ${port}. Must be between 1 and 65535.`)
+      throw new Error(
+        `Invalid port number: ${port}. Must be between 1 and 65535.`
+      )
     }
     return port
   }

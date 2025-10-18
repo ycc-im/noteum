@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: User description: "让我们创建一个基础的vite + react + yjs的框架结构，补充：还需要支持tauri的封装，补充：基于shadcn的ui组件，这部分可能要放到 packages/ui中？"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - 基础前端框架搭建 (Priority: P1)
 
@@ -82,7 +82,7 @@
 - 大型协作文档的性能优化
 - 跨平台 UI 一致性问题
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -95,14 +95,14 @@
 - **FR-007**: 必须支持跨平台桌面构建
 - **FR-008**: 必须提供完整的测试覆盖
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Collaborative Document**: YJS 文档实例，支持实时协作
 - **User Presence**: 用户在线状态和光标位置
 - **UI Component**: shadcn/ui 组件实例和主题配置
 - **Desktop Window**: Tauri 窗口管理和系统集成
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

@@ -134,7 +134,11 @@ export const migrationConfig = {
  */
 export function getEnvironmentConfig() {
   const env = process.env.NODE_ENV || 'development'
-  return migrationConfig.environments[env as keyof typeof migrationConfig.environments] || migrationConfig.environments.development
+  return (
+    migrationConfig.environments[
+      env as keyof typeof migrationConfig.environments
+    ] || migrationConfig.environments.development
+  )
 }
 
 /**

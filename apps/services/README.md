@@ -38,18 +38,19 @@
 
 #### 📋 Docker 服务概览
 
-| 服务 | 端口 | 访问地址 | 用途 |
-|------|------|----------|------|
-| **🌐 NestJS 应用** | 3000 | http://localhost:3000 | 主应用 |
-| **📚 API 文档** | 3000 | http://localhost:3000/docs | Swagger UI |
-| **🐘 PostgreSQL** | 5432 | localhost:5432 | 数据库 |
-| **🔴 Redis** | 6379 | localhost:6379 | 缓存 |
-| **🔧 pgAdmin** | 8080 | http://localhost:8080 | 数据库管理 |
-| **🛠️ Redis Commander** | 8081 | http://localhost:8081 | Redis 管理 |
+| 服务                   | 端口 | 访问地址                   | 用途       |
+| ---------------------- | ---- | -------------------------- | ---------- |
+| **🌐 NestJS 应用**     | 3000 | http://localhost:3000      | 主应用     |
+| **📚 API 文档**        | 3000 | http://localhost:3000/docs | Swagger UI |
+| **🐘 PostgreSQL**      | 5432 | localhost:5432             | 数据库     |
+| **🔴 Redis**           | 6379 | localhost:6379             | 缓存       |
+| **🔧 pgAdmin**         | 8080 | http://localhost:8080      | 数据库管理 |
+| **🛠️ Redis Commander** | 8081 | http://localhost:8081      | Redis 管理 |
 
 #### 🔑 登录信息
 
 **🐘 pgAdmin:**
+
 - 📧 **邮箱**: `admin@noteum.dev`
 - 🔒 **密码**: `admin`
 - 📊 **数据库连接**:
@@ -60,6 +61,7 @@
   - 🔑 **密码**: `postgres`
 
 **👤 应用测试账户:**
+
 - 📧 **邮箱**: `admin@noteum.dev`
 - 🔒 **密码**: `admin123456`
 
@@ -184,6 +186,7 @@ src/
 ```
 
 **参数说明:**
+
 - `all` - 启动/停止所有服务（默认）
 - `core` - 只启动/停止核心服务（app, postgres, redis）
 - `tools` - 启动/停止管理工具（pgadmin, redis-commander）
@@ -249,6 +252,7 @@ docker-compose -p noteum-services-dev exec app sh
 **问题**: 应用启动时出现 "Prisma Client did not initialize yet" 错误
 
 **解决方案**:
+
 ```bash
 # 重新生成 Prisma 客户端
 docker-compose -p noteum-services-dev exec app sh -c "cd /app/apps/services && pnpm prisma generate"
@@ -262,6 +266,7 @@ docker-compose -p noteum-services-dev restart app
 **问题**: 端口 3000、5432、6379、8080、8081 被占用
 
 **解决方案**:
+
 ```bash
 # 查看占用端口的进程
 lsof -i :3000
@@ -275,6 +280,7 @@ lsof -i :5432
 **问题**: 应用无法连接到 PostgreSQL
 
 **解决方案**:
+
 ```bash
 # 检查 PostgreSQL 容器状态
 docker ps | grep postgres
@@ -291,6 +297,7 @@ docker-compose -p noteum-services-dev exec postgres psql -U postgres -d noteum -
 **问题**: 容器无法启动或健康检查失败
 
 **解决方案**:
+
 ```bash
 # 查看容器日志
 docker logs noteum-services-dev-app

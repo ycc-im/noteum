@@ -10,7 +10,7 @@ import {
   getBackendPort,
   getDatabasePorts,
   getWebSocketConfig,
-  validateBackendPortConfig
+  validateBackendPortConfig,
 } from '../src/config/ports'
 import { checkPortAvailability, checkPortConflicts } from '@noteum/utils'
 
@@ -23,7 +23,8 @@ describe('Backend Port Configuration', () => {
       ...originalEnv,
       NODE_ENV: 'test',
       PORT: '9168',
-      DATABASE_URL: 'postgresql://postgres:password@localhost:9198/noteum?schema=public',
+      DATABASE_URL:
+        'postgresql://postgres:password@localhost:9198/noteum?schema=public',
       REDIS_URL: 'redis://localhost:9178',
       CORS_ORIGIN: 'http://localhost:9158',
       YJS_HOST: 'localhost',
@@ -120,7 +121,11 @@ describe('Backend Port Configuration', () => {
       process.env.PORT = '9198' // Same as PostgreSQL
       const result = validateBackendPortConfig()
       expect(result.isValid).toBe(false)
-      expect(result.errors.some(e => e.includes('Port 9198 is used by multiple services'))).toBe(true)
+      expect(
+        result.errors.some(e =>
+          e.includes('Port 9198 is used by multiple services')
+        )
+      ).toBe(true)
     })
 
     it('should detect privileged port warnings', () => {

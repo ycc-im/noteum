@@ -29,39 +29,46 @@
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 ### Gates Analysis
 
 **✅ Test-Driven Development (Principle I)**:
+
 - 所有配置更改必须先写测试验证端口配置正确性
 - 需要为开发环境启动流程编写集成测试
 - 必须测试端口冲突检测功能
 
 **✅ Code Style Standards (Principle II)**:
+
 - 所有配置文件必须遵循项目的ESLint和Prettier规则
 - TypeScript严格类型检查必须通过
 - 无新代码实现，主要是配置更改，风险较低
 
 **✅ Monorepo Principles (Principle III)**:
+
 - 保持现有monorepo结构不变
 - 端口配置在各应用中独立配置
 - 无新增包，无循环依赖风险
 
 **✅ Independent User Stories (Principle IV)**:
+
 - 三个用户故事（端口冲突、统一环境、环境隔离）可独立实现
 - P1优先级故事可独立交付价值
 
 **✅ TypeScript-First Development (Principle V)**:
+
 - 所有配置文件使用TypeScript类型定义
 - 环境配置必须有严格类型检查
 
 **✅ Frontend Framework Standards (Principle VI)**:
+
 - 前端继续使用Vite + React + YJS技术栈
 - 端口更改不影响框架选择
 - 热重载功能必须在Vite中配置
 
 **✅ Tauri Desktop Application Support (Principle VII)**:
+
 - 桌面应用打包不受端口配置影响
 - Tauri应用可继续使用相同的后端API
 
@@ -70,6 +77,7 @@
 所有宪法原则检查通过，设计阶段无违规项。
 
 **Phase 1 Design Review**:
+
 - ✅ 数据模型使用TypeScript严格类型定义
 - ✅ API合同遵循RESTful最佳实践
 - ✅ 快速启动指南符合用户体验要求
@@ -124,9 +132,9 @@ noteum/
 
 ## Complexity Tracking
 
-*Fill ONLY if Constitution Check has violations that must be justified*
+_Fill ONLY if Constitution Check has violations that must be justified_
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| Violation                  | Why Needed         | Simpler Alternative Rejected Because |
+| -------------------------- | ------------------ | ------------------------------------ |
+| [e.g., 4th project]        | [current need]     | [why 3 projects insufficient]        |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient]  |

@@ -8,7 +8,7 @@ export enum LogLevel {
   INFO = 1,
   WARN = 2,
   ERROR = 3,
-  FATAL = 4
+  FATAL = 4,
 }
 
 export enum LogCategory {
@@ -19,7 +19,7 @@ export enum LogCategory {
   DOCKER_CONFIG = 'DOCKER_CONFIG',
   ENVIRONMENT = 'ENVIRONMENT',
   HEALTH_CHECK = 'HEALTH_CHECK',
-  AUDIT = 'AUDIT'
+  AUDIT = 'AUDIT',
 }
 
 export interface LogEntry {
@@ -59,7 +59,7 @@ export class PortLogger {
       enableColors: true,
       enableTimestamp: true,
       enableMetadata: true,
-      ...config
+      ...config,
     }
 
     // Create log directory if file logging is enabled
@@ -82,35 +82,62 @@ export class PortLogger {
   /**
    * Log debug message
    */
-  public debug(message: string, category: LogCategory, data?: Record<string, unknown>, correlationId?: string): void {
+  public debug(
+    message: string,
+    category: LogCategory,
+    data?: Record<string, unknown>,
+    correlationId?: string
+  ): void {
     this.log(LogLevel.DEBUG, message, category, data, correlationId)
   }
 
   /**
    * Log info message
    */
-  public info(message: string, category: LogCategory, data?: Record<string, unknown>, correlationId?: string): void {
+  public info(
+    message: string,
+    category: LogCategory,
+    data?: Record<string, unknown>,
+    correlationId?: string
+  ): void {
     this.log(LogLevel.INFO, message, category, data, correlationId)
   }
 
   /**
    * Log warning message
    */
-  public warn(message: string, category: LogCategory, data?: Record<string, unknown>, correlationId?: string): void {
+  public warn(
+    message: string,
+    category: LogCategory,
+    data?: Record<string, unknown>,
+    correlationId?: string
+  ): void {
     this.log(LogLevel.WARN, message, category, data, correlationId)
   }
 
   /**
    * Log error message
    */
-  public error(message: string, category: LogCategory, error?: Error, data?: Record<string, unknown>, correlationId?: string): void {
+  public error(
+    message: string,
+    category: LogCategory,
+    error?: Error,
+    data?: Record<string, unknown>,
+    correlationId?: string
+  ): void {
     this.log(LogLevel.ERROR, message, category, data, correlationId, error)
   }
 
   /**
    * Log fatal message
    */
-  public fatal(message: string, category: LogCategory, error?: Error, data?: Record<string, unknown>, correlationId?: string): void {
+  public fatal(
+    message: string,
+    category: LogCategory,
+    error?: Error,
+    data?: Record<string, unknown>,
+    correlationId?: string
+  ): void {
     this.log(LogLevel.FATAL, message, category, data, correlationId, error)
   }
 
@@ -136,7 +163,7 @@ export class PortLogger {
       message,
       data,
       error,
-      correlationId
+      correlationId,
     }
 
     // Log to console
@@ -156,7 +183,9 @@ export class PortLogger {
   private logToConsole(entry: LogEntry): void {
     const levelName = LogLevel[entry.level].padEnd(5)
     const categoryName = entry.category.padEnd(16)
-    const timestamp = this.config.enableTimestamp ? entry.timestamp.toISOString() + ' ' : ''
+    const timestamp = this.config.enableTimestamp
+      ? entry.timestamp.toISOString() + ' '
+      : ''
     const correlation = entry.correlationId ? `[${entry.correlationId}] ` : ''
 
     let message = `${timestamp}${levelName} ${categoryName} ${correlation}${entry.message}`
@@ -193,10 +222,10 @@ export class PortLogger {
   private colorizeMessage(message: string, level: LogLevel): string {
     const colors = {
       [LogLevel.DEBUG]: '\x1b[36m', // Cyan
-      [LogLevel.INFO]: '\x1b[32m',  // Green
-      [LogLevel.WARN]: '\x1b[33m',  // Yellow
+      [LogLevel.INFO]: '\x1b[32m', // Green
+      [LogLevel.WARN]: '\x1b[33m', // Yellow
       [LogLevel.ERROR]: '\x1b[31m', // Red
-      [LogLevel.FATAL]: '\x1b[35m'  // Magenta
+      [LogLevel.FATAL]: '\x1b[35m', // Magenta
     }
 
     const reset = '\x1b[0m'
@@ -234,27 +263,54 @@ export class PortChildLogger {
     private context: Record<string, unknown>
   ) {}
 
-  public debug(message: string, category: LogCategory, additionalData?: Record<string, unknown>, correlationId?: string): void {
+  public debug(
+    message: string,
+    category: LogCategory,
+    additionalData?: Record<string, unknown>,
+    correlationId?: string
+  ): void {
     const data = { ...this.context, ...additionalData }
     this.parent.debug(message, category, data, correlationId)
   }
 
-  public info(message: string, category: LogCategory, additionalData?: Record<string, unknown>, correlationId?: string): void {
+  public info(
+    message: string,
+    category: LogCategory,
+    additionalData?: Record<string, unknown>,
+    correlationId?: string
+  ): void {
     const data = { ...this.context, ...additionalData }
     this.parent.info(message, category, data, correlationId)
   }
 
-  public warn(message: string, category: LogCategory, additionalData?: Record<string, unknown>, correlationId?: string): void {
+  public warn(
+    message: string,
+    category: LogCategory,
+    additionalData?: Record<string, unknown>,
+    correlationId?: string
+  ): void {
     const data = { ...this.context, ...additionalData }
     this.parent.warn(message, category, data, correlationId)
   }
 
-  public error(message: string, category: LogCategory, error?: Error, additionalData?: Record<string, unknown>, correlationId?: string): void {
+  public error(
+    message: string,
+    category: LogCategory,
+    error?: Error,
+    additionalData?: Record<string, unknown>,
+    correlationId?: string
+  ): void {
     const data = { ...this.context, ...additionalData }
     this.parent.error(message, category, error, data, correlationId)
   }
 
-  public fatal(message: string, category: LogCategory, error?: Error, additionalData?: Record<string, unknown>, correlationId?: string): void {
+  public fatal(
+    message: string,
+    category: LogCategory,
+    error?: Error,
+    additionalData?: Record<string, unknown>,
+    correlationId?: string
+  ): void {
     const data = { ...this.context, ...additionalData }
     this.parent.fatal(message, category, error, data, correlationId)
   }
@@ -268,20 +324,26 @@ export const logger = PortLogger.getInstance({
   enableConsole: true,
   enableColors: true,
   enableTimestamp: true,
-  enableMetadata: true
+  enableMetadata: true,
 })
 
 /**
  * Create a logger for a specific service
  */
-export function createServiceLogger(service: string, config?: Partial<LoggerConfig>): PortChildLogger {
+export function createServiceLogger(
+  service: string,
+  config?: Partial<LoggerConfig>
+): PortChildLogger {
   return logger.child({ service })
 }
 
 /**
  * Create a logger for a specific operation
  */
-export function createOperationLogger(operation: string, config?: Partial<LoggerConfig>): PortChildLogger {
+export function createOperationLogger(
+  operation: string,
+  config?: Partial<LoggerConfig>
+): PortChildLogger {
   return logger.child({ operation })
 }
 
@@ -301,7 +363,7 @@ export function logPortConfigurationChange(
       service,
       oldPort,
       newPort,
-      reason: reason || 'No reason provided'
+      reason: reason || 'No reason provided',
     }
   )
 }
@@ -323,7 +385,7 @@ export function logPortValidation(
         port,
         isValid,
         errors,
-        warnings
+        warnings,
       }
     )
   } else {
@@ -334,7 +396,7 @@ export function logPortValidation(
         port,
         isValid,
         errors,
-        warnings
+        warnings,
       }
     )
   }
@@ -349,17 +411,13 @@ export function logPortScanResults(
   occupiedPorts: number,
   duration: number
 ): void {
-  logger.info(
-    `Port scan completed`,
-    LogCategory.PORT_SCAN,
-    {
-      totalPorts,
-      availablePorts,
-      occupiedPorts,
-      conflicts: totalPorts - availablePorts - occupiedPorts,
-      duration: `${duration}ms`
-    }
-  )
+  logger.info(`Port scan completed`, LogCategory.PORT_SCAN, {
+    totalPorts,
+    availablePorts,
+    occupiedPorts,
+    conflicts: totalPorts - availablePorts - occupiedPorts,
+    duration: `${duration}ms`,
+  })
 }
 
 /**
@@ -370,20 +428,19 @@ export function logPortConflict(
   conflictingServices: string[],
   resolution?: string
 ): void {
-  logger.warn(
-    `Port conflict detected`,
-    LogCategory.PORT_CONFLICT,
-    {
-      port,
-      conflictingServices,
-      resolution: resolution || 'No resolution provided'
-    }
-  )
+  logger.warn(`Port conflict detected`, LogCategory.PORT_CONFLICT, {
+    port,
+    conflictingServices,
+    resolution: resolution || 'No resolution provided',
+  })
 }
 
 /**
  * Generate correlation ID for tracking operations
  */
 export function generateCorrelationId(): string {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+  return (
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15)
+  )
 }

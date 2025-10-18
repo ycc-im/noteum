@@ -9,7 +9,7 @@ export class YjsService {
   private readonly providers = new Map<string, WebsocketProvider>()
 
   constructor(
-    private readonly documentPersistenceService: DocumentPersistenceService,
+    private readonly documentPersistenceService: DocumentPersistenceService
   ) {}
 
   getDocument(documentId: string): Y.Doc {

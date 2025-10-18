@@ -29,7 +29,7 @@ export class DatabaseHealthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly migrationService: MigrationService,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService
   ) {}
 
   /**
@@ -70,7 +70,8 @@ export class DatabaseHealthService {
       this.logger.error('Database health check failed', error)
       result.status = 'unhealthy'
       result.connection.status = 'error'
-      result.connection.error = error instanceof Error ? error.message : String(error)
+      result.connection.error =
+        error instanceof Error ? error.message : String(error)
       return result
     }
   }
@@ -93,7 +94,8 @@ export class DatabaseHealthService {
       }
     } catch (error) {
       result.connection.status = 'error'
-      result.connection.error = error instanceof Error ? error.message : String(error)
+      result.connection.error =
+        error instanceof Error ? error.message : String(error)
       result.status = 'unhealthy'
       throw error
     }
@@ -108,15 +110,20 @@ export class DatabaseHealthService {
 
       if (migrationStatus.pendingMigrations.length > 0) {
         result.migrations.status = 'pending'
-        result.migrations.pendingCount = migrationStatus.pendingMigrations.length
+        result.migrations.pendingCount =
+          migrationStatus.pendingMigrations.length
 
         // 在生产环境中，待执行的迁移会使数据库状态降级
         if (this.configService.get<string>('NODE_ENV') === 'production') {
-          result.status = result.status === 'healthy' ? 'degraded' : result.status
+          result.status =
+            result.status === 'healthy' ? 'degraded' : result.status
         }
       } else {
         result.migrations.status = 'up-to-date'
-        const lastMigration = migrationStatus.appliedMigrations[migrationStatus.appliedMigrations.length - 1]
+        const lastMigration =
+          migrationStatus.appliedMigrations[
+            migrationStatus.appliedMigrations.length - 1
+          ]
         if (lastMigration) {
           result.migrations.lastMigration = lastMigration.migration_name
         }
@@ -130,7 +137,10 @@ export class DatabaseHealthService {
   /**
    * 检查性能指标
    */
-  private async checkPerformance(result: DatabaseHealthCheck, overallStartTime: number): Promise<void> {
+  private async checkPerformance(
+    result: DatabaseHealthCheck,
+    overallStartTime: number
+  ): Promise<void> {
     try {
       const queryStartTime = Date.now()
 
@@ -143,9 +153,9 @@ export class DatabaseHealthService {
 
       // 获取内存使用情况（如果可用）
       try {
-        const memoryQuery = await this.prisma.$queryRaw`
+        const memoryQuery = (await this.prisma.$queryRaw`
           SELECT pg_size_pretty(pg_database_size(current_database())) as database_size
-        ` as Array<{ database_size: string }>
+        `) as Array<{ database_size: string }>
 
         // 这个信息主要用于日志记录
         if (memoryQuery[0]) {
@@ -153,7 +163,10 @@ export class DatabaseHealthService {
         }
       } catch (memoryError) {
         // 内存查询失败不是致命错误
-        this.logger.warn('Could not fetch database size information', memoryError)
+        this.logger.warn(
+          'Could not fetch database size information',
+          memoryError
+        )
       }
 
       // 如果查询时间过长，标记为降级
@@ -170,7 +183,10 @@ export class DatabaseHealthService {
    * 确定整体健康状态
    */
   private determineOverallHealth(result: DatabaseHealthCheck): void {
-    if (result.connection.status === 'error' || result.migrations.status === 'error') {
+    if (
+      result.connection.status === 'error' ||
+      result.migrations.status === 'error'
+    ) {
       result.status = 'unhealthy'
     } else if (
       result.connection.status === 'disconnected' ||
@@ -211,20 +227,20 @@ export class DatabaseHealthService {
     cacheHitRatio?: number
   }> {
     try {
-      const metrics = await this.prisma.$queryRaw`
+      const metrics = (await this.prisma.$queryRaw`
         SELECT
           COUNT(*) as connection_count,
           SUM(CASE WHEN state = 'active' THEN 1 ELSE 0 END) as active_connections
         FROM pg_stat_activity
         WHERE datname = current_database()
-      ` as Array<{
+      `) as Array<{
         connection_count: bigint
         active_connections: bigint
       }>
 
-      const sizeQuery = await this.prisma.$queryRaw`
+      const sizeQuery = (await this.prisma.$queryRaw`
         SELECT pg_size_pretty(pg_database_size(current_database())) as database_size
-      ` as Array<{ database_size: string }>
+      `) as Array<{ database_size: string }>
 
       return {
         connectionCount: Number(metrics[0]?.connection_count || 0),

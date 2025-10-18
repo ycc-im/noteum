@@ -74,7 +74,9 @@ async function main() {
 
       case 'reset':
         if (configService.get<string>('NODE_ENV') !== 'development') {
-          logger.error('❌ Database reset is only allowed in development environment')
+          logger.error(
+            '❌ Database reset is only allowed in development environment'
+          )
           process.exit(1)
         }
         await migrationService.resetDatabase()
@@ -200,7 +202,7 @@ Environment:
 }
 
 // 处理未捕获的异常
-process.on('uncaughtException', (error) => {
+process.on('uncaughtException', error => {
   logger.error('Uncaught Exception:', error)
   process.exit(1)
 })

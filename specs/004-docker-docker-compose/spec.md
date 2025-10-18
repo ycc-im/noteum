@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: User description: "任务是修复 docker 开发环境 @docker-compose.dev.yml 中的潜在问题：1. 在services端报错：请分析prisma的逻辑， 是不是要在每次启动前进行设置什么的？因为现在不管有没有在本地文件中进行过 prisma generate 在容器中都会报这个错误。 又或者是不是现在的容器文件映射有问题导致的？ 2. 在client端一直报错：sh: vite: not found，看上去是不是也是映射有问题？请深度 think harder, 找出两个问题的原因。 最终让我们完成一个可以在本地修改后自动热跟新进行实时验证的开发环境。"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - 可靠的Docker开发环境启动 (Priority: P1)
 
@@ -65,7 +65,7 @@
 - 数据库连接失败时，容器是否会无限重启？
 - 端口冲突时如何处理？
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -78,7 +78,7 @@
 - **FR-007**: 系统 MUST 处理容器重启时的状态恢复，包括数据库重新连接和Prisma客户端重新生成
 - **FR-008**: 错误日志 MUST 清晰显示在容器输出中，便于开发者调试问题
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Docker Compose配置**: 开发环境的容器编排配置，包括服务定义、网络和卷映射
 - **NestJS服务容器**: 后端API服务的运行环境，包括Prisma和依赖管理
@@ -86,7 +86,7 @@
 - **PostgreSQL容器**: 数据库服务，支持pgvector扩展
 - **Redis容器**: 缓存服务，用于会话和临时数据存储
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

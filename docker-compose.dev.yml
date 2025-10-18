@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: postgres_dev
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - "9198:5432" # 使用标准化端口 9198
+      - '9198:5432' # 使用标准化端口 9198
     volumes:
       - postgres_data_dev:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
@@ -19,7 +19,7 @@ services:
       - noteum-dev
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d noteum_dev" ]
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d noteum_dev']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -29,7 +29,7 @@ services:
     image: redis:7-alpine
     container_name: noteum-redis-dev
     ports:
-      - "9178:6379" # 使用标准化端口 9178
+      - '9178:6379' # 使用标准化端口 9178
     volumes:
       - redis_data_dev:/data
     networks:
@@ -37,7 +37,7 @@ services:
     restart: unless-stopped
     command: redis-server --appendonly yes
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 3s
       retries: 3
@@ -53,7 +53,7 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin123
       PGADMIN_LISTEN_PORT: 80
     ports:
-      - "9188:80" # 使用标准化端口 9188
+      - '9188:80' # 使用标准化端口 9188
     volumes:
       - pgadmin_data_dev:/var/lib/pgadmin
     networks:
@@ -63,7 +63,8 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/" ]
+      test:
+        ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost/']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -73,7 +74,7 @@ services:
     image: rediscommander/redis-commander:latest
     container_name: noteum-redis-commander-dev
     ports:
-      - "9189:8081" # 使用端口 9189 避免冲突
+      - '9189:8081' # 使用端口 9189 避免冲突
     environment:
       REDIS_HOSTS: local:redis:6379
     depends_on:

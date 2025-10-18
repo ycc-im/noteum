@@ -9,7 +9,7 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly prisma: PrismaService,
+    private readonly prisma: PrismaService
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -26,7 +26,10 @@ export class AuthService {
     return user
   }
 
-  async validateUserByUsername(username: string, password: string): Promise<any> {
+  async validateUserByUsername(
+    username: string,
+    password: string
+  ): Promise<any> {
     const user = await this.usersService.findByUsername(username)
     if (!user) {
       return null
@@ -91,7 +94,13 @@ export class AuthService {
     }
   }
 
-  async createSession(userId: string, token: string, deviceInfo: any, ipAddress: string, userAgent: string) {
+  async createSession(
+    userId: string,
+    token: string,
+    deviceInfo: any,
+    ipAddress: string,
+    userAgent: string
+  ) {
     const tokenHash = await bcrypt.hash(token, 10)
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + 7) // 7 days
@@ -128,10 +137,7 @@ export class AuthService {
   async cleanupExpiredSessions() {
     await this.prisma.session.deleteMany({
       where: {
-        OR: [
-          { expiresAt: { lt: new Date() } },
-          { isActive: false },
-        ],
+        OR: [{ expiresAt: { lt: new Date() } }, { isActive: false }],
       },
     })
   }

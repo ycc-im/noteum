@@ -27,6 +27,7 @@ noteum/
 - Docker & Docker Compose（用于数据库等基础设施）
 
 ### 安装依赖
+
 ```bash
 pnpm install
 ```
@@ -36,6 +37,7 @@ pnpm install
 #### 🚀 启动开发工作区（推荐）
 
 从根目录启动：
+
 ```bash
 # 启动前后端所有服务
 pnpm dev:workspace
@@ -43,7 +45,6 @@ pnpm dev:workspace
 # 或者简写
 pnpm dev
 ```
-
 
 #### 🔧 单独启动服务
 
@@ -91,6 +92,7 @@ pnpm docker:logs
 ```
 
 ### 构建
+
 ```bash
 # 构建所有包
 pnpm build
@@ -100,6 +102,7 @@ pnpm --filter @noteum/ui build
 ```
 
 ### 代码检查
+
 ```bash
 # 运行 ESLint
 pnpm lint
@@ -136,6 +139,7 @@ pnpm test
 ## 开发工具
 
 ### 代码质量
+
 ```bash
 # 运行 ESLint
 pnpm lint
@@ -148,6 +152,7 @@ pnpm test
 ```
 
 ### 端口管理
+
 ```bash
 # 检查端口占用情况
 pnpm ports:check
@@ -160,16 +165,16 @@ pnpm ports:validate
 
 ### 基础开发命令
 
-| 命令 | 功能 | 说明 |
-|------|------|------|
-| `pnpm dev:workspace` | 启动所有服务 | 并发启动 Services 和 Client |
-| `pnpm dev:services` | 启动后端 | 仅启动 NestJS 服务 |
-| `pnpm dev:client` | 启动前端 | 仅启动 React 应用 |
-| `pnpm dev:health` | 健康检查 | 检查所有服务状态 |
-| `pnpm dev:stop` | 停止服务 | 停止所有开发服务 |
-| `pnpm dev:restart` | 重启服务 | 重启所有开发服务 |
-| `pnpm dev:restart-services` | 重启后端 | 仅重启后端服务 |
-| `pnpm dev:restart-client` | 重启前端 | 仅重启前端应用 |
+| 命令                        | 功能         | 说明                        |
+| --------------------------- | ------------ | --------------------------- |
+| `pnpm dev:workspace`        | 启动所有服务 | 并发启动 Services 和 Client |
+| `pnpm dev:services`         | 启动后端     | 仅启动 NestJS 服务          |
+| `pnpm dev:client`           | 启动前端     | 仅启动 React 应用           |
+| `pnpm dev:health`           | 健康检查     | 检查所有服务状态            |
+| `pnpm dev:stop`             | 停止服务     | 停止所有开发服务            |
+| `pnpm dev:restart`          | 重启服务     | 重启所有开发服务            |
+| `pnpm dev:restart-services` | 重启后端     | 仅重启后端服务              |
+| `pnpm dev:restart-client`   | 重启前端     | 仅重启前端应用              |
 
 ### 高级用法
 

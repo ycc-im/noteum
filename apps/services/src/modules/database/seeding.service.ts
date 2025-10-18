@@ -11,28 +11,36 @@ export class SeedingService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
-  ) { }
+    private readonly configService: ConfigService
+  ) {}
 
   /**
    * 清空所有数据（保留表结构）
    */
   async clearDatabase(): Promise<void> {
-    const isDevelopment = this.configService.get<string>('NODE_ENV') === 'development'
+    const isDevelopment =
+      this.configService.get<string>('NODE_ENV') === 'development'
 
     if (!isDevelopment) {
-      throw new Error('Database clearing is only allowed in development environment')
+      throw new Error(
+        'Database clearing is only allowed in development environment'
+      )
     }
 
     this.logger.log('Clearing database...')
 
     // 按照外键依赖顺序删除数据
-    const tablenames = await this.prisma.$queryRaw`SELECT tablename FROM pg_tables WHERE schemaname='public'` as Array<{ tablename: string }>
+    const tablenames = (await this.prisma
+      .$queryRaw`SELECT tablename FROM pg_tables WHERE schemaname='public'`) as Array<{
+      tablename: string
+    }>
 
     for (const { tablename } of tablenames) {
       if (tablename !== '_prisma_migrations') {
         try {
-          await this.prisma.$executeRawUnsafe(`TRUNCATE TABLE "public"."${tablename}" CASCADE;`)
+          await this.prisma.$executeRawUnsafe(
+            `TRUNCATE TABLE "public"."${tablename}" CASCADE;`
+          )
           this.logger.log(`Cleared table: ${tablename}`)
         } catch (error) {
           this.logger.error(`Failed to clear table ${tablename}:`, error)
@@ -99,7 +107,9 @@ export class SeedingService {
   private async createSampleDocuments(): Promise<void> {
     // 这里会在后续实现文档功能时添加
     // 目前作为占位符
-    this.logger.log('Sample documents creation skipped (Document model not implemented yet)')
+    this.logger.log(
+      'Sample documents creation skipped (Document model not implemented yet)'
+    )
   }
 
   /**

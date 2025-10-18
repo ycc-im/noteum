@@ -29,11 +29,13 @@
 ## 🧪 测试工具使用
 
 ### 在开发环境中测试
+
 1. 打开浏览器开发者工具控制台
 2. 运行 `testIndexedDB()` 来测试完整的 IndexedDB 功能
 3. 检查控制台输出的测试结果
 
 ### 测试内容包括：
+
 - IndexedDB 支持检测
 - 数据库连接测试
 - 认证数据存储和检索
@@ -44,14 +46,17 @@
 ## 🚀 生产部署
 
 ### 可以安全排除的文件：
+
 - 整个 `src/test/` 目录
 - `src/test/utils/database-test.ts`
 
 ### 排除方法：
+
 1. **构建时排除**: 测试文件只在 `import.meta.env.DEV` 时导入
 2. **Git 排除**: 可以添加 `src/test/` 到 `.gitignore` (如果不需要版本控制)
 
 ### 验证生产构建：
+
 ```bash
 # 构建应用
 pnpm build
@@ -64,6 +69,7 @@ grep -r "testIndexedDB" dist/
 ## 📋 迁移状态
 
 应用启动时会自动：
+
 1. 检测 localStorage 中的现有认证数据
 2. 验证数据完整性
 3. 迁移到 IndexedDB
@@ -73,12 +79,14 @@ grep -r "testIndexedDB" dist/
 ## 🔧 故障排除
 
 ### 如果遇到问题：
+
 1. 打开浏览器控制台查看错误信息
 2. 运行 `testIndexedDB()` 进行诊断
 3. 检查 IndexedDB 支持情况
 4. 验证迁移状态
 
 ### 手动重置：
+
 ```javascript
 // 在浏览器控制台运行
 localStorage.clear()

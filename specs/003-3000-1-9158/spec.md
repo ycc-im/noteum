@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: User description: "我发现前后端默认使用了相同的端口号3000， 所能我认为需要设定，考虑到这些端口号容易和其他项目的端口冲突，我认为应该把我们的所有项目的端口号都规范一下：1 前端开发的用 9158， 2.后端用9168， 3，redis的为 9178, 4.pgsql的设定为 9198, 5.pgadmin的为 9188 . 另外，考虑到现在只有前端client项目没有在开发容器中，我认为可以把现在的开发容器提升等级到全系统并且加入前端开发的容器。"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - 端口冲突解决 (Priority: P1)
 
@@ -62,7 +62,7 @@
 - 如何处理开发环境内外的文件同步问题？
 - 如何在开发环境内进行调试和日志查看？
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -77,14 +77,14 @@
 - **FR-009**: 开发环境必须支持本地文件挂载以实现代码编辑
 - **FR-010**: 系统必须提供端口冲突检测和解决指导
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **端口配置**: 各服务的端口号映射和配置信息
 - **服务配置**: 定义服务间依赖和网络配置
 - **开发环境**: 包含前端、后端开发所需工具的环境
 - **环境配置**: 开发、测试、生产环境的差异化配置
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

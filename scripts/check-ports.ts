@@ -8,7 +8,11 @@
 import { createServer } from 'net'
 import { exec } from 'child_process'
 import { promisify } from 'util'
-import { STANDARD_PORTS, validatePort, isDevelopmentPort } from '../packages/utils/src/port-config'
+import {
+  STANDARD_PORTS,
+  validatePort,
+  isDevelopmentPort,
+} from '../packages/utils/src/port-config'
 
 const execAsync = promisify(exec)
 
@@ -75,7 +79,9 @@ async function getPortProcess(port: number): Promise<string | null> {
       const match = stdout.match(/\s+(\d+)$/)
       if (match) {
         const pid = match[1]
-        const { stdout: cmdOutput } = await execAsync(`tasklist /FI "PID eq ${pid}" /FO CSV | findstr /V "Image Name"`)
+        const { stdout: cmdOutput } = await execAsync(
+          `tasklist /FI "PID eq ${pid}" /FO CSV | findstr /V "Image Name"`
+        )
         return cmdOutput.replace(/"/g, '').trim()
       }
     }
@@ -95,7 +101,7 @@ function suggestResolution(port: number, process?: string): string {
   if (isDevelopmentPort(port)) {
     const alternativePort = port + 10
     suggestions.push(`Use alternative port ${alternativePort}`)
-    suggestions.push('Stop the conflicting process if it\'s not needed')
+    suggestions.push("Stop the conflicting process if it's not needed")
   }
 
   if (process) {
@@ -118,7 +124,7 @@ async function checkPort(port: number): Promise<PortCheckResult> {
     return {
       port,
       isAvailable: true,
-      conflictResolution: 'Port is available for use'
+      conflictResolution: 'Port is available for use',
     }
   }
 
@@ -129,7 +135,7 @@ async function checkPort(port: number): Promise<PortCheckResult> {
     port,
     isAvailable: false,
     occupiedBy: processInfo || 'Unknown process',
-    conflictResolution
+    conflictResolution,
   }
 }
 
@@ -137,7 +143,9 @@ async function checkPort(port: number): Promise<PortCheckResult> {
  * Check all standard Noteum ports
  */
 async function checkAllPorts(): Promise<PortCheckSummary> {
-  const ports = Object.values(STANDARD_PORTS).map(config => config.externalPort)
+  const ports = Object.values(STANDARD_PORTS).map(
+    (config) => config.externalPort
+  )
   const results: PortCheckResult[] = []
 
   console.log('🔍 Checking Noteum port availability...')
@@ -148,10 +156,14 @@ async function checkAllPorts(): Promise<PortCheckSummary> {
     results.push(result)
 
     const status = result.isAvailable ? '✅' : '❌'
-    const service = Object.values(STANDARD_PORTS).find(config => config.externalPort === port)
+    const service = Object.values(STANDARD_PORTS).find(
+      (config) => config.externalPort === port
+    )
     const serviceName = service ? service.service : 'Unknown'
 
-    console.log(`${status} Port ${port} (${serviceName}): ${result.isAvailable ? 'Available' : 'Occupied'}`)
+    console.log(
+      `${status} Port ${port} (${serviceName}): ${result.isAvailable ? 'Available' : 'Occupied'}`
+    )
 
     if (!result.isAvailable) {
       console.log(`   └─ ${result.occupiedBy}`)
@@ -159,15 +171,17 @@ async function checkAllPorts(): Promise<PortCheckSummary> {
     }
   }
 
-  const conflicts = results.filter(r => !r.isAvailable)
-  const available = results.filter(r => r.isAvailable)
+  const conflicts = results.filter((r) => !r.isAvailable)
+  const available = results.filter((r) => r.isAvailable)
 
   console.log('═'.repeat(50))
-  console.log(`📊 Summary: ${available.length} available, ${conflicts.length} conflicts`)
+  console.log(
+    `📊 Summary: ${available.length} available, ${conflicts.length} conflicts`
+  )
 
   if (conflicts.length > 0) {
     console.log('\n⚠️  Port conflicts detected:')
-    conflicts.forEach(conflict => {
+    conflicts.forEach((conflict) => {
       console.log(`   • Port ${conflict.port}: ${conflict.occupiedBy}`)
     })
     console.log('\n💡 To resolve conflicts:')
@@ -175,14 +189,16 @@ async function checkAllPorts(): Promise<PortCheckSummary> {
     console.log('   2. Use alternative ports in your .env.local')
     console.log('   3. Wait for ports to be released naturally')
   } else {
-    console.log('🎉 All ports are available! You can start the development environment.')
+    console.log(
+      '🎉 All ports are available! You can start the development environment.'
+    )
   }
 
   return {
     results,
     conflicts,
     available,
-    timestamp: new Date()
+    timestamp: new Date(),
   }
 }
 
@@ -196,7 +212,9 @@ async function checkSpecificPorts(portNumbers: number[]): Promise<void> {
   for (const port of portNumbers) {
     const result = await checkPort(port)
     const status = result.isAvailable ? '✅' : '❌'
-    console.log(`${status} Port ${port}: ${result.isAvailable ? 'Available' : 'Occupied'}`)
+    console.log(
+      `${status} Port ${port}: ${result.isAvailable ? 'Available' : 'Occupied'}`
+    )
 
     if (!result.isAvailable) {
       console.log(`   └─ ${result.occupiedBy}`)
@@ -217,11 +235,15 @@ async function watchPorts(intervalMs: number = 5000): Promise<void> {
 
   const check = async () => {
     const summary = await checkAllPorts()
-    const currentConflicts = summary.conflicts.map(c => c.port)
+    const currentConflicts = summary.conflicts.map((c) => c.port)
 
     // Detect changes
-    const newConflicts = currentConflicts.filter(p => !lastConflicts.includes(p))
-    const resolvedConflicts = lastConflicts.filter(p => !currentConflicts.includes(p))
+    const newConflicts = currentConflicts.filter(
+      (p) => !lastConflicts.includes(p)
+    )
+    const resolvedConflicts = lastConflicts.filter(
+      (p) => !currentConflicts.includes(p)
+    )
 
     if (newConflicts.length > 0) {
       console.log(`\n⚠️  New conflicts detected: ${newConflicts.join(', ')}`)
@@ -272,20 +294,21 @@ Examples:
     return
   }
 
-  const watchIndex = args.findIndex(arg => arg === '--watch' || arg === '-w')
-  const intervalIndex = args.findIndex(arg => arg === '--interval')
+  const watchIndex = args.findIndex((arg) => arg === '--watch' || arg === '-w')
+  const intervalIndex = args.findIndex((arg) => arg === '--interval')
 
   if (watchIndex !== -1) {
-    const intervalMs = intervalIndex !== -1 ? parseInt(args[intervalIndex + 1]) || 5000 : 5000
+    const intervalMs =
+      intervalIndex !== -1 ? parseInt(args[intervalIndex + 1]) || 5000 : 5000
     await watchPorts(intervalMs)
     return
   }
 
   // Extract port numbers from arguments
   const portNumbers = args
-    .filter(arg => !arg.startsWith('--'))
-    .map(arg => parseInt(arg))
-    .filter(num => !isNaN(num) && num > 0 && num <= 65535)
+    .filter((arg) => !arg.startsWith('--'))
+    .map((arg) => parseInt(arg))
+    .filter((num) => !isNaN(num) && num > 0 && num <= 65535)
 
   if (portNumbers.length > 0) {
     await checkSpecificPorts(portNumbers)
@@ -296,7 +319,7 @@ Examples:
 
 // Run if executed directly
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('❌ Error checking ports:', error.message)
     process.exit(1)
   })

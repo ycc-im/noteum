@@ -7,10 +7,16 @@ import * as bcrypt from 'bcrypt'
 export class SessionService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly cache: CacheService,
+    private readonly cache: CacheService
   ) {}
 
-  async createSession(userId: string, tokenHash: string, deviceInfo: any, ipAddress: string, userAgent: string) {
+  async createSession(
+    userId: string,
+    tokenHash: string,
+    deviceInfo: any,
+    ipAddress: string,
+    userAgent: string
+  ) {
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + 7) // 7 days
 
@@ -27,7 +33,11 @@ export class SessionService {
     })
 
     // Cache session data for faster access
-    await this.cache.setex(`session:${session.id}`, JSON.stringify(session), 60 * 60 * 24 * 7) // 7 days
+    await this.cache.setex(
+      `session:${session.id}`,
+      JSON.stringify(session),
+      60 * 60 * 24 * 7
+    ) // 7 days
 
     return session
   }
@@ -50,11 +60,21 @@ export class SessionService {
       where: { id: sessionId },
     })
 
-    if (session && session.isActive && new Date(session.expiresAt) > new Date()) {
+    if (
+      session &&
+      session.isActive &&
+      new Date(session.expiresAt) > new Date()
+    ) {
       // Cache the session
-      const ttl = Math.floor((new Date(session.expiresAt).getTime() - Date.now()) / 1000)
+      const ttl = Math.floor(
+        (new Date(session.expiresAt).getTime() - Date.now()) / 1000
+      )
       if (ttl > 0) {
-        await this.cache.setex(`session:${sessionId}`, JSON.stringify(session), ttl)
+        await this.cache.setex(
+          `session:${sessionId}`,
+          JSON.stringify(session),
+          ttl
+        )
       }
       return session
     }
@@ -82,17 +102,17 @@ export class SessionService {
     // Note: This is a simplified approach. In production, you might want to track session IDs per user
   }
 
-  async validateSessionToken(token: string, tokenHash: string): Promise<boolean> {
+  async validateSessionToken(
+    token: string,
+    tokenHash: string
+  ): Promise<boolean> {
     return await bcrypt.compare(token, tokenHash)
   }
 
   async cleanupExpiredSessions(): Promise<void> {
     await this.prisma.session.deleteMany({
       where: {
-        OR: [
-          { expiresAt: { lt: new Date() } },
-          { isActive: false },
-        ],
+        OR: [{ expiresAt: { lt: new Date() } }, { isActive: false }],
       },
     })
   }

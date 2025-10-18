@@ -46,10 +46,16 @@ export class DocumentPersistenceService {
     }
   }
 
-  async saveUpdate(documentId: string, update: Uint8Array, origin: string): Promise<void> {
+  async saveUpdate(
+    documentId: string,
+    update: Uint8Array,
+    origin: string
+  ): Promise<void> {
     try {
       // TODO: Implement update persistence when NoteUpdate model is available
-      console.log(`Persisting update for document ${documentId} from ${origin} (${update.length} bytes)`)
+      console.log(
+        `Persisting update for document ${documentId} from ${origin} (${update.length} bytes)`
+      )
 
       // await this.prisma.noteUpdate.create({
       //   documentId,
@@ -59,7 +65,10 @@ export class DocumentPersistenceService {
       //   updateType: 'CONTENT', // Determine type based on context
       // })
     } catch (error) {
-      console.error(`Error persisting update for document ${documentId}:`, error)
+      console.error(
+        `Error persisting update for document ${documentId}:`,
+        error
+      )
     }
   }
 
@@ -67,7 +76,9 @@ export class DocumentPersistenceService {
     try {
       const state = Y.encodeStateAsUpdateV2(doc)
 
-      console.log(`Creating snapshot for document ${documentId} (${state.length} bytes)`)
+      console.log(
+        `Creating snapshot for document ${documentId} (${state.length} bytes)`
+      )
 
       // TODO: Implement snapshot creation when model is available
       // await this.prisma.noteSnapshot.create({
@@ -77,7 +88,10 @@ export class DocumentPersistenceService {
       //   version: doc.store.version,
       // })
     } catch (error) {
-      console.error(`Error creating snapshot for document ${documentId}:`, error)
+      console.error(
+        `Error creating snapshot for document ${documentId}:`,
+        error
+      )
     }
   }
 }

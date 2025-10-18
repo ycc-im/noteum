@@ -50,11 +50,11 @@ export const HttpStatus = {
 
 // Cache TTL Constants (in seconds)
 export const CacheTTL = {
-  SHORT: 60,        // 1 minute
-  MEDIUM: 300,      // 5 minutes
-  LONG: 3600,       // 1 hour
-  DAY: 86400,       // 24 hours
-  WEEK: 604800,     // 7 days
+  SHORT: 60, // 1 minute
+  MEDIUM: 300, // 5 minutes
+  LONG: 3600, // 1 hour
+  DAY: 86400, // 24 hours
+  WEEK: 604800, // 7 days
 } as const
 
 // Pagination Defaults
@@ -66,14 +66,9 @@ export const Pagination = {
 
 // File Upload Constraints
 export const UploadConstraints = {
-  MAX_SIZE_IMAGES: 5 * 1024 * 1024,      // 5MB
-  MAX_SIZE_DOCUMENTS: 10 * 1024 * 1024,  // 10MB
-  ALLOWED_IMAGE_TYPES: [
-    'image/jpeg',
-    'image/png',
-    'image/gif',
-    'image/webp',
-  ],
+  MAX_SIZE_IMAGES: 5 * 1024 * 1024, // 5MB
+  MAX_SIZE_DOCUMENTS: 10 * 1024 * 1024, // 10MB
+  ALLOWED_IMAGE_TYPES: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
   ALLOWED_DOCUMENT_TYPES: [
     'application/pdf',
     'text/plain',
@@ -84,10 +79,10 @@ export const UploadConstraints = {
 
 // Rate Limiting
 export const RateLimit = {
-  DEFAULT_WINDOW_MS: 60 * 1000,  // 1 minute
+  DEFAULT_WINDOW_MS: 60 * 1000, // 1 minute
   DEFAULT_MAX_REQUESTS: 100,
-  AUTH_WINDOW_MS: 15 * 60 * 1000,  // 15 minutes
-  AUTH_MAX_REQUESTS: 5,  // For sensitive operations like login
+  AUTH_WINDOW_MS: 15 * 60 * 1000, // 15 minutes
+  AUTH_MAX_REQUESTS: 5, // For sensitive operations like login
 } as const
 
 // JWT Expiration Times

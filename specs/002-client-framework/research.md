@@ -16,12 +16,14 @@
 **决策**: 使用 Vite 搭配 SWC 插件作为构建工具，React 18 作为 UI 框架。
 
 **理由**:
+
 - Vite 提供最快的热模块替换和构建时间
 - SWC 提供卓越的 TypeScript 编译速度
 - React 18 并发特性支持更好的实时协作用户体验
 - 与 TypeScript 严格类型检查的完美集成
 
 **关键配置**:
+
 ```typescript
 // vite.config.ts
 export default defineConfig({
@@ -30,7 +32,7 @@ export default defineConfig({
       jsxImportSource: 'react',
       devTarget: 'es2022',
       include: /\.(mdx|js|jsx|ts|tsx)$/,
-    })
+    }),
   ],
   resolve: {
     alias: {
@@ -58,12 +60,14 @@ export default defineConfig({
 **决策**: 使用 YJS 搭配自定义 React hooks 进行协作文档管理。
 
 **理由**:
+
 - YJS 提供经过验证的无冲突复制数据类型（CRDT）算法
 - React hooks 模式提供与组件生命周期的清晰集成
 - 支持在线和离线协作场景
 - TypeScript 集成确保协作数据结构的类型安全
 
 **Provider 架构**:
+
 ```typescript
 // providers/YjsProvider.tsx
 interface YjsContextValue {
@@ -78,7 +82,7 @@ export function YjsProvider({
   children,
   documentId,
   websocketUrl,
-  enableOfflineSupport = true
+  enableOfflineSupport = true,
 }: YjsProviderProps) {
   // WebSocket provider + IndexedDB persistence
   // Connection state management
@@ -87,6 +91,7 @@ export function YjsProvider({
 ```
 
 **Custom Hooks**:
+
 ```typescript
 // hooks/useYText.ts
 export function useYText(name: string) {
@@ -111,12 +116,14 @@ export function usePresence<T = any>() {
 **决策**: 使用 Tauri 2.x 进行桌面应用打包，配合最小的 Rust 后端。
 
 **理由**:
+
 - 保持相同的 React 代码库用于 web 和桌面
 - 提供原生桌面功能（窗口管理、系统托盘）
 - 跨平台支持（Windows、macOS、Linux）
 - 强大的安全模型和基于能力的权限系统
 
 **关键配置**:
+
 ```json
 {
   "build": {
@@ -126,13 +133,15 @@ export function usePresence<T = any>() {
     "beforeBuildCommand": "npm run build"
   },
   "app": {
-    "windows": [{
-      "title": "Noteum",
-      "width": 1200,
-      "height": 800,
-      "minWidth": 800,
-      "minHeight": 600
-    }]
+    "windows": [
+      {
+        "title": "Noteum",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600
+      }
+    ]
   },
   "bundle": {
     "active": true,
@@ -146,17 +155,20 @@ export function usePresence<T = any>() {
 **决策**: 使用 shadcn/ui 组件库，考虑提取到 packages/ui。
 
 **理由**:
+
 - shadcn/ui 提供基于 Radix UI 的现代、可访问的 React 组件
 - TypeScript 优先方法，提供适当的类型定义
 - 与 Tailwind CSS 的优秀集成
 - 可定制和可组合的组件模式
 
 **当前建议**: 最初保留在 `apps/client/src/components/ui` 中，计划在以下情况下提取到 `packages/ui`：
+
 - 多个前端应用需要相同组件
 - 需要在项目间共享设计系统
 - 组件库达到足够的成熟度
 
 **组件结构**:
+
 ```
 apps/client/src/components/ui/
 ├── button.tsx
@@ -167,6 +179,7 @@ apps/client/src/components/ui/
 ```
 
 **未来包结构**:
+
 ```
 packages/ui/
 ├── src/
@@ -183,6 +196,7 @@ packages/ui/
 ```
 
 **shadcn/ui 集成优势**:
+
 - 基于 Radix UI 的无障碍组件
 - 完全可定制的样式系统
 - TypeScript 类型安全
@@ -194,6 +208,7 @@ packages/ui/
 ### 1. Unit Testing: Vitest + React Testing Library
 
 **配置**:
+
 ```typescript
 // vitest.config.ts
 export default defineConfig({
@@ -209,6 +224,7 @@ export default defineConfig({
 ```
 
 **测试模式**:
+
 - 使用 React Testing Library 进行组件测试
 - 使用 @testing-library/react-hooks 进行 hook 测试
 - 使用模拟 WebSocket providers 进行 YJS 协作测试
@@ -217,6 +233,7 @@ export default defineConfig({
 ### 2. Integration Testing
 
 **重点领域**:
+
 - 多用户协作场景
 - 离线/在线转换处理
 - 跨平台功能（web vs desktop）
@@ -246,7 +263,7 @@ const { batchUpdate } = useBatchedYjs(doc, 100)
 const { visibleLines, totalHeight } = useVirtualizedYText('content', {
   itemHeight: 24,
   containerHeight: 600,
-  overscan: 10
+  overscan: 10,
 })
 ```
 

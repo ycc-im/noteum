@@ -16,7 +16,9 @@ import { Server, Socket } from 'socket.io'
   },
   transports: ['websocket', 'polling'],
 })
-export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class WebsocketGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   server!: Server
 

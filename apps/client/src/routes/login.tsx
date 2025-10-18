@@ -1,6 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import apiClient from '@/services/api'
+import { authService } from '@/lib/database/auth-service'
+import { User } from '@/types/user'
 
 export const Route = createFileRoute('/login')({
   component: LoginComponent,
@@ -22,10 +24,19 @@ function LoginComponent() {
     try {
       const response = await apiClient.login(formData)
 
-      // 存储认证信息
-      localStorage.setItem('auth_token', response.accessToken)
-      localStorage.setItem('refresh_token', response.refreshToken)
-      localStorage.setItem('user', JSON.stringify(response.user))
+      // 存储认证信息到 IndexedDB - 转换为完整的 User 类型
+      const fullUser: User = {
+        ...response.user,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isActive: true,
+      }
+
+      await authService.storeAuthData(
+        response.accessToken,
+        response.refreshToken,
+        fullUser
+      )
 
       // 重定向到 dashboard
       window.location.href = '/dashboard'
@@ -44,10 +55,25 @@ function LoginComponent() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9fafb' }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f9fafb',
+      }}
+    >
       <div style={{ maxWidth: '400px', width: '100%', padding: '20px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', marginBottom: '8px' }}>
+          <h2
+            style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#111827',
+              marginBottom: '8px',
+            }}
+          >
             登录到 Noteum
           </h2>
           <p style={{ fontSize: '14px', color: '#6b7280' }}>
@@ -94,15 +120,17 @@ function LoginComponent() {
           </div>
 
           {error && (
-            <div style={{
-              backgroundColor: '#fee2e2',
-              border: '1px solid #fecaca',
-              color: '#dc2626',
-              padding: '12px',
-              borderRadius: '6px',
-              marginBottom: '16px',
-              fontSize: '14px',
-            }}>
+            <div
+              style={{
+                backgroundColor: '#fee2e2',
+                border: '1px solid #fecaca',
+                color: '#dc2626',
+                padding: '12px',
+                borderRadius: '6px',
+                marginBottom: '16px',
+                fontSize: '14px',
+              }}
+            >
               {error}
             </div>
           )}

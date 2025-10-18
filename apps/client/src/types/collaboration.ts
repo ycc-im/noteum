@@ -48,7 +48,12 @@ export interface Conflict {
 
 export interface CollaborationEvent {
   id: string
-  type: 'user_joined' | 'user_left' | 'cursor_moved' | 'text_changed' | 'conflict_detected'
+  type:
+    | 'user_joined'
+    | 'user_left'
+    | 'cursor_moved'
+    | 'text_changed'
+    | 'conflict_detected'
   userId: string
   timestamp: Date
   data: any

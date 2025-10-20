@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@hocuspocus/provider": "^2.0.0",
+    "@noteum/ui": "workspace:^",
     "@noteum/utils": "workspace:*",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",

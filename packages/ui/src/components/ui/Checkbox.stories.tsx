@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
-import { Checkbox } from '../src/components/ui/checkbox'
-import { Button } from '../src/components/ui/button'
+import { Checkbox } from './checkbox'
+import { Button } from './button'
 
 const meta: Meta<typeof Checkbox> = {
   title: 'UI/Checkbox',

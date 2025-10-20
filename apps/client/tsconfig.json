@@ -18,8 +18,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "~/*": ["./*"],
-      "@noteum/ui": ["../../packages/ui/dist"]
+      "~/*": ["./*"]
     },
     "types": ["vite/client", "vitest/importMeta"]
   },

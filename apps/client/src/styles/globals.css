@@ -2,11 +2,145 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 导入 @noteum/ui 的公共样式 */
-@import '@noteum/ui/styles/globals.css';
-
 @layer base {
-  /* 确保基础样式已正确加载 */
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  /* 默认配色方案 - 简洁风格 */
+  .color-scheme-default.dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+
+  /* 护眼配色方案 - 暖色调 */
+  .color-scheme-warm.dark {
+    --background: 25 15% 15%; /* 暖深灰背景 #2d2b2a */
+    --foreground: 45 20% 95%; /* 暖白色前景 #f5f5f1 */
+    --card: 25 15% 18%; /* 稍浅的暖深灰卡片 */
+    --card-foreground: 45 20% 95%; /* 暖白色卡片文字 */
+    --popover: 25 15% 18%; /* 弹窗背景 */
+    --popover-foreground: 45 20% 95%; /* 弹窗文字 */
+    --primary: 45 30% 60%; /* 暖色调主色 */
+    --primary-foreground: 25 15% 15%; /* 主色上的文字 */
+    --secondary: 25 12% 25%; /* 次要色 - 暖灰 */
+    --secondary-foreground: 45 20% 90%; /* 次要色上的文字 */
+    --muted: 25 10% 30%; /* 静音色 - 更深的暖灰 */
+    --muted-foreground: 45 15% 70%; /* 静音文字 */
+    --accent: 35 20% 35%; /* 强调色 - 暖棕 */
+    --accent-foreground: 45 20% 95%; /* 强调色上的文字 */
+    --destructive: 0 60% 45%; /* 错误色 - 暖红 */
+    --destructive-foreground: 45 20% 95%; /* 错误色上的文字 */
+    --border: 25 12% 25%; /* 边框色 - 暖灰 */
+    --input: 25 12% 25%; /* 输入框背景 */
+    --ring: 45 30% 60%; /* 焦点环 - 暖色调 */
+  }
+
+  /* 护眼配色方案 - 暖色调日间模式 */
+  .color-scheme-warm.light {
+    --background: 45 20% 98%; /* 暖白色背景 #faf8f3 */
+    --foreground: 25 15% 15%; /* 暖黑色前景 #2d2b2a */
+    --card: 45 20% 96%; /* 暖白色卡片 */
+    --card-foreground: 25 15% 15%; /* 暖黑色卡片文字 */
+    --popover: 45 20% 96%; /* 弹窗背景 */
+    --popover-foreground: 25 15% 15%; /* 弹窗文字 */
+    --primary: 25 30% 40%; /* 暖色调主色 */
+    --primary-foreground: 45 20% 98%; /* 主色上的文字 */
+    --secondary: 45 15% 90%; /* 次要色 - 浅暖灰 */
+    --secondary-foreground: 25 15% 20%; /* 次要色上的文字 */
+    --muted: 45 10% 85%; /* 静音色 - 更浅的暖灰 */
+    --muted-foreground: 25 10% 40%; /* 静音文字 */
+    --accent: 25 15% 80%; /* 强调色 - 暖米色 */
+    --accent-foreground: 25 15% 15%; /* 强调色上的文字 */
+    --destructive: 0 70% 50%; /* 错误色 - 暖红 */
+    --destructive-foreground: 45 20% 98%; /* 错误色上的文字 */
+    --border: 45 15% 88%; /* 边框色 - 暖灰 */
+    --input: 45 15% 88%; /* 输入框背景 */
+    --ring: 25 30% 40%; /* 焦点环 - 暖色调 */
+  }
+
+  /* 高对比度配色方案 - 冷色调 */
+  .color-scheme-contrast.dark {
+    --background: 0 0% 8%; /* 纯黑背景 */
+    --foreground: 0 0% 98%; /* 纯白前景 */
+    --card: 0 0% 10%; /* 深灰卡片 */
+    --card-foreground: 0 0% 98%; /* 纯白卡片文字 */
+    --popover: 0 0% 10%; /* 弹窗背景 */
+    --popover-foreground: 0 0% 98%; /* 弹窗文字 */
+    --primary: 0 0% 95%; /* 高对比主色 */
+    --primary-foreground: 0 0% 10%; /* 主色上的文字 */
+    --secondary: 0 0% 20%; /* 次要色 - 深灰 */
+    --secondary-foreground: 0 0% 95%; /* 次要色上的文字 */
+    --muted: 0 0% 30%; /* 静音色 - 中灰 */
+    --muted-foreground: 0 0% 70%; /* 静音文字 */
+    --accent: 0 0% 80%; /* 强调色 - 浅灰 */
+    --accent-foreground: 0 0% 10%; /* 强调色上的文字 */
+    --destructive: 0 100% 50%; /* 错误色 - 纯红 */
+    --destructive-foreground: 0 0% 98%; /* 错误色上的文字 */
+    --border: 0 0% 25%; /* 边框色 - 深灰 */
+    --input: 0 0% 15%; /* 输入框背景 */
+    --ring: 0 0% 95%; /* 焦点环 - 纯白 */
+  }
+
+  /* 高对比度配色方案 - 冷色调日间模式 */
+  .color-scheme-contrast.light {
+    --background: 0 0% 100%; /* 纯白背景 */
+    --foreground: 0 0% 8%; /* 纯黑前景 */
+    --card: 0 0% 98%; /* 浅白卡片 */
+    --card-foreground: 0 0% 8%; /* 纯黑卡片文字 */
+    --popover: 0 0% 98%; /* 弹窗背景 */
+    --popover-foreground: 0 0% 8%; /* 弹窗文字 */
+    --primary: 0 0% 10%; /* 高对比主色 */
+    --primary-foreground: 0 0% 100%; /* 主色上的文字 */
+    --secondary: 0 0% 96%; /* 次要色 - 浅灰 */
+    --secondary-foreground: 0 0% 10%; /* 次要色上的文字 */
+    --muted: 0 0% 92%; /* 静音色 - 更浅的灰 */
+    --muted-foreground: 0 0% 40%; /* 静音文字 */
+    --accent: 0 0% 85%; /* 强调色 - 中灰 */
+    --accent-foreground: 0 0% 10%; /* 强调色上的文字 */
+    --destructive: 0 100% 45%; /* 错误色 - 纯红 */
+    --destructive-foreground: 0 0% 100%; /* 错误色上的文字 */
+    --border: 0 0% 88%; /* 边框色 - 浅灰 */
+    --input: 0 0% 94%; /* 输入框背景 */
+    --ring: 0 0% 10%; /* 焦点环 - 纯黑 */
+  }
+
   * {
     @apply border-border;
   }

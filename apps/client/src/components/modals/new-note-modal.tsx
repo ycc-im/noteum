@@ -6,8 +6,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  Button,
-} from '@noteum/ui'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import { useActiveModal, useShortcutsStore } from '@/stores/shortcuts'
 
 export interface NewNoteModalProps {
@@ -79,7 +79,7 @@ export const NewNoteModal: React.FC<NewNoteModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent size="md" onKeyDown={handleKeyDown}>
+      <DialogContent className="max-w-md" onKeyDown={handleKeyDown}>
         <DialogHeader>
           <DialogTitle>创建新笔记</DialogTitle>
           <DialogDescription>

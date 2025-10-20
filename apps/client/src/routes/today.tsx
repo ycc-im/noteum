@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useNewNoteShortcut } from '@/components/shortcuts/shortcut-provider'
 import { useNewNoteModal } from '@/components/modals/new-note-modal'
 import { NewNoteModal } from '@/components/modals/new-note-modal'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export const Route = createFileRoute('/today')({
   component: TodayPage,
@@ -24,6 +25,7 @@ function TodayPage() {
 
   return (
     <div className="h-screen w-full bg-background flex items-center justify-center">
+      <ThemeToggle />
       <div className="text-center">
         <h1 className="text-3xl font-semibold mb-4 text-gray-900">欢迎回来</h1>
         <p className="text-lg text-gray-600 mb-8">

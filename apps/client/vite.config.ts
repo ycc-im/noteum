@@ -8,7 +8,6 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './src'),
       '~': resolve(__dirname, './'),
-      '@noteum/ui': resolve(__dirname, '../../packages/ui/dist'),
     },
   },
   server: {

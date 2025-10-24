@@ -30,7 +30,7 @@ shadcn/ui 提供了现代、完整的组件库解决方案，具有以下优势�
 
 1. **依赖管理**：
    - 移除 `@noteum/ui` 包依赖
-   - 添加 shadcn/ui 相关依赖（@radix-ui/\* 组件）
+   - 添加 shadcn/ui 相关依赖（@radix-ui/* 组件）
    - 安装 shadcn CLI 工具
 
 2. **配置文件**：

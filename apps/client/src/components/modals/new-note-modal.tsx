@@ -6,8 +6,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@noteum/ui'
-import { Button } from '@noteum/ui'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import { useActiveModal, useShortcutsStore } from '@/stores/shortcuts'
 
 export interface NewNoteModalProps {

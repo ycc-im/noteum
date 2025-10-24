@@ -8,8 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './dialog'
-import { Button } from './button'
+  Button,
+} from '../src/components'
 
 const meta: Meta<typeof Dialog> = {
   title: 'UI/Dialog',

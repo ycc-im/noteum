@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Moon, Sun, Palette, ChevronDown } from 'lucide-react'
-// 使用 @noteum/ui 的所有组件
-import { Button } from '@noteum/ui'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +10,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '@noteum/ui'
+} from '@/components/ui/dropdown-menu'
 
 type ColorScheme = 'default' | 'warm' | 'contrast'
 type ThemeMode = 'light' | 'dark'

@@ -252,6 +252,9 @@ importers:
       ioredis:
         specifier: ^5.3.2
         version: 5.8.1
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4
       multer:
         specifier: ^1.4.5-lts.1
         version: 1.4.5-lts.2
@@ -11607,6 +11610,11 @@ packages:
     dependencies:
       jwa: 1.4.2
       safe-buffer: 5.2.1
+    dev: false
+
+  /kafkajs@2.2.4:
+    resolution: {integrity: sha512-j/YeapB1vfPT2iOIUn/vxdyKEuhuY2PxMBvf5JWux6iSaukAccrMtXEY/Lb7OvavDhOWME589bpLrEdnVHjfjA==}
+    engines: {node: '>=14.0.0'}
     dev: false
 
   /keyv@4.5.4:

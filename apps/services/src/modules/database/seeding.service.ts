@@ -81,18 +81,18 @@ export class SeedingService {
 
     const user = await this.prisma.user.create({
       data: {
-        id: ulid(),
+        // id: Auto-increment number, no need to set
         email: defaultEmail,
         username: 'admin',
-        passwordHash: hashedPassword,
+        passwordhash: hashedPassword,
         role: UserRole.ADMIN,
-        isActive: true,
+        isactive: true,
         profile: {
           create: {
-            id: ulid(),
-            firstName: 'Admin',
-            lastName: 'User',
-            displayName: 'Admin',
+            id: `profile_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            firstname: 'Admin',
+            lastname: 'User',
+            displayname: 'Admin',
           },
         },
       },
@@ -166,18 +166,18 @@ export class SeedingService {
 
       const user = await this.prisma.user.create({
         data: {
-          id: ulid(),
+          // id: Auto-increment number, no need to set
           email: userData.email,
           username: userData.email.split('@')[0], // 使用 email 前缀作为 username
-          passwordHash: hashedPassword,
+          passwordhash: hashedPassword,
           role: userData.role as any,
-          isActive: true,
+          isactive: true,
           profile: {
             create: {
-              id: ulid(),
-              firstName: userData.firstName,
-              lastName: userData.lastName,
-              displayName: userData.displayName,
+              id: `profile_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+              firstname: userData.firstName,
+              lastname: userData.lastName,
+              displayname: userData.displayName,
             },
           },
         },
@@ -202,7 +202,7 @@ export class SeedingService {
     for (const user of users) {
       const sessionExists = await this.prisma.session.findFirst({
         where: {
-          userId: user.id,
+          userid: user.id,
         },
       })
 
@@ -216,18 +216,18 @@ export class SeedingService {
 
       const session = await this.prisma.session.create({
         data: {
-          id: ulid(),
-          userId: user.id,
-          tokenHash: 'test_token_hash_' + ulid(),
-          isActive: true,
-          expiresAt,
-          deviceInfo: {
+          id: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          userid: user.id,
+          tokenhash: 'test_token_hash_' + ulid(),
+          isactive: true,
+          expiresat: expiresAt,
+          deviceinfo: {
             type: 'web',
             os: 'Linux',
             browser: 'Chrome',
           },
-          ipAddress: '127.0.0.1',
-          userAgent: 'Test User Agent',
+          ipaddress: '127.0.0.1',
+          useragent: 'Test User Agent',
         },
       })
 

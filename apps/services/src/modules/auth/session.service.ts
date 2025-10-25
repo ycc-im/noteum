@@ -11,24 +11,24 @@ export class SessionService {
   ) {}
 
   async createSession(
-    userId: string,
-    tokenHash: string,
+    userId: number,
+    tokenhash: string,
     deviceInfo: any,
     ipAddress: string,
     userAgent: string
   ) {
-    const expiresAt = new Date()
-    expiresAt.setDate(expiresAt.getDate() + 7) // 7 days
+    const expiresat = new Date()
+    expiresat.setDate(expiresat.getDate() + 7) // 7 days
 
     const session = await this.prisma.session.create({
       data: {
         id: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        userId,
-        tokenHash,
-        expiresAt,
-        deviceInfo,
-        ipAddress,
-        userAgent,
+        userid: userId,
+        tokenhash,
+        expiresat,
+        deviceinfo: deviceInfo,
+        ipaddress: ipAddress,
+        useragent: userAgent,
       },
     })
 
@@ -42,13 +42,13 @@ export class SessionService {
     return session
   }
 
-  async getSession(sessionId: string): Promise<any> {
-    // Try cache first
-    const cached = await this.cache.get(`session:${sessionId}`)
-    if (cached) {
-      const session = JSON.parse(cached)
+  async getSessionById(sessionId: string) {
+    // Try to get from cache first
+    const cachedSession = await this.cache.get(`session:${sessionId}`)
+    if (cachedSession) {
+      const session = JSON.parse(cachedSession)
       // Check if session is still valid and active
-      if (session.isActive && new Date(session.expiresAt) > new Date()) {
+      if (session.isactive && new Date(session.expiresat) > new Date()) {
         return session
       }
       // Remove expired session from cache
@@ -62,12 +62,12 @@ export class SessionService {
 
     if (
       session &&
-      session.isActive &&
-      new Date(session.expiresAt) > new Date()
+      session.isactive &&
+      new Date(session.expiresat) > new Date()
     ) {
       // Cache the session
       const ttl = Math.floor(
-        (new Date(session.expiresAt).getTime() - Date.now()) / 1000
+        (new Date(session.expiresat).getTime() - Date.now()) / 1000
       )
       if (ttl > 0) {
         await this.cache.setex(
@@ -85,16 +85,16 @@ export class SessionService {
   async invalidateSession(sessionId: string): Promise<void> {
     await this.prisma.session.update({
       where: { id: sessionId },
-      data: { isActive: false },
+      data: { isactive: false },
     })
 
     await this.cache.del(`session:${sessionId}`)
   }
 
-  async invalidateAllUserSessions(userId: string): Promise<void> {
+  async invalidateAllUserSessions(userId: number): Promise<void> {
     await this.prisma.session.updateMany({
-      where: { userId },
-      data: { isActive: false },
+      where: { userid: userId },
+      data: { isactive: false },
     })
 
     // Invalidate all cached sessions for this user
@@ -104,15 +104,15 @@ export class SessionService {
 
   async validateSessionToken(
     token: string,
-    tokenHash: string
+    tokenhash: string
   ): Promise<boolean> {
-    return await bcrypt.compare(token, tokenHash)
+    return await bcrypt.compare(token, tokenhash)
   }
 
   async cleanupExpiredSessions(): Promise<void> {
     await this.prisma.session.deleteMany({
       where: {
-        OR: [{ expiresAt: { lt: new Date() } }, { isActive: false }],
+        OR: [{ expiresat: { lt: new Date() } }, { isactive: false }],
       },
     })
   }

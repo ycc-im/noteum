@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { useTheme } from '@/providers/theme-provider'
 import { useAppStore } from '@/stores'
+import { SocketStatusIndicator } from './SocketStatusIndicator'
 
 export function Header() {
   const { theme, setTheme } = useTheme()
@@ -63,6 +64,9 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex items-center space-x-4">
+          {/* Socket Status Indicator */}
+          <SocketStatusIndicator />
+
           <button
             onClick={toggleTheme}
             className="p-2 rounded-md hover:bg-accent"

@@ -18,7 +18,7 @@ export class AuthService {
       return null
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash)
+    const isPasswordValid = await bcrypt.compare(password, user.passwordhash)
     if (!isPasswordValid) {
       return null
     }
@@ -35,11 +35,11 @@ export class AuthService {
       return null
     }
 
-    if (!user.isActive) {
+    if (!user.isactive) {
       return null
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash)
+    const isPasswordValid = await bcrypt.compare(password, user.passwordhash)
     if (!isPasswordValid) {
       return null
     }
@@ -84,7 +84,7 @@ export class AuthService {
       const payload = this.jwtService.verify(refreshToken)
       const user = await this.usersService.findById(payload.sub)
 
-      if (!user || !user.isActive) {
+      if (!user || !user.isactive) {
         throw new Error('Invalid refresh token')
       }
 
@@ -95,49 +95,49 @@ export class AuthService {
   }
 
   async createSession(
-    userId: string,
+    userId: number,
     token: string,
     deviceInfo: any,
     ipAddress: string,
     userAgent: string
   ) {
-    const tokenHash = await bcrypt.hash(token, 10)
-    const expiresAt = new Date()
-    expiresAt.setDate(expiresAt.getDate() + 7) // 7 days
+    const tokenhash = await bcrypt.hash(token, 10)
+    const expiresat = new Date()
+    expiresat.setDate(expiresat.getDate() + 7) // 7 days
 
     const session = await this.prisma.session.create({
       data: {
         id: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        userId,
-        tokenHash,
-        expiresAt,
-        deviceInfo,
-        ipAddress,
-        userAgent,
+        userid: userId,
+        tokenhash,
+        expiresat,
+        deviceinfo: deviceInfo,
+        ipaddress: ipAddress,
+        useragent: userAgent,
       },
     })
 
     return session
   }
 
-  async invalidateSession(tokenHash: string) {
+  async invalidateSession(tokenhash: string) {
     await this.prisma.session.updateMany({
-      where: { tokenHash },
-      data: { isActive: false },
+      where: { tokenhash },
+      data: { isactive: false },
     })
   }
 
-  async invalidateAllUserSessions(userId: string) {
+  async invalidateAllUserSessions(userId: number) {
     await this.prisma.session.updateMany({
-      where: { userId },
-      data: { isActive: false },
+      where: { userid: userId },
+      data: { isactive: false },
     })
   }
 
   async cleanupExpiredSessions() {
     await this.prisma.session.deleteMany({
       where: {
-        OR: [{ expiresAt: { lt: new Date() } }, { isActive: false }],
+        OR: [{ expiresat: { lt: new Date() } }, { isactive: false }],
       },
     })
   }

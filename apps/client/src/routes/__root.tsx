@@ -78,6 +78,16 @@ export const Route = createFileRoute('/')({
                 Notes
               </a>
               <a
+                href="/socket-status"
+                style={{
+                  textDecoration: 'none',
+                  color: '#6b7280',
+                  fontSize: '14px',
+                }}
+              >
+                Socket Status
+              </a>
+              <a
                 href="/settings"
                 style={{
                   textDecoration: 'none',

@@ -24,7 +24,6 @@ export default defineConfig({
         manualChunks: {
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom', '@tanstack/react-router'],
-          collaboration: ['yjs', 'y-websocket', '@hocuspocus/provider'],
           desktop: ['@tauri-apps/api'],
         },
       },

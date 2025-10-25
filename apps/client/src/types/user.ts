@@ -26,7 +26,6 @@ export interface UserPreferences {
     email: boolean
     push: boolean
     mentions: boolean
-    collaboration: boolean
   }
   editor: {
     fontSize: number

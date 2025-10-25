@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <title>WebSocket Test</title>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+  </head>
+  <body>
+    <h1>WebSocket Connection Test</h1>
+    <div id="status">Connecting...</div>
+    <div id="messages"></div>
+
+    <script>
+      const status = document.getElementById('status')
+      const messages = document.getElementById('messages')
+
+      function log(message) {
+        console.log(message)
+        messages.innerHTML +=
+          '<p>' + new Date().toLocaleTimeString() + ': ' + message + '</p>'
+      }
+
+      // Connect to WebSocket server
+      const socket = io('http://localhost:9168', {
+        transports: ['websocket', 'polling'],
+      })
+
+      socket.on('connect', () => {
+        status.textContent = 'Connected ✅'
+        log('Connected to WebSocket server')
+        log('Socket ID: ' + socket.id)
+
+        // Test basic message
+        socket.emit('message', 'Hello from browser test client')
+
+        // Test room functionality
+        socket.emit('join-room', { roomId: 'test-room' })
+      })
+
+      socket.on('connected', (data) => {
+        log('Received connected event: ' + JSON.stringify(data))
+      })
+
+      socket.on('echo', (data) => {
+        log('Received echo response: ' + JSON.stringify(data))
+      })
+
+      socket.on('joined-room', (data) => {
+        log('Joined room: ' + JSON.stringify(data))
+      })
+
+      socket.on('user-joined', (data) => {
+        log('User joined room: ' + JSON.stringify(data))
+      })
+
+      socket.on('disconnect', () => {
+        status.textContent = 'Disconnected ❌'
+        log('Disconnected from WebSocket server')
+      })
+
+      socket.on('connect_error', (error) => {
+        status.textContent = 'Connection Error ❌'
+        log('Connection error: ' + error.message)
+      })
+    </script>
+  </body>
+</html>

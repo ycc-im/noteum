@@ -27,3 +27,6 @@ export * from './error/messaging-error-handler'
 
 // Health monitoring
 export * from './health/messaging-health.service'
+
+// Testing
+export * from './testing/messaging-test-controller'

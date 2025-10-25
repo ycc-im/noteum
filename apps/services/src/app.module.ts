@@ -10,6 +10,7 @@ import { NotebooksModule } from './modules/notebooks/notebooks.module'
 import { NotesModule } from './modules/notes/notes.module'
 import { WebsocketModule } from './modules/websocket/websocket.module'
 import { TrpcModule } from './modules/trpc/trpc.module'
+import { MessagingTestModule } from './modules/messaging/testing/messaging-test.module'
 import { configuration } from './config/configuration'
 import { validateConfig } from './config/validation'
 
@@ -43,6 +44,7 @@ import { validateConfig } from './config/validation'
     NotesModule,
     WebsocketModule,
     TrpcModule,
+    MessagingTestModule,
   ],
 })
 export class AppModule {}

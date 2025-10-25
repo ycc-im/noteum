@@ -12,12 +12,6 @@ export interface Note {
     wordCount?: number
     readingTime?: number
   }
-  collaborationData: {
-    yjsState?: Uint8Array
-    lastSyncAt?: Date
-    conflictResolved: boolean
-    isCollaborative: boolean
-  }
   createdAt: Date
   updatedAt: Date
   createdBy: string

@@ -20,15 +20,16 @@ echo -e "${YELLOW}📋 当前分支: $CURRENT_BRANCH${NC}"
 
 if [ "$CURRENT_BRANCH" = "main" ]; then
     echo -e "${RED}❌ 错误：不能在 main 分支直接提交代码${NC}"
-    echo -e "${YELLOW}💡 请创建功能分支：git checkout -b [###-task-description]${NC}"
+    echo -e "${YELLOW}💡 请创建功能分支：git checkout -b [feature-bugfix-description]${NC}"
     exit 1
 fi
 
 # 2. 检查分支命名规范
-if [[ ! "$CURRENT_BRANCH" =~ ^[0-9]+-.+$ ]]; then
-    echo -e "${YELLOW}⚠️  警告：分支名称建议遵循 [###-task-description] 格式${NC}"
+if [[ ! "$CURRENT_BRANCH" =~ ^[a-z0-9-]+-[a-z0-9-]+$ ]]; then
+    echo -e "${YELLOW}⚠️  警告：分支名称建议遵循 [feature-bugfix-description] 格式${NC}"
     echo -e "${YELLOW}   当前分支: $CURRENT_BRANCH${NC}"
-    echo -e "${YELLOW}   建议格式: 123-feature-description${NC}"
+    echo -e "${YELLOW}   建议格式: feature-description 或 bug-fix-description${NC}"
+    echo -e "${YELLOW}   示例: feature-user-authentication, docs-update-guide${NC}"
 
     read -p "是否继续提交？(y/N): " -n 1 -r
     echo

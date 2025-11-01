@@ -102,4 +102,50 @@ noteum/
 - 001-apps-services: Added TypeScript 5.0+ (NestJS 10.x LTS) + NestJS, tRPC, Prisma, y-websocket, langchain.js
 
 <!-- MANUAL ADDITIONS START -->
+
+## 开发服务器管理约束
+
+为了防止端口无限增长和资源浪费，严格遵守以下开发服务器管理规则：
+
+### 端口检查和重启流程
+1. **启动前检查**：在启动任何开发服务器前，必须先检查端口是否已被占用
+   - 前端端口检查：`lsof -ti:9158` 或 `netstat -an | grep 9158`
+   - 后端端口检查：`lsof -ti:3000` 或 `netstat -an | grep 3000`
+
+2. **发现端口占用时的处理**：
+   - 如果发现端口已被占用，先停止现有服务：`kill -9 $(lsof -ti:9158)`
+   - 使用项目的重启命令而不是新建服务实例：
+     - `pnpm dev:restart` - 重启所有服务
+     - `pnpm dev:restart-services` - 仅重启后端服务
+     - `pnpm dev:restart-client` - 仅重启前端应用
+
+3. **禁止行为**：
+   - 禁止在已知端口被占用时仍然启动新的服务实例
+   - 禁止使用不同端口启动同一服务的多个实例
+   - 禁止绕过端口检查直接启动服务
+
+### 推荐的启动命令
+
+**分别启动方式（强烈推荐）**：
+- 启动后端服务：`cd apps/services && pnpm start:dev`
+- 启动前端应用：`FRONTEND_PORT=9158 pnpm --filter @noteum/client dev`
+- 完整启动流程：先启动 services，再启动 client
+
+**为什么推荐分别启动**：
+- 更好的可控性：可以独立控制和调试每个服务
+- 更清晰的错误定位：问题更容易定位到具体服务
+- 更灵活的重启：可以单独重启有问题的服务
+- 避免复杂的脚本依赖：减少意外麻烦
+
+**容器化启动方式（仅在有经验时使用）**：
+- 首次启动：`pnpm dev:workspace` （仅在没有问题时使用）
+- 重启所有服务：`pnpm dev:restart`
+- 仅重启前端：`pnpm dev:restart-client`
+- 仅重启后端：`pnpm dev:restart-services`
+
+### 服务验证
+启动后使用以下命令验证服务状态：
+- `pnpm dev:health` - 检查开发环境健康状态
+- `pnpm ports:check` - 检查端口占用情况
+
 <!-- MANUAL ADDITIONS END -->

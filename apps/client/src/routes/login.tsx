@@ -1,14 +1,25 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import apiClient from '@/services/api'
 import { authService } from '@/lib/database/auth-service'
 import { User } from '@/types/user'
 
 export const Route = createFileRoute('/login')({
+  beforeLoad: async () => {
+    // 检查用户是否已登录
+    const authData = await authService.getAuthData()
+    if (authData?.accessToken) {
+      // 如果已登录，重定向到 notes 页面
+      throw redirect({
+        to: '/notes',
+      })
+    }
+  },
   component: LoginComponent,
 })
 
 function LoginComponent() {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -38,8 +49,8 @@ function LoginComponent() {
         fullUser
       )
 
-      // 重定向到 dashboard
-      window.location.href = '/dashboard'
+      // 使用 TanStack Router 导航到 notes 页面
+      router.navigate({ to: '/notes' })
     } catch (err) {
       setError(err instanceof Error ? err.message : '登录失败')
     } finally {
@@ -155,7 +166,7 @@ function LoginComponent() {
 
           <div style={{ textAlign: 'center', marginTop: '16px' }}>
             <p style={{ fontSize: '12px', color: '#6b7280' }}>
-              测试账号: choufeng / 123123
+              测试账号: choufeng@noteum.dev / password
             </p>
           </div>
         </form>

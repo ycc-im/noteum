@@ -1,5 +1,6 @@
 import { Outlet } from '@tanstack/react-router'
 import { AppInit } from '@/components/app-init'
+import { TrpcProvider } from '@/providers/trpc-provider'
 
 // Import test utilities in development
 if (import.meta.env.DEV) {
@@ -8,10 +9,12 @@ if (import.meta.env.DEV) {
 
 export function App() {
   return (
-    <AppInit>
-      <div className="min-h-screen bg-background">
-        <Outlet />
-      </div>
-    </AppInit>
+    <TrpcProvider>
+      <AppInit>
+        <div className="min-h-screen bg-background">
+          <Outlet />
+        </div>
+      </AppInit>
+    </TrpcProvider>
   )
 }

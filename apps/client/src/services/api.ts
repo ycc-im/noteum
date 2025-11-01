@@ -33,45 +33,66 @@ class ApiClient {
     return response.json()
   }
 
-  // 认证相关 API
+  // 认证相关 API - 使用 tRPC
   async login(data: LoginRequest): Promise<LoginResponse> {
-    // 将用户名转换为邮箱，因为当前后端只支持邮箱登录
-    const email = data.username.includes('@')
-      ? data.username
-      : `${data.username}@noteum.dev`
+    // 将用户名转换为用户名格式，因为 tRPC 支持用户名登录
+    const username = data.username.includes('@')
+      ? data.username.split('@')[0]
+      : data.username
 
     const response = await this.request<{
-      success: boolean
-      data: LoginResponse
-    }>('/api/v1/auth/login', {
+      result: {
+        data: {
+          json: {
+            success: boolean
+            data: LoginResponse
+          }
+        }
+      }
+    }>('/api/v1/trpc/auth.login', {
       method: 'POST',
-      body: JSON.stringify({ email, password: data.password }),
+      body: JSON.stringify({
+        json: {
+          username,
+          password: data.password,
+        },
+      }),
     })
 
-    if (!response.success) {
+    if (!response.result.data.json.success) {
       throw new Error('Login failed')
     }
 
-    return response.data
+    return response.result.data.json.data
   }
 
   async refreshToken(data: RefreshTokenRequest): Promise<LoginResponse> {
     const response = await this.request<{
-      success: boolean
-      data: LoginResponse
-    }>('/api/v1/auth/refresh', {
+      result: {
+        data: {
+          json: {
+            success: boolean
+            data: LoginResponse
+          }
+        }
+      }
+    }>('/api/v1/trpc/auth.refreshToken', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        json: {
+          refreshToken: data.refreshToken,
+        },
+      }),
     })
 
-    if (!response.success) {
+    if (!response.result.data.json.success) {
       throw new Error('Token refresh failed')
     }
 
-    return response.data
+    return response.result.data.json.data
   }
 
-  async getCurrentUser(accessToken: string): Promise<any> {
+  async getCurrentUser(_accessToken: string): Promise<any> {
     // 暂时返回一个简单的用户信息，后续可以实现获取当前用户的 API
     return Promise.resolve({})
   }

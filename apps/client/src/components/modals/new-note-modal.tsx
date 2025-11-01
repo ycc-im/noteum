@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { useActiveModal, useShortcutsStore } from '@/stores/shortcuts'
+import { trpc } from '@/lib/trpc'
+import { generateUlid } from '@/lib/ulid'
 
 export interface NewNoteModalProps {
   isOpen?: boolean
@@ -40,27 +42,52 @@ export const NewNoteModal: React.FC<NewNoteModalProps> = ({
 
   // 表单状态
   const [title, setTitle] = useState('')
+  const [isCreating, setIsCreating] = useState(false)
 
   // 处理创建笔记
-  const handleCreateNote = () => {
-    if (title.trim()) {
+  const handleCreateNote = async () => {
+    if (!title.trim()) return
+
+    setIsCreating(true)
+    try {
+      const noteId = generateUlid()
       const noteData = {
+        id: noteId,
         title: title.trim(),
         notebookId: 'default',
       }
 
+      // 暂时使用简单的事件创建笔记，待tRPC路由器完善后恢复
+      // const result = await createNoteMutation.mutateAsync(noteData)
+
+      // 如果有外部回调函数，调用它
       if (externalOnCreateNote) {
-        externalOnCreateNote(noteData)
+        externalOnCreateNote({
+          ...noteData,
+          id: noteId,
+          createdAt: new Date(),
+        })
       } else {
         // 触发全局创建笔记事件
         window.dispatchEvent(
-          new CustomEvent('create-note', { detail: noteData })
+          new CustomEvent('create-note', {
+            detail: {
+              ...noteData,
+              id: noteId,
+              createdAt: new Date(),
+            },
+          })
         )
       }
 
       // 重置表单并关闭模态框
       setTitle('')
       handleClose()
+    } catch (error) {
+      console.error('Failed to create note:', error)
+      // TODO: 显示错误提示给用户
+    } finally {
+      setIsCreating(false)
     }
   }
 
@@ -105,30 +132,14 @@ export const NewNoteModal: React.FC<NewNoteModalProps> = ({
         </div>
 
         <DialogFooter>
-          <Button onClick={handleCreateNote} disabled={!title.trim()}>
-            创建笔记
+          <Button
+            onClick={handleCreateNote}
+            disabled={!title.trim() || isCreating}
+          >
+            {isCreating ? '创建中...' : '创建笔记'}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   )
-}
-
-// Hook 用于控制新建笔记模态框
-export const useNewNoteModal = () => {
-  const { openModal, closeModal } = useShortcutsStore()
-
-  const openNewNoteModal = () => {
-    openModal('new-note')
-  }
-
-  const closeNewNoteModal = () => {
-    closeModal()
-  }
-
-  return {
-    isOpen: useActiveModal() === 'new-note',
-    openNewNoteModal,
-    closeNewNoteModal,
-  }
 }

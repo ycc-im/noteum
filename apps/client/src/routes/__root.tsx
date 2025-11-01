@@ -1,109 +1,112 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { ShortcutProvider } from '@/components/shortcuts/shortcut-provider'
+import { TrpcProvider } from '@/providers/trpc-provider'
 
 export const Route = createFileRoute('/')({
   component: () => (
-    <ShortcutProvider>
-      <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-        <header
-          style={{
-            borderBottom: '1px solid #e5e7eb',
-            backgroundColor: 'white',
-          }}
-        >
-          <div
+    <TrpcProvider>
+      <ShortcutProvider>
+        <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+          <header
             style={{
-              display: 'flex',
-              height: '56px',
-              alignItems: 'center',
-              padding: '0 16px',
+              borderBottom: '1px solid #e5e7eb',
+              backgroundColor: 'white',
             }}
           >
-            <h1
-              style={{
-                fontSize: '18px',
-                fontWeight: '600',
-                color: '#111827',
-                margin: 0,
-              }}
-            >
-              Noteum
-            </h1>
-            <nav
+            <div
               style={{
                 display: 'flex',
+                height: '56px',
                 alignItems: 'center',
-                gap: '24px',
-                marginLeft: '24px',
+                padding: '0 16px',
               }}
             >
-              <a
-                href="/today"
+              <h1
                 style={{
-                  textDecoration: 'none',
-                  color: '#6b7280',
-                  fontSize: '14px',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  color: '#111827',
+                  margin: 0,
                 }}
               >
-                Today
-              </a>
-              <a
-                href="/dashboard"
+                Noteum
+              </h1>
+              <nav
                 style={{
-                  textDecoration: 'none',
-                  color: '#6b7280',
-                  fontSize: '14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '24px',
+                  marginLeft: '24px',
                 }}
               >
-                Dashboard
-              </a>
-              <a
-                href="/notebooks"
-                style={{
-                  textDecoration: 'none',
-                  color: '#6b7280',
-                  fontSize: '14px',
-                }}
-              >
-                Notebooks
-              </a>
-              <a
-                href="/notes"
-                style={{
-                  textDecoration: 'none',
-                  color: '#6b7280',
-                  fontSize: '14px',
-                }}
-              >
-                Notes
-              </a>
-              <a
-                href="/socket-status"
-                style={{
-                  textDecoration: 'none',
-                  color: '#6b7280',
-                  fontSize: '14px',
-                }}
-              >
-                Socket Status
-              </a>
-              <a
-                href="/settings"
-                style={{
-                  textDecoration: 'none',
-                  color: '#6b7280',
-                  fontSize: '14px',
-                }}
-              >
-                Settings
-              </a>
-            </nav>
-          </div>
-        </header>
-        <main style={{ padding: '24px' }}>
-          <Outlet />
-        </main>
-      </div>
-    </ShortcutProvider>
+                <a
+                  href="/today"
+                  style={{
+                    textDecoration: 'none',
+                    color: '#6b7280',
+                    fontSize: '14px',
+                  }}
+                >
+                  Today
+                </a>
+                <a
+                  href="/dashboard"
+                  style={{
+                    textDecoration: 'none',
+                    color: '#6b7280',
+                    fontSize: '14px',
+                  }}
+                >
+                  Dashboard
+                </a>
+                <a
+                  href="/notebooks"
+                  style={{
+                    textDecoration: 'none',
+                    color: '#6b7280',
+                    fontSize: '14px',
+                  }}
+                >
+                  Notebooks
+                </a>
+                <a
+                  href="/notes"
+                  style={{
+                    textDecoration: 'none',
+                    color: '#6b7280',
+                    fontSize: '14px',
+                  }}
+                >
+                  Notes
+                </a>
+                <a
+                  href="/socket-status"
+                  style={{
+                    textDecoration: 'none',
+                    color: '#6b7280',
+                    fontSize: '14px',
+                  }}
+                >
+                  Socket Status
+                </a>
+                <a
+                  href="/settings"
+                  style={{
+                    textDecoration: 'none',
+                    color: '#6b7280',
+                    fontSize: '14px',
+                  }}
+                >
+                  Settings
+                </a>
+              </nav>
+            </div>
+          </header>
+          <main style={{ padding: '24px' }}>
+            <Outlet />
+          </main>
+        </div>
+      </ShortcutProvider>
+    </TrpcProvider>
   ),
 })

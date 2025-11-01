@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useNewNoteShortcut } from '@/components/shortcuts/shortcut-provider'
-import { useNewNoteModal } from '@/components/modals/new-note-modal'
+import { useNewNoteModal } from '@/hooks/use-new-note-modal'
 import { NewNoteModal } from '@/components/modals/new-note-modal'
 import { ThemeToggle } from '@/components/theme-toggle'
 

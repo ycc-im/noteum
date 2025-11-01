@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { useActiveModal, useShortcutsStore } from '@/stores/shortcuts'
+import { trpc } from '@/lib/trpc'
+import { generateUlid } from '@/lib/ulid'
 
 export interface NewNoteModalProps {
   isOpen?: boolean
@@ -40,29 +42,52 @@ export const NewNoteModal: React.FC<NewNoteModalProps> = ({
 
   // 表单状态
   const [title, setTitle] = useState('')
-  const [notebookId, setNotebookId] = useState('')
+  const [isCreating, setIsCreating] = useState(false)
 
   // 处理创建笔记
-  const handleCreateNote = () => {
-    if (title.trim()) {
+  const handleCreateNote = async () => {
+    if (!title.trim()) return
+
+    setIsCreating(true)
+    try {
+      const noteId = generateUlid()
       const noteData = {
+        id: noteId,
         title: title.trim(),
-        notebookId: notebookId || 'default',
+        notebookId: 'default',
       }
 
+      // 暂时使用简单的事件创建笔记，待tRPC路由器完善后恢复
+      // const result = await createNoteMutation.mutateAsync(noteData)
+
+      // 如果有外部回调函数，调用它
       if (externalOnCreateNote) {
-        externalOnCreateNote(noteData)
+        externalOnCreateNote({
+          ...noteData,
+          id: noteId,
+          createdAt: new Date(),
+        })
       } else {
         // 触发全局创建笔记事件
         window.dispatchEvent(
-          new CustomEvent('create-note', { detail: noteData })
+          new CustomEvent('create-note', {
+            detail: {
+              ...noteData,
+              id: noteId,
+              createdAt: new Date(),
+            },
+          })
         )
       }
 
       // 重置表单并关闭模态框
       setTitle('')
-      setNotebookId('')
       handleClose()
+    } catch (error) {
+      console.error('Failed to create note:', error)
+      // TODO: 显示错误提示给用户
+    } finally {
+      setIsCreating(false)
     }
   }
 
@@ -81,80 +106,40 @@ export const NewNoteModal: React.FC<NewNoteModalProps> = ({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-md" onKeyDown={handleKeyDown}>
         <DialogHeader>
-          <DialogTitle>创建新笔记</DialogTitle>
+          <DialogTitle>新笔记</DialogTitle>
           <DialogDescription>
-            为你的新笔记选择一个标题和笔记本
+            输入笔记内容，使用 Cmd/Ctrl + Enter 创建
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div>
             <label
-              htmlFor="note-title"
+              htmlFor="note-content"
               className="block text-sm font-medium mb-2"
             >
-              标题
+              内容
             </label>
-            <input
-              id="note-title"
-              type="text"
+            <textarea
+              id="note-content"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="输入笔记标题..."
-              className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              placeholder="输入笔记内容..."
+              className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 min-h-[200px] resize-y"
               autoFocus
             />
-          </div>
-
-          <div>
-            <label
-              htmlFor="notebook-select"
-              className="block text-sm font-medium mb-2"
-            >
-              笔记本
-            </label>
-            <select
-              id="notebook-select"
-              value={notebookId}
-              onChange={(e) => setNotebookId(e.target.value)}
-              className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            >
-              <option value="default">默认笔记本</option>
-              <option value="work">工作</option>
-              <option value="personal">个人</option>
-              <option value="ideas">想法</option>
-            </select>
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
-            取消
-          </Button>
-          <Button onClick={handleCreateNote} disabled={!title.trim()}>
-            创建笔记
+          <Button
+            onClick={handleCreateNote}
+            disabled={!title.trim() || isCreating}
+          >
+            {isCreating ? '创建中...' : '创建笔记'}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   )
-}
-
-// Hook 用于控制新建笔记模态框
-export const useNewNoteModal = () => {
-  const { openModal, closeModal } = useShortcutsStore()
-
-  const openNewNoteModal = () => {
-    openModal('new-note')
-  }
-
-  const closeNewNoteModal = () => {
-    closeModal()
-  }
-
-  return {
-    isOpen: useActiveModal() === 'new-note',
-    openNewNoteModal,
-    closeNewNoteModal,
-  }
 }

@@ -30,7 +30,6 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@noteum/utils": "workspace:*",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^10.0.0",
@@ -42,9 +41,10 @@
     "@nestjs/terminus": "^10.2.3",
     "@nestjs/throttler": "^5.0.1",
     "@nestjs/websockets": "^11.1.6",
+    "@noteum/utils": "workspace:*",
     "@prisma/client": "^5.0.0",
-    "@trpc/client": "^10.45.0",
-    "@trpc/server": "^10.45.0",
+    "@trpc/client": "^11.7.1",
+    "@trpc/server": "^11.7.1",
     "@types/ws": "^8.18.1",
     "axios": "^1.6.2",
     "bcrypt": "^5.1.1",

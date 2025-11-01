@@ -4,6 +4,7 @@ import { ThrottlerModule } from '@nestjs/throttler'
 import { TerminusModule } from '@nestjs/terminus'
 import { HealthModule } from './modules/health/health.module'
 import { DatabaseModule } from './modules/database/database.module'
+import { CacheModule } from './modules/cache/cache.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { UsersModule } from './modules/users/users.module'
 import { NotebooksModule } from './modules/notebooks/notebooks.module'
@@ -37,6 +38,7 @@ import { validateConfig } from './config/validation'
     // 业务模块
     HealthModule,
     DatabaseModule,
+    CacheModule,
     AuthModule,
     UsersModule,
     NotebooksModule,

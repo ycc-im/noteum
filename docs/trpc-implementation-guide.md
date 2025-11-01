@@ -7,6 +7,7 @@ tRPC 是一个用于构建类型安全 API 的全栈 TypeScript 库。本指南�
 ## 项目技术栈
 
 ### 后端
+
 - **框架**: NestJS 10.x LTS
 - **运行时**: Node.js 18+
 - **数据库**: PostgreSQL 15+ with Prisma 5.0+
@@ -14,6 +15,7 @@ tRPC 是一个用于构建类型安全 API 的全栈 TypeScript 库。本指南�
 - **AI 集成**: LangChain.js + LangGraph
 
 ### 前端
+
 - **框架**: React 18.2+
 - **路由**: TanStack Router
 - **状态管理**: Zustand
@@ -22,6 +24,7 @@ tRPC 是一个用于构建类型安全 API 的全栈 TypeScript 库。本指南�
 - **TypeScript**: 5.0+
 
 ### tRPC 版本
+
 - **tRPC**: v10.45.0
 - **@tanstack/react-query**: v4.x
 - **包名**: `@trpc/react-query`
@@ -46,31 +49,27 @@ noteum/
 
 ```typescript
 // apps/services/src/trpc/trpc.module.ts
-import { Module } from '@nestjs/common';
-import { TrpcModule } from './trpc.module';
-import { NotesModule } from '../notes/notes.module';
-import { AuthModule } from '../auth/auth.module';
+import { Module } from '@nestjs/common'
+import { TrpcModule } from './trpc.module'
+import { NotesModule } from '../notes/notes.module'
+import { AuthModule } from '../auth/auth.module'
 
 @Module({
-  imports: [
-    TrpcModule,
-    NotesModule,
-    AuthModule,
-  ],
+  imports: [TrpcModule, NotesModule, AuthModule],
 })
 export class AppModule {}
 ```
 
 ```typescript
 // apps/services/src/trpc/trpc.service.ts
-import { Injectable } from '@nestjs/common';
-import { initTRPC, TRPCError } from '@trpc/server';
-import { ZodError } from 'zod';
-import { Context } from './trpc.context';
+import { Injectable } from '@nestjs/common'
+import { initTRPC, TRPCError } from '@trpc/server'
+import { ZodError } from 'zod'
+import { Context } from './trpc.context'
 
 const t = initTRPC.context<Context>().create({
   errorFormatter(opts) {
-    const { shape, error } = opts;
+    const { shape, error } = opts
     return {
       ...shape,
       data: {
@@ -80,58 +79,61 @@ const t = initTRPC.context<Context>().create({
             ? error.cause.flatten()
             : null,
       },
-    };
+    }
   },
-});
+})
 
-export const router = t.router;
-export const publicProcedure = t.procedure;
+export const router = t.router
+export const publicProcedure = t.procedure
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   if (!ctx.user) {
-    throw new TRPCError({ code: 'UNAUTHORIZED' });
+    throw new TRPCError({ code: 'UNAUTHORIZED' })
   }
   return next({
     ctx: {
       ...ctx,
       user: ctx.user,
     },
-  });
-});
+  })
+})
 
 @Injectable()
 export class TrpcService {
-  router = router;
-  publicProcedure = publicProcedure;
-  protectedProcedure = protectedProcedure;
+  router = router
+  publicProcedure = publicProcedure
+  protectedProcedure = protectedProcedure
 }
 ```
 
 ```typescript
 // apps/services/src/trpc/trpc.context.ts
-import { PrismaService } from '../prisma/prisma.service';
-import { RedisService } from '../redis/redis.service';
+import { PrismaService } from '../prisma/prisma.service'
+import { RedisService } from '../redis/redis.service'
 
 export interface Context {
   user?: {
-    id: string;
-    email: string;
-  };
-  prisma: PrismaService;
-  redis: RedisService;
-  req?: Request;
-  res?: Response;
+    id: string
+    email: string
+  }
+  prisma: PrismaService
+  redis: RedisService
+  req?: Request
+  res?: Response
 }
 
-export type ContextFactory = (opts: { req: Request; res: Response }) => Promise<Context>;
+export type ContextFactory = (opts: {
+  req: Request
+  res: Response
+}) => Promise<Context>
 
 export const createContext: ContextFactory = async ({ req, res }) => {
   // 从请求头中提取认证信息
-  const token = req.headers.get('authorization')?.replace('Bearer ', '');
+  const token = req.headers.get('authorization')?.replace('Bearer ', '')
 
-  let user;
+  let user
   if (token) {
     // 验证 JWT token 并获取用户信息
-    user = await verifyToken(token);
+    user = await verifyToken(token)
   }
 
   return {
@@ -140,36 +142,40 @@ export const createContext: ContextFactory = async ({ req, res }) => {
     redis: new RedisService(),
     req,
     res,
-  };
-};
+  }
+}
 ```
 
 ### 1.2 笔记路由实现
 
 ```typescript
 // apps/services/src/notes/notes.router.ts
-import { z } from 'zod';
-import { router, protectedProcedure, publicProcedure } from '../trpc/trpc.service';
-import { NotesService } from './notes.service';
-import { AiProcessingService } from '../ai/ai-processing.service';
+import { z } from 'zod'
+import {
+  router,
+  protectedProcedure,
+  publicProcedure,
+} from '../trpc/trpc.service'
+import { NotesService } from './notes.service'
+import { AiProcessingService } from '../ai/ai-processing.service'
 
 const CreateNoteSchema = z.object({
   title: z.string().min(1).max(255),
   content: z.string().optional(),
   tags: z.array(z.string()).optional(),
   isPublic: z.boolean().default(false),
-});
+})
 
 const UpdateNoteSchema = CreateNoteSchema.partial().extend({
   id: z.string().uuid(),
-});
+})
 
 const GetNotesSchema = z.object({
   limit: z.number().min(1).max(100).default(20),
   offset: z.number().min(0).default(0),
   search: z.string().optional(),
   tags: z.array(z.string()).optional(),
-});
+})
 
 export const notesRouter = router({
   // 获取笔记列表
@@ -185,9 +191,10 @@ export const notesRouter = router({
               { content: { contains: input.search, mode: 'insensitive' } },
             ],
           }),
-          ...(input.tags && input.tags.length > 0 && {
-            tags: { hasSome: input.tags },
-          }),
+          ...(input.tags &&
+            input.tags.length > 0 && {
+              tags: { hasSome: input.tags },
+            }),
         },
         orderBy: { updatedAt: 'desc' },
         take: input.limit,
@@ -196,7 +203,7 @@ export const notesRouter = router({
           tags: true,
           _count: { select: { childNotes: true } },
         },
-      });
+      })
     }),
 
   // 获取单个笔记
@@ -213,16 +220,16 @@ export const notesRouter = router({
           childNotes: true,
           parentNote: true,
         },
-      });
+      })
 
       if (!note) {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: '笔记不存在',
-        });
+        })
       }
 
-      return note;
+      return note
     }),
 
   // 创建笔记
@@ -237,27 +244,27 @@ export const notesRouter = router({
         include: {
           tags: true,
         },
-      });
+      })
 
-      return note;
+      return note
     }),
 
   // 更新笔记
   update: protectedProcedure
     .input(UpdateNoteSchema)
     .mutation(async ({ input, ctx }) => {
-      const { id, ...data } = input;
+      const { id, ...data } = input
 
       // 检查笔记是否存在且属于当前用户
       const existingNote = await ctx.prisma.note.findFirst({
         where: { id, userId: ctx.user.id },
-      });
+      })
 
       if (!existingNote) {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: '笔记不存在',
-        });
+        })
       }
 
       const updatedNote = await ctx.prisma.note.update({
@@ -269,9 +276,9 @@ export const notesRouter = router({
         include: {
           tags: true,
         },
-      });
+      })
 
-      return updatedNote;
+      return updatedNote
     }),
 
   // 删除笔记
@@ -280,169 +287,178 @@ export const notesRouter = router({
     .mutation(async ({ input, ctx }) => {
       const note = await ctx.prisma.note.findFirst({
         where: { id: input.id, userId: ctx.user.id },
-      });
+      })
 
       if (!note) {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: '笔记不存在',
-        });
+        })
       }
 
       await ctx.prisma.note.delete({
         where: { id: input.id },
-      });
+      })
 
-      return { success: true };
+      return { success: true }
     }),
 
   // 提交 AI 处理请求
   submitAiProcessing: protectedProcedure
-    .input(z.object({
-      noteId: z.string().uuid(),
-      processingOptions: z.object({
-        type: z.enum(['SUMMARIZE', 'EXTRACT_INSIGHTS', 'GENERATE_RELATED']),
-        model: z.string().default('gpt-4'),
-        temperature: z.number().min(0).max(2).default(0.7),
-      }),
-    }))
+    .input(
+      z.object({
+        noteId: z.string().uuid(),
+        processingOptions: z.object({
+          type: z.enum(['SUMMARIZE', 'EXTRACT_INSIGHTS', 'GENERATE_RELATED']),
+          model: z.string().default('gpt-4'),
+          temperature: z.number().min(0).max(2).default(0.7),
+        }),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
       // 验证笔记所有权
       const note = await ctx.prisma.note.findFirst({
         where: { id: input.noteId, userId: ctx.user.id },
-      });
+      })
 
       if (!note) {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: '笔记不存在',
-        });
+        })
       }
 
       // 添加到 Redis Streams 任务队列
-      const taskId = `ai-${Date.now()}-${input.noteId}`;
-      await ctx.redis.xadd('ai-task-queue', '*',
-        'taskId', taskId,
-        'noteId', input.noteId,
-        'userId', ctx.user.id,
-        'processingOptions', JSON.stringify(input.processingOptions),
-        'createdAt', new Date().toISOString()
-      );
+      const taskId = `ai-${Date.now()}-${input.noteId}`
+      await ctx.redis.xadd(
+        'ai-task-queue',
+        '*',
+        'taskId',
+        taskId,
+        'noteId',
+        input.noteId,
+        'userId',
+        ctx.user.id,
+        'processingOptions',
+        JSON.stringify(input.processingOptions),
+        'createdAt',
+        new Date().toISOString()
+      )
 
-      return { taskId, status: 'QUEUED' };
+      return { taskId, status: 'QUEUED' }
     }),
-});
+})
 ```
 
 ### 1.3 tRPC 订阅实现
 
 ```typescript
 // apps/services/src/trpc/subscriptions.router.ts
-import { observable } from '@trpc/server/observable';
-import { EventEmitter } from 'events';
-import { router, protectedProcedure } from '../trpc/trpc.service';
-import { z } from 'zod';
+import { observable } from '@trpc/server/observable'
+import { EventEmitter } from 'events'
+import { router, protectedProcedure } from '../trpc/trpc.service'
+import { z } from 'zod'
 
 // 全局事件发射器
-const taskEvents = new EventEmitter();
-const aiResultEvents = new EventEmitter();
+const taskEvents = new EventEmitter()
+const aiResultEvents = new EventEmitter()
 
 export const subscriptionsRouter = router({
   // 任务状态更新订阅
   onTaskUpdate: protectedProcedure
     .input(z.object({ taskId: z.string().optional() }))
     .subscription(({ input, ctx }) => {
-      return observable<{ taskId: string; status: string; progress: number }>((emit) => {
-        const onTaskUpdate = (data: any) => {
-          // 如果指定了 taskId，只发送该任务的事件
-          if (!input.taskId || data.taskId === input.taskId) {
-            // 确保用户只能收到自己的任务事件
-            if (data.userId === ctx.user.id) {
-              emit.next(data);
+      return observable<{ taskId: string; status: string; progress: number }>(
+        (emit) => {
+          const onTaskUpdate = (data: any) => {
+            // 如果指定了 taskId，只发送该任务的事件
+            if (!input.taskId || data.taskId === input.taskId) {
+              // 确保用户只能收到自己的任务事件
+              if (data.userId === ctx.user.id) {
+                emit.next(data)
+              }
             }
           }
-        };
 
-        taskEvents.on('task-update', onTaskUpdate);
+          taskEvents.on('task-update', onTaskUpdate)
 
-        return () => {
-          taskEvents.off('task-update', onTaskUpdate);
-        };
-      });
+          return () => {
+            taskEvents.off('task-update', onTaskUpdate)
+          }
+        }
+      )
     }),
 
   // AI 处理结果订阅
-  onAiResult: protectedProcedure
-    .subscription(({ ctx }) => {
-      return observable<any>((emit) => {
-        const onAiResult = (data: any) => {
-          // 确保用户只能收到自己的 AI 处理结果
-          if (data.userId === ctx.user.id) {
-            emit.next(data);
-          }
-        };
+  onAiResult: protectedProcedure.subscription(({ ctx }) => {
+    return observable<any>((emit) => {
+      const onAiResult = (data: any) => {
+        // 确保用户只能收到自己的 AI 处理结果
+        if (data.userId === ctx.user.id) {
+          emit.next(data)
+        }
+      }
 
-        aiResultEvents.on('ai-result', onAiResult);
+      aiResultEvents.on('ai-result', onAiResult)
 
-        return () => {
-          aiResultEvents.off('ai-result', onAiResult);
-        };
-      });
-    }),
+      return () => {
+        aiResultEvents.off('ai-result', onAiResult)
+      }
+    })
+  }),
 
   // 笔记同步订阅
-  onNoteSync: protectedProcedure
-    .subscription(({ ctx }) => {
-      return observable<any>((emit) => {
-        const onNoteSync = (data: any) => {
-          // 确保用户只能收到自己的同步事件
-          if (data.userId === ctx.user.id) {
-            emit.next(data);
-          }
-        };
+  onNoteSync: protectedProcedure.subscription(({ ctx }) => {
+    return observable<any>((emit) => {
+      const onNoteSync = (data: any) => {
+        // 确保用户只能收到自己的同步事件
+        if (data.userId === ctx.user.id) {
+          emit.next(data)
+        }
+      }
 
-        taskEvents.on('note-sync', onNoteSync);
+      taskEvents.on('note-sync', onNoteSync)
 
-        return () => {
-          taskEvents.off('note-sync', onNoteSync);
-        };
-      });
-    }),
-});
+      return () => {
+        taskEvents.off('note-sync', onNoteSync)
+      }
+    })
+  }),
+})
 
 // 导出事件发射器供其他服务使用
-export { taskEvents, aiResultEvents };
+export { taskEvents, aiResultEvents }
 ```
 
 ### 1.4 主路由器
 
 ```typescript
 // apps/services/src/trpc/app.router.ts
-import { router } from './trpc.service';
-import { notesRouter } from '../notes/notes.router';
-import { subscriptionsRouter } from './subscriptions.router';
-import { authRouter } from '../auth/auth.router';
-import { tagsRouter } from '../tags/tags.router';
+import { router } from './trpc.service'
+import { notesRouter } from '../notes/notes.router'
+import { subscriptionsRouter } from './subscriptions.router'
+import { authRouter } from '../auth/auth.router'
+import { tagsRouter } from '../tags/tags.router'
 
 export const appRouter = router({
   notes: notesRouter,
   auth: authRouter,
   tags: tagsRouter,
   subscriptions: subscriptionsRouter,
-});
+})
 
-export type AppRouter = typeof appRouter;
+export type AppRouter = typeof appRouter
 ```
 
 ### 1.5 NestJS 集成
 
 ```typescript
 // apps/services/src/trpc/trpc.controller.ts
-import { Controller } from '@nestjs/common';
-import { TrpcService } from './trpc.service';
-import { createContext, ContextFactory } from './trpc.context';
-import { appRouter } from './app.router';
-import { createExpressMiddleware } from '@trpc/server/adapters/express';
+import { Controller } from '@nestjs/common'
+import { TrpcService } from './trpc.service'
+import { createContext, ContextFactory } from './trpc.context'
+import { appRouter } from './app.router'
+import { createExpressMiddleware } from '@trpc/server/adapters/express'
 
 @Controller('trpc')
 export class TrpcController {
@@ -452,49 +468,49 @@ export class TrpcController {
   middleware = createExpressMiddleware({
     router: appRouter,
     createContext,
-  });
+  })
 }
 ```
 
 ```typescript
 // apps/services/src/main.ts
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { TrpcController } from './trpc/trpc.controller';
-import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestFactory } from '@nestjs/core'
+import { AppModule } from './app.module'
+import { TrpcController } from './trpc/trpc.controller'
+import { ValidationPipe } from '@nestjs/common'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule)
 
   // 启用 CORS
   app.enableCors({
     origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true,
-  });
+  })
 
   // 全局验证管道
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe())
 
   // 设置 tRPC
-  const trpcController = app.get(TrpcController);
-  app.use('/trpc', trpcController.middleware);
+  const trpcController = app.get(TrpcController)
+  app.use('/trpc', trpcController.middleware)
 
   // Swagger 文档
   const config = new DocumentBuilder()
     .setTitle('Noteum API')
     .setDescription('Noteum 项目 API 文档')
     .setVersion('1.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+    .build()
+  const document = SwaggerModule.createDocument(app, config)
+  SwaggerModule.setup('api', app, document)
 
-  await app.listen(process.env.PORT || 3001);
-  console.log(`🚀 服务运行在: ${await app.getUrl()}`);
-  console.log(`📚 API 文档: ${await app.getUrl()}/api`);
+  await app.listen(process.env.PORT || 3001)
+  console.log(`🚀 服务运行在: ${await app.getUrl()}`)
+  console.log(`📚 API 文档: ${await app.getUrl()}/api`)
 }
 
-bootstrap();
+bootstrap()
 ```
 
 ## 2. React 前端实现
@@ -562,35 +578,35 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
 
 ```typescript
 // apps/client/src/stores/useNotesStore.ts
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
-import { trpc } from '../utils/trpc';
+import { create } from 'zustand'
+import { devtools } from 'zustand/middleware'
+import { trpc } from '../utils/trpc'
 
 interface Note {
-  id: string;
-  title: string;
-  content?: string;
-  tags: string[];
-  isPublic: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  id: string
+  title: string
+  content?: string
+  tags: string[]
+  isPublic: boolean
+  createdAt: Date
+  updatedAt: Date
 }
 
 interface NotesState {
-  notes: Note[];
-  currentNote: Note | null;
-  isLoading: boolean;
-  searchQuery: string;
-  selectedTags: string[];
+  notes: Note[]
+  currentNote: Note | null
+  isLoading: boolean
+  searchQuery: string
+  selectedTags: string[]
 
   // Actions
-  setNotes: (notes: Note[]) => void;
-  setCurrentNote: (note: Note | null) => void;
-  addNote: (note: Note) => void;
-  updateNote: (id: string, updates: Partial<Note>) => void;
-  removeNote: (id: string) => void;
-  setSearchQuery: (query: string) => void;
-  setSelectedTags: (tags: string[]) => void;
+  setNotes: (notes: Note[]) => void
+  setCurrentNote: (note: Note | null) => void
+  addNote: (note: Note) => void
+  updateNote: (id: string, updates: Partial<Note>) => void
+  removeNote: (id: string) => void
+  setSearchQuery: (query: string) => void
+  setSelectedTags: (tags: string[]) => void
 }
 
 export const useNotesStore = create<NotesState>()(
@@ -606,57 +622,68 @@ export const useNotesStore = create<NotesState>()(
 
       setCurrentNote: (note) => set({ currentNote: note }),
 
-      addNote: (note) => set((state) => ({
-        notes: [note, ...state.notes],
-      })),
+      addNote: (note) =>
+        set((state) => ({
+          notes: [note, ...state.notes],
+        })),
 
-      updateNote: (id, updates) => set((state) => ({
-        notes: state.notes.map(note =>
-          note.id === id ? { ...note, ...updates } : note
-        ),
-        currentNote: state.currentNote?.id === id
-          ? { ...state.currentNote, ...updates }
-          : state.currentNote,
-      })),
+      updateNote: (id, updates) =>
+        set((state) => ({
+          notes: state.notes.map((note) =>
+            note.id === id ? { ...note, ...updates } : note
+          ),
+          currentNote:
+            state.currentNote?.id === id
+              ? { ...state.currentNote, ...updates }
+              : state.currentNote,
+        })),
 
-      removeNote: (id) => set((state) => ({
-        notes: state.notes.filter(note => note.id !== id),
-        currentNote: state.currentNote?.id === id ? null : state.currentNote,
-      })),
+      removeNote: (id) =>
+        set((state) => ({
+          notes: state.notes.filter((note) => note.id !== id),
+          currentNote: state.currentNote?.id === id ? null : state.currentNote,
+        })),
 
       setSearchQuery: (query) => set({ searchQuery: query }),
       setSelectedTags: (tags) => set({ selectedTags: tags }),
     }),
     { name: 'notes-store' }
   )
-);
+)
 
 // tRPC 集成的 hooks
 export const useNotes = () => {
-  const { notes, setNotes, isLoading } = useNotesStore();
-  const searchQuery = useNotesStore((state) => state.searchQuery);
-  const selectedTags = useNotesStore((state) => state.selectedTags);
+  const { notes, setNotes, isLoading } = useNotesStore()
+  const searchQuery = useNotesStore((state) => state.searchQuery)
+  const selectedTags = useNotesStore((state) => state.selectedTags)
 
-  const { data, isLoading: isFetching, refetch } = trpc.notes.list.useQuery({
-    limit: 50,
-    offset: 0,
-    search: searchQuery || undefined,
-    tags: selectedTags.length > 0 ? selectedTags : undefined,
-  }, {
-    onSuccess: (data) => {
-      setNotes(data);
+  const {
+    data,
+    isLoading: isFetching,
+    refetch,
+  } = trpc.notes.list.useQuery(
+    {
+      limit: 50,
+      offset: 0,
+      search: searchQuery || undefined,
+      tags: selectedTags.length > 0 ? selectedTags : undefined,
     },
-  });
+    {
+      onSuccess: (data) => {
+        setNotes(data)
+      },
+    }
+  )
 
   return {
     notes: data || notes,
     isLoading: isLoading || isFetching,
     refetch,
-  };
-};
+  }
+}
 
 export const useCurrentNote = (id?: string) => {
-  const { currentNote, setCurrentNote } = useNotesStore();
+  const { currentNote, setCurrentNote } = useNotesStore()
 
   const { data, isLoading } = trpc.notes.getById.useQuery(
     { id: id! },
@@ -664,14 +691,14 @@ export const useCurrentNote = (id?: string) => {
       enabled: !!id,
       onSuccess: (data) => setCurrentNote(data),
     }
-  );
+  )
 
   return {
     note: data || currentNote,
     isLoading,
     setCurrentNote,
-  };
-};
+  }
+}
 ```
 
 ### 2.3 TanStack Router 集成
@@ -834,96 +861,96 @@ function NotesPage() {
 
 ```typescript
 // apps/client/src/components/notifications/TaskNotifications.tsx
-import { useEffect } from 'react';
-import { trpc } from '../../utils/trpc';
-import { useNotesStore } from '../../stores/useNotesStore';
-import { toast } from '@/components/ui/use-toast';
+import { useEffect } from 'react'
+import { trpc } from '../../utils/trpc'
+import { useNotesStore } from '../../stores/useNotesStore'
+import { toast } from '@/components/ui/use-toast'
 
 export function TaskNotifications() {
-  const updateNote = useNotesStore((state) => state.updateNote);
-  const { user } = useAuth(); // 假设有 useAuth hook
+  const updateNote = useNotesStore((state) => state.updateNote)
+  const { user } = useAuth() // 假设有 useAuth hook
 
   // 任务状态更新订阅
   trpc.subscriptions.onTaskUpdate.useSubscription(undefined, {
     onData(data) {
-      console.log('任务更新:', data);
+      console.log('任务更新:', data)
 
       if (data.status === 'COMPLETED') {
         toast({
-          title: "任务完成",
+          title: '任务完成',
           description: `任务 ${data.taskId} 已完成处理`,
-        });
+        })
       } else if (data.status === 'FAILED') {
         toast({
-          title: "任务失败",
+          title: '任务失败',
           description: `任务 ${data.taskId} 处理失败`,
-          variant: "destructive",
-        });
+          variant: 'destructive',
+        })
       }
     },
-  });
+  })
 
   // AI 处理结果订阅
   trpc.subscriptions.onAiResult.useSubscription(undefined, {
     onData(data) {
-      console.log('AI 处理结果:', data);
+      console.log('AI 处理结果:', data)
 
-      const { result } = data;
+      const { result } = data
 
       // 更新本地笔记状态
       if (result.action === 'UPDATE_ORIGINAL' && result.updatedNote) {
-        updateNote(result.noteId, result.updatedNote);
+        updateNote(result.noteId, result.updatedNote)
       }
 
       // 显示通知
       switch (result.action) {
         case 'CREATE_CHILD_NOTE':
           toast({
-            title: "AI 处理完成",
-            description: "已创建 AI 处理结果笔记",
-          });
-          break;
+            title: 'AI 处理完成',
+            description: '已创建 AI 处理结果笔记',
+          })
+          break
         case 'UPDATE_ORIGINAL':
           toast({
-            title: "笔记已更新",
-            description: "笔记已通过 AI 处理更新",
-          });
-          break;
+            title: '笔记已更新',
+            description: '笔记已通过 AI 处理更新',
+          })
+          break
         case 'REQUEST_CONFIRMATION':
           // 显示确认对话框
-          showAiResultDialog(result);
-          break;
+          showAiResultDialog(result)
+          break
       }
     },
-  });
+  })
 
   // 笔记同步订阅
   trpc.subscriptions.onNoteSync.useSubscription(undefined, {
     onData(data) {
-      console.log('笔记同步:', data);
+      console.log('笔记同步:', data)
 
       switch (data.type) {
         case 'NOTE_CREATED':
           // 笔记创建成功
-          break;
+          break
         case 'NOTE_UPDATED':
-          updateNote(data.noteId, data.updates);
-          break;
+          updateNote(data.noteId, data.updates)
+          break
         case 'NOTE_DELETED':
           // 笔记删除成功
-          break;
+          break
       }
     },
-  });
+  })
 
-  return null;
+  return null
 }
 
 // AI 结果确认对话框
 function showAiResultDialog(result: any) {
   // 这里可以集成 shadcn/ui 的 Dialog 组件
   // 或者使用路由导航到专门的确认页面
-  console.log('需要用户确认 AI 处理结果:', result);
+  console.log('需要用户确认 AI 处理结果:', result)
 }
 ```
 
@@ -1039,13 +1066,13 @@ export function AiProcessor({
 
 ```typescript
 // apps/services/src/redis/redis.service.ts
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import Redis from 'ioredis';
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common'
+import Redis from 'ioredis'
 
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
-  private client: Redis;
-  private subscriber: Redis;
+  private client: Redis
+  private subscriber: Redis
 
   async onModuleInit() {
     this.client = new Redis({
@@ -1053,25 +1080,25 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       port: parseInt(process.env.REDIS_PORT || '6379'),
       retryDelayOnFailover: 100,
       maxRetriesPerRequest: 3,
-    });
+    })
 
     this.subscriber = new Redis({
       host: process.env.REDIS_HOST || 'localhost',
       port: parseInt(process.env.REDIS_PORT || '6379'),
-    });
+    })
 
-    console.log('✅ Redis 连接已建立');
+    console.log('✅ Redis 连接已建立')
   }
 
   async onModuleDestroy() {
-    await this.client.quit();
-    await this.subscriber.quit();
-    console.log('🔴 Redis 连接已关闭');
+    await this.client.quit()
+    await this.subscriber.quit()
+    console.log('🔴 Redis 连接已关闭')
   }
 
   // Redis Streams 操作
   async xadd(stream: string, ...args: string[]): Promise<string> {
-    return this.client.xadd(stream, '*', ...args);
+    return this.client.xadd(stream, '*', ...args)
   }
 
   async xreadgroup(
@@ -1079,44 +1106,51 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     consumer: string,
     ...args: string[]
   ): Promise<any[]> {
-    return this.client.xreadgroup('GROUP', group, consumer, ...args);
+    return this.client.xreadgroup('GROUP', group, consumer, ...args)
   }
 
-  async xack(stream: string, group: string, messageId: string): Promise<number> {
-    return this.client.xack(stream, group, messageId);
+  async xack(
+    stream: string,
+    group: string,
+    messageId: string
+  ): Promise<number> {
+    return this.client.xack(stream, group, messageId)
   }
 
   async xgroup(
     command: 'CREATE' | 'SETID' | 'DESTROY' | 'DELCONSUMER',
     ...args: string[]
   ): Promise<string | number> {
-    return this.client.xgroup(command, ...args);
+    return this.client.xgroup(command, ...args)
   }
 
   // 常规 Redis 操作
   async get(key: string): Promise<string | null> {
-    return this.client.get(key);
+    return this.client.get(key)
   }
 
   async set(key: string, value: string, ttl?: number): Promise<string> {
     if (ttl) {
-      return this.client.setex(key, ttl, value);
+      return this.client.setex(key, ttl, value)
     }
-    return this.client.set(key, value);
+    return this.client.set(key, value)
   }
 
   async del(key: string): Promise<number> {
-    return this.client.del(key);
+    return this.client.del(key)
   }
 
   // 发布订阅
   async publish(channel: string, message: string): Promise<number> {
-    return this.client.publish(channel, message);
+    return this.client.publish(channel, message)
   }
 
-  async subscribe(channel: string, callback: (channel: string, message: string) => void): Promise<void> {
-    this.subscriber.subscribe(channel);
-    this.subscriber.on('message', callback);
+  async subscribe(
+    channel: string,
+    callback: (channel: string, message: string) => void
+  ): Promise<void> {
+    this.subscriber.subscribe(channel)
+    this.subscriber.on('message', callback)
   }
 }
 ```
@@ -1125,10 +1159,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
 ```typescript
 // apps/services/src/queue/task-queue.service.ts
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { RedisService } from '../redis/redis.service';
-import { AiProcessingService } from '../ai/ai-processing.service';
-import { taskEvents, aiResultEvents } from '../trpc/subscriptions.router';
+import { Injectable, OnModuleInit } from '@nestjs/common'
+import { RedisService } from '../redis/redis.service'
+import { AiProcessingService } from '../ai/ai-processing.service'
+import { taskEvents, aiResultEvents } from '../trpc/subscriptions.router'
 
 @Injectable()
 export class TaskQueueService implements OnModuleInit {
@@ -1146,20 +1180,20 @@ export class TaskQueueService implements OnModuleInit {
         'ai-processors',
         '0',
         'MKSTREAM'
-      );
+      )
     } catch (error) {
       // 消费者组可能已存在
-      console.log('消费者组已存在或创建失败:', error.message);
+      console.log('消费者组已存在或创建失败:', error.message)
     }
 
     // 启动消费者
-    this.startAiConsumer();
-    console.log('🚀 AI 任务队列消费者已启动');
+    this.startAiConsumer()
+    console.log('🚀 AI 任务队列消费者已启动')
   }
 
   private async startAiConsumer(): Promise<void> {
-    const consumerGroup = 'ai-processors';
-    const consumerId = `ai-processor-${Date.now()}`;
+    const consumerGroup = 'ai-processors'
+    const consumerId = `ai-processor-${Date.now()}`
 
     while (true) {
       try {
@@ -1173,10 +1207,10 @@ export class TaskQueueService implements OnModuleInit {
           'STREAMS',
           'ai-task-queue',
           '>'
-        );
+        )
 
         if (results && results.length > 0) {
-          const [streamName, messages] = results[0];
+          const [streamName, messages] = results[0]
 
           for (const [messageId, fields] of messages) {
             try {
@@ -1186,28 +1220,27 @@ export class TaskQueueService implements OnModuleInit {
                 userId: fields.userId,
                 processingOptions: JSON.parse(fields.processingOptions),
                 createdAt: new Date(fields.createdAt),
-              };
+              }
 
               // 处理任务
-              await this.processAiTask(taskData);
+              await this.processAiTask(taskData)
 
               // 确认消息处理完成
-              await this.redisService.xack(streamName, consumerGroup, messageId);
-
+              await this.redisService.xack(streamName, consumerGroup, messageId)
             } catch (error) {
-              console.error(`处理消息 ${messageId} 时出错:`, error);
+              console.error(`处理消息 ${messageId} 时出错:`, error)
             }
           }
         }
       } catch (error) {
-        console.error('AI 消费者错误:', error);
-        await this.sleep(5000); // 错误后等待 5 秒
+        console.error('AI 消费者错误:', error)
+        await this.sleep(5000) // 错误后等待 5 秒
       }
     }
   }
 
   private async processAiTask(taskData: any): Promise<void> {
-    const { taskId, noteId, userId, processingOptions } = taskData;
+    const { taskId, noteId, userId, processingOptions } = taskData
 
     try {
       // 通知任务开始
@@ -1216,7 +1249,7 @@ export class TaskQueueService implements OnModuleInit {
         userId,
         status: 'PROCESSING',
         progress: 10,
-      });
+      })
 
       // 执行 AI 处理
       const result = await this.aiProcessingService.processNote({
@@ -1229,9 +1262,9 @@ export class TaskQueueService implements OnModuleInit {
             userId,
             status: 'PROCESSING',
             progress,
-          });
+          })
         },
-      });
+      })
 
       // 通知任务完成
       taskEvents.emit('task-update', {
@@ -1239,16 +1272,15 @@ export class TaskQueueService implements OnModuleInit {
         userId,
         status: 'COMPLETED',
         progress: 100,
-      });
+      })
 
       // 发送 AI 处理结果
       aiResultEvents.emit('ai-result', {
         userId,
         result,
-      });
-
+      })
     } catch (error) {
-      console.error(`AI 任务 ${taskId} 处理失败:`, error);
+      console.error(`AI 任务 ${taskId} 处理失败:`, error)
 
       // 通知任务失败
       taskEvents.emit('task-update', {
@@ -1257,12 +1289,12 @@ export class TaskQueueService implements OnModuleInit {
         status: 'FAILED',
         progress: 0,
         error: error.message,
-      });
+      })
     }
   }
 
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 }
 ```
@@ -1273,18 +1305,18 @@ export class TaskQueueService implements OnModuleInit {
 
 ```typescript
 // apps/services/src/trpc/schemas/notes.schema.ts
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const CreateNoteSchema = z.object({
   title: z.string().min(1, '标题不能为空').max(255, '标题过长'),
   content: z.string().optional(),
   tags: z.array(z.string()).max(10, '标签数量不能超过 10 个').optional(),
   isPublic: z.boolean().default(false),
-});
+})
 
 export const UpdateNoteSchema = CreateNoteSchema.partial().extend({
   id: z.string().uuid('无效的笔记 ID'),
-});
+})
 
 export const GetNotesSchema = z.object({
   limit: z.number().min(1).max(100).default(20),
@@ -1293,28 +1325,28 @@ export const GetNotesSchema = z.object({
   tags: z.array(z.string()).max(20).optional(),
   sortBy: z.enum(['updatedAt', 'createdAt', 'title']).default('updatedAt'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
-});
+})
 
 export const AiProcessingOptionsSchema = z.object({
   type: z.enum(['SUMMARIZE', 'EXTRACT_INSIGHTS', 'GENERATE_RELATED']),
   model: z.string().default('gpt-4'),
   temperature: z.number().min(0).max(2).default(0.7),
   maxTokens: z.number().min(100).max(4000).default(2000),
-});
+})
 
 // 导出类型供客户端使用
-export type CreateNoteInput = z.infer<typeof CreateNoteSchema>;
-export type UpdateNoteInput = z.infer<typeof UpdateNoteSchema>;
-export type GetNotesInput = z.infer<typeof GetNotesSchema>;
-export type AiProcessingOptions = z.infer<typeof AiProcessingOptionsSchema>;
+export type CreateNoteInput = z.infer<typeof CreateNoteSchema>
+export type UpdateNoteInput = z.infer<typeof UpdateNoteSchema>
+export type GetNotesInput = z.infer<typeof GetNotesSchema>
+export type AiProcessingOptions = z.infer<typeof AiProcessingOptionsSchema>
 ```
 
 ### 4.2 错误处理
 
 ```typescript
 // apps/services/src/trpc/trpc.error-handler.ts
-import { TRPCError } from '@trpc/server';
-import { ZodError } from 'zod';
+import { TRPCError } from '@trpc/server'
+import { ZodError } from 'zod'
 
 export class TrpcErrorHandler {
   static handleValidationError(error: ZodError): never {
@@ -1322,37 +1354,37 @@ export class TrpcErrorHandler {
       code: 'BAD_REQUEST',
       message: '输入验证失败',
       cause: error,
-    });
+    })
   }
 
   static handleNotFound(resource: string): never {
     throw new TRPCError({
       code: 'NOT_FOUND',
       message: `${resource} 不存在`,
-    });
+    })
   }
 
   static handleUnauthorized(message: string = '未授权访问'): never {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message,
-    });
+    })
   }
 
   static handleForbidden(message: string = '权限不足'): never {
     throw new TRPCError({
       code: 'FORBIDDEN',
       message,
-    });
+    })
   }
 
   static handleInternalError(error: Error, message?: string): never {
-    console.error('内部服务器错误:', error);
+    console.error('内部服务器错误:', error)
     throw new TRPCError({
       code: 'INTERNAL_SERVER_ERROR',
       message: message || '服务器内部错误',
       cause: error,
-    });
+    })
   }
 }
 ```
@@ -1363,14 +1395,14 @@ export class TrpcErrorHandler {
 
 ```typescript
 // apps/services/src/notes/notes.service.spec.ts
-import { Test, TestingModule } from '@nestjs/testing';
-import { NotesService } from './notes.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { TRPCError } from '@trpc/server';
+import { Test, TestingModule } from '@nestjs/testing'
+import { NotesService } from './notes.service'
+import { PrismaService } from '../prisma/prisma.service'
+import { TRPCError } from '@trpc/server'
 
 describe('NotesService', () => {
-  let service: NotesService;
-  let prismaService: PrismaService;
+  let service: NotesService
+  let prismaService: PrismaService
 
   const mockPrismaService = {
     note: {
@@ -1380,7 +1412,7 @@ describe('NotesService', () => {
       update: jest.fn(),
       delete: jest.fn(),
     },
-  };
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -1391,20 +1423,20 @@ describe('NotesService', () => {
           useValue: mockPrismaService,
         },
       ],
-    }).compile();
+    }).compile()
 
-    service = module.get<NotesService>(NotesService);
-    prismaService = module.get<PrismaService>(PrismaService);
-  });
+    service = module.get<NotesService>(NotesService)
+    prismaService = module.get<PrismaService>(PrismaService)
+  })
 
   describe('createNote', () => {
     it('should create a note successfully', async () => {
-      const userId = 'user-123';
+      const userId = 'user-123'
       const noteData = {
         title: '测试笔记',
         content: '测试内容',
         tags: ['test'],
-      };
+      }
 
       const expectedNote = {
         id: 'note-123',
@@ -1412,47 +1444,48 @@ describe('NotesService', () => {
         userId,
         createdAt: new Date(),
         updatedAt: new Date(),
-      };
+      }
 
-      mockPrismaService.note.create.mockResolvedValue(expectedNote);
+      mockPrismaService.note.create.mockResolvedValue(expectedNote)
 
-      const result = await service.createNote(userId, noteData);
+      const result = await service.createNote(userId, noteData)
 
-      expect(result).toEqual(expectedNote);
+      expect(result).toEqual(expectedNote)
       expect(prismaService.note.create).toHaveBeenCalledWith({
         data: { ...noteData, userId },
-      });
-    });
-  });
+      })
+    })
+  })
 
   describe('getNoteById', () => {
     it('should return note if found', async () => {
-      const userId = 'user-123';
-      const noteId = 'note-123';
+      const userId = 'user-123'
+      const noteId = 'note-123'
       const expectedNote = {
         id: noteId,
         title: '测试笔记',
         userId,
-      };
+      }
 
-      mockPrismaService.note.findFirst.mockResolvedValue(expectedNote);
+      mockPrismaService.note.findFirst.mockResolvedValue(expectedNote)
 
-      const result = await service.getNoteById(userId, noteId);
+      const result = await service.getNoteById(userId, noteId)
 
-      expect(result).toEqual(expectedNote);
-    });
+      expect(result).toEqual(expectedNote)
+    })
 
     it('should throw NOT_FOUND if note not found', async () => {
-      const userId = 'user-123';
-      const noteId = 'nonexistent';
+      const userId = 'user-123'
+      const noteId = 'nonexistent'
 
-      mockPrismaService.note.findFirst.mockResolvedValue(null);
+      mockPrismaService.note.findFirst.mockResolvedValue(null)
 
-      await expect(service.getNoteById(userId, noteId))
-        .rejects.toThrow(TRPCError);
-    });
-  });
-});
+      await expect(service.getNoteById(userId, noteId)).rejects.toThrow(
+        TRPCError
+      )
+    })
+  })
+})
 ```
 
 ### 5.2 集成测试
@@ -1642,8 +1675,8 @@ const optimizedNotesQuery = async (userId: string, options: GetNotesInput) => {
     orderBy: { [options.sortBy]: options.sortOrder },
     take: options.limit,
     skip: options.offset,
-  });
-};
+  })
+}
 ```
 
 ### 7.2 缓存策略
@@ -1651,27 +1684,31 @@ const optimizedNotesQuery = async (userId: string, options: GetNotesInput) => {
 ```typescript
 // Redis 缓存装饰器
 export function Cache(ttl: number = 300) {
-  return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
-    const method = descriptor.value;
+  return function (
+    target: any,
+    propertyName: string,
+    descriptor: PropertyDescriptor
+  ) {
+    const method = descriptor.value
 
     descriptor.value = async function (...args: any[]) {
-      const cacheKey = `${target.constructor.name}:${propertyName}:${JSON.stringify(args)}`;
+      const cacheKey = `${target.constructor.name}:${propertyName}:${JSON.stringify(args)}`
 
       // 尝试从缓存获取
-      const cached = await this.redisService.get(cacheKey);
+      const cached = await this.redisService.get(cacheKey)
       if (cached) {
-        return JSON.parse(cached);
+        return JSON.parse(cached)
       }
 
       // 执行原方法
-      const result = await method.apply(this, args);
+      const result = await method.apply(this, args)
 
       // 存入缓存
-      await this.redisService.set(cacheKey, JSON.stringify(result), ttl);
+      await this.redisService.set(cacheKey, JSON.stringify(result), ttl)
 
-      return result;
-    };
-  };
+      return result
+    }
+  }
 }
 
 // 使用示例

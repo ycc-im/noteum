@@ -9,7 +9,6 @@ import { AuthModule } from './modules/auth/auth.module'
 import { UsersModule } from './modules/users/users.module'
 import { NotebooksModule } from './modules/notebooks/notebooks.module'
 import { NotesModule } from './modules/notes/notes.module'
-import { WebsocketModule } from './modules/websocket/websocket.module'
 import { TrpcModule } from './modules/trpc/trpc.module'
 import { configuration } from './config/configuration'
 import { validateConfig } from './config/validation'
@@ -43,7 +42,6 @@ import { validateConfig } from './config/validation'
     UsersModule,
     NotebooksModule,
     NotesModule,
-    WebsocketModule,
     TrpcModule,
   ],
 })

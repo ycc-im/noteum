@@ -30,12 +30,6 @@ export const configuration: ConfigFactory = () => ({
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '30d',
   },
 
-  websocket: {
-    host: process.env.YJS_HOST || 'localhost',
-    port: parseInt(process.env.YJS_PORT || '3001', 10),
-    maxConnections: parseInt(process.env.WS_MAX_CONNECTIONS || '1000', 10),
-  },
-
   upload: {
     maxSize: parseInt(process.env.UPLOAD_MAX_SIZE || '10485760', 10), // 10MB
     allowedTypes: process.env.UPLOAD_ALLOWED_TYPES?.split(',') || [

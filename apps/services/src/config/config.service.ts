@@ -53,17 +53,6 @@ export class ConfigService {
     }
   }
 
-  // WebSocket Configuration
-  get websocket() {
-    return {
-      host: this.configService.get<string>('websocket.host'),
-      port: this.configService.get<number>('websocket.port'),
-      maxConnections: this.configService.get<number>(
-        'websocket.maxConnections'
-      ),
-    }
-  }
-
   // Upload Configuration
   get upload() {
     return {

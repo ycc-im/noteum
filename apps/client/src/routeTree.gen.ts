@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TodayRouteImport } from './routes/today'
-import { Route as SocketStatusRouteImport } from './routes/socket-status'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
@@ -20,11 +19,6 @@ import { Route as NotebooksIndexRouteImport } from './routes/notebooks/index'
 const TodayRoute = TodayRouteImport.update({
   id: '/today',
   path: '/today',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SocketStatusRoute = SocketStatusRouteImport.update({
-  id: '/socket-status',
-  path: '/socket-status',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -56,7 +50,6 @@ const NotebooksIndexRoute = NotebooksIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
-  '/socket-status': typeof SocketStatusRoute
   '/today': typeof TodayRoute
   '/notebooks': typeof NotebooksIndexRoute
   '/notes': typeof NotesIndexRoute
@@ -65,7 +58,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
-  '/socket-status': typeof SocketStatusRoute
   '/today': typeof TodayRoute
   '/notebooks': typeof NotebooksIndexRoute
   '/notes': typeof NotesIndexRoute
@@ -75,7 +67,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
-  '/socket-status': typeof SocketStatusRoute
   '/today': typeof TodayRoute
   '/notebooks/': typeof NotebooksIndexRoute
   '/notes/': typeof NotesIndexRoute
@@ -86,25 +77,16 @@ export interface FileRouteTypes {
   fullPaths:
     | '/dashboard'
     | '/login'
-    | '/socket-status'
     | '/today'
     | '/notebooks'
     | '/notes'
     | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/dashboard'
-    | '/login'
-    | '/socket-status'
-    | '/today'
-    | '/notebooks'
-    | '/notes'
-    | '/settings'
+  to: '/dashboard' | '/login' | '/today' | '/notebooks' | '/notes' | '/settings'
   id:
     | '__root__'
     | '/dashboard'
     | '/login'
-    | '/socket-status'
     | '/today'
     | '/notebooks/'
     | '/notes/'
@@ -114,7 +96,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
-  SocketStatusRoute: typeof SocketStatusRoute
   TodayRoute: typeof TodayRoute
   NotebooksIndexRoute: typeof NotebooksIndexRoute
   NotesIndexRoute: typeof NotesIndexRoute
@@ -128,13 +109,6 @@ declare module '@tanstack/react-router' {
       path: '/today'
       fullPath: '/today'
       preLoaderRoute: typeof TodayRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/socket-status': {
-      id: '/socket-status'
-      path: '/socket-status'
-      fullPath: '/socket-status'
-      preLoaderRoute: typeof SocketStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -178,7 +152,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
-  SocketStatusRoute: SocketStatusRoute,
   TodayRoute: TodayRoute,
   NotebooksIndexRoute: NotebooksIndexRoute,
   NotesIndexRoute: NotesIndexRoute,

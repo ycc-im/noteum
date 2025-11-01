@@ -271,51 +271,6 @@ export const UpdateCollaboratorPermissionSchema = z.object({
   permission: z.enum(['READ', 'WRITE', 'ADMIN']),
 })
 
-// ============= YJS Schemas =============
-
-export const YjsUpdateSchema = z.object({
-  noteId: ULIDSchema,
-  update: z.string().base64(), // Base64 encoded binary data
-  origin: z.string().optional(),
-})
-
-export const YjsStateVectorSchema = z.object({
-  noteId: ULIDSchema,
-  stateVector: z.string().base64().optional(),
-})
-
-export const NoteSnapshotSchema = z.object({
-  id: ULIDSchema,
-  noteId: ULIDSchema,
-  version: z.number().int().min(0),
-  createdAt: DateTimeSchema,
-})
-
-// ============= User Awareness Schemas =============
-
-export const UserAwarenessSchema = z.object({
-  userId: ULIDSchema,
-  noteId: ULIDSchema,
-  cursorPosition: z.number().int().min(0).optional(),
-  selectionStart: z.number().int().min(0).optional(),
-  selectionEnd: z.number().int().min(0).optional(),
-  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-  lastActivityAt: DateTimeSchema,
-  isActive: z.boolean(),
-  user: UserSchema.pick({
-    id: true,
-    username: true,
-    profile: true,
-  }),
-})
-
-export const UpdateAwarenessSchema = z.object({
-  noteId: ULIDSchema,
-  cursorPosition: z.number().int().min(0).optional(),
-  selectionStart: z.number().int().min(0).optional(),
-  selectionEnd: z.number().int().min(0).optional(),
-})
-
 // ============= Search Schemas =============
 
 export const SearchQuerySchema = z.object({
@@ -395,39 +350,9 @@ export const HealthCheckSchema = z.object({
       status: z.enum(['healthy', 'unhealthy']),
       responseTime: z.number(),
     }),
-    websockets: z.object({
-      status: z.enum(['healthy', 'unhealthy']),
-      activeConnections: z.number().int().min(0),
-    }),
   }),
   version: z.string(),
   uptime: z.number(),
-})
-
-// ============= WebSocket Event Schemas =============
-
-export const WebSocketEventSchema = z.object({
-  type: z.enum([
-    'document_update',
-    'user_joined',
-    'user_left',
-    'cursor_moved',
-    'awareness_updated',
-    'document_saved',
-  ]),
-  noteId: ULIDSchema,
-  userId: ULIDSchema,
-  data: JsonSchema,
-  timestamp: DateTimeSchema,
-})
-
-export const NoteJoinSchema = z.object({
-  noteId: ULIDSchema,
-  stateVector: z.string().base64().optional(),
-})
-
-export const NoteLeaveSchema = z.object({
-  noteId: ULIDSchema,
 })
 
 // ============= Error Schemas =============
@@ -508,15 +433,6 @@ export const API_Schemas = {
   InviteCollaborator: InviteCollaboratorSchema,
   UpdateCollaboratorPermission: UpdateCollaboratorPermissionSchema,
 
-  // YJS schemas
-  YjsUpdate: YjsUpdateSchema,
-  YjsStateVector: YjsStateVectorSchema,
-  NoteSnapshot: NoteSnapshotSchema,
-
-  // Awareness schemas
-  UserAwareness: UserAwarenessSchema,
-  UpdateAwareness: UpdateAwarenessSchema,
-
   // Search schemas
   SearchQuery: SearchQuerySchema,
   SearchResult: SearchResultSchema,
@@ -527,11 +443,6 @@ export const API_Schemas = {
 
   // Health check schemas
   HealthCheck: HealthCheckSchema,
-
-  // WebSocket schemas
-  WebSocketEvent: WebSocketEventSchema,
-  NoteJoin: NoteJoinSchema,
-  NoteLeave: NoteLeaveSchema,
 
   // Error schemas
   Error: ErrorSchema,

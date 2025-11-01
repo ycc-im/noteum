@@ -42,11 +42,6 @@ export const BACKEND_ENV_VARS = {
   REDIS_MAX_RETRIES: 'REDIS_MAX_RETRIES',
   REDIS_RETRY_DELAY: 'REDIS_RETRY_DELAY',
 
-  // WebSocket
-  YJS_HOST: 'YJS_HOST',
-  YJS_PORT: 'YJS_PORT',
-  WS_MAX_CONNECTIONS: 'WS_MAX_CONNECTIONS',
-
   // CORS
   CORS_ORIGIN: 'CORS_ORIGIN',
 } as const
@@ -98,24 +93,6 @@ export const getDatabasePorts = () => {
     postgresql: postgresPort,
     redis: redisPort,
     pgAdmin: pgAdminPort,
-  }
-}
-
-/**
- * Get WebSocket configuration
- */
-export const getWebSocketConfig = () => {
-  const host = process.env[BACKEND_ENV_VARS.YJS_HOST] || 'localhost'
-  const port = process.env[BACKEND_ENV_VARS.YJS_PORT] || '3001'
-  const maxConnections = parseInt(
-    process.env[BACKEND_ENV_VARS.WS_MAX_CONNECTIONS] || '1000',
-    10
-  )
-
-  return {
-    host,
-    port: parseInt(port, 10),
-    maxConnections,
   }
 }
 

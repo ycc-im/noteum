@@ -41,8 +41,8 @@ const initializeAuthFromIndexedDB = async () => {
         user: authData.user,
         accessToken: authData.accessToken,
         refreshToken: authData.refreshToken,
-        isAuthenticated: authData.isAuthenticated,
-        isLoading: authData.isLoading,
+        isAuthenticated: true,
+        isLoading: false,
       }
     }
   } catch (error) {
@@ -53,84 +53,42 @@ const initializeAuthFromIndexedDB = async () => {
 // 初始化认证状态
 initializeAuthFromIndexedDB()
 
-export const useAuthStore = create<AuthStore>()((set, _get) => ({
-  // State
-  ...memoryState,
-
-  // Actions
-  login: async (data) => {
-    const newState = {
-      user: data.user,
-      accessToken: data.accessToken,
-      refreshToken: data.refreshToken,
-      isAuthenticated: true,
-      isLoading: false,
-    }
-
-    // 更新内存状态
-    memoryState = newState
-
-    // 保存到 IndexedDB
+export const useAuthStore = create<AuthStore>()((set, _get) => {
+  // 异步初始化状态
+  const initializeState = async () => {
     try {
-      await authService.storeAuthData(
-        newState.accessToken,
-        newState.refreshToken,
-        newState.user
-      )
+      const authData = await authService.getAuthData()
+      if (authData) {
+        memoryState = {
+          user: authData.user,
+          accessToken: authData.accessToken,
+          refreshToken: authData.refreshToken,
+          isAuthenticated: true,
+          isLoading: false,
+        }
+        // 更新 Zustand 状态
+        set(memoryState)
+      }
     } catch (error) {
-      console.error('Failed to save auth data to IndexedDB:', error)
+      console.error('Failed to initialize auth state:', error)
     }
+  }
 
-    // 更新 Zustand 状态
-    set(newState)
-  },
+  // 异步初始化状态
+  initializeState()
 
-  logout: async () => {
-    const newState = {
-      user: null,
-      accessToken: null,
-      refreshToken: null,
-      isAuthenticated: false,
-      isLoading: false,
-    }
+  return {
+    // State
+    ...memoryState,
 
-    // 更新内存状态
-    memoryState = newState
-
-    // 清除 IndexedDB
-    try {
-      await authService.clearAuthData()
-    } catch (error) {
-      console.error('Failed to clear auth data from IndexedDB:', error)
-    }
-
-    // 更新 Zustand 状态
-    set(newState)
-  },
-
-  setLoading: async (loading) => {
-    const newState = { ...memoryState, isLoading: loading }
-
-    // 更新内存状态
-    memoryState = newState
-
-    // 保存到 IndexedDB
-    try {
-      await indexedDBService.saveAuthData(newState)
-    } catch (error) {
-      console.error('Failed to save loading state to IndexedDB:', error)
-    }
-
-    // 更新 Zustand 状态
-    set({ isLoading: loading })
-  },
-
-  updateUser: async (userData) => {
-    const currentUser = memoryState.user
-    if (currentUser) {
+    // Actions
+    login: async (data) => {
       const newState = {
-        ...memoryState,
-        user: { ...currentUser, ...userData },
+        user: data.user,
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        isAuthenticated: true,
+        isLoading: false,
       }
 
       // 更新内存状态
@@ -138,28 +96,107 @@ export const useAuthStore = create<AuthStore>()((set, _get) => ({
 
       // 保存到 IndexedDB
       try {
-        await indexedDBService.saveAuthData(newState)
+        await authService.storeAuthData(
+          newState.accessToken,
+          newState.refreshToken,
+          newState.user
+        )
       } catch (error) {
-        console.error('Failed to update user data in IndexedDB:', error)
+        console.error('Failed to save auth data to IndexedDB:', error)
       }
 
       // 更新 Zustand 状态
-      set({ user: newState.user })
-    }
-  },
-}))
+      set(newState)
+    },
+
+    logout: async () => {
+      const newState = {
+        user: null,
+        accessToken: null,
+        refreshToken: null,
+        isAuthenticated: false,
+        isLoading: false,
+      }
+
+      // 更新内存状态
+      memoryState = newState
+
+      // 清除 IndexedDB
+      try {
+        await authService.clearAuthData()
+      } catch (error) {
+        console.error('Failed to clear auth data from IndexedDB:', error)
+      }
+
+      // 更新 Zustand 状态
+      set(newState)
+    },
+
+    setLoading: async (loading) => {
+      const newState = { ...memoryState, isLoading: loading }
+
+      // 更新内存状态
+      memoryState = newState
+
+      // 保存到 IndexedDB
+      try {
+        if (newState.accessToken && newState.refreshToken && newState.user) {
+          await authService.storeAuthData(
+            newState.accessToken,
+            newState.refreshToken,
+            newState.user
+          )
+        }
+      } catch (error) {
+        console.error('Failed to save loading state to IndexedDB:', error)
+      }
+
+      // 更新 Zustand 状态
+      set({ isLoading: loading })
+    },
+
+    updateUser: async (userData) => {
+      const currentUser = memoryState.user
+      if (currentUser) {
+        const newState = {
+          ...memoryState,
+          user: { ...currentUser, ...userData },
+        }
+
+        // 更新内存状态
+        memoryState = newState
+
+        // 保存到 IndexedDB
+        try {
+          if (newState.accessToken && newState.refreshToken && newState.user) {
+            await authService.storeAuthData(
+              newState.accessToken,
+              newState.refreshToken,
+              newState.user
+            )
+          }
+        } catch (error) {
+          console.error('Failed to update user data in IndexedDB:', error)
+        }
+
+        // 更新 Zustand 状态
+        set({ user: newState.user })
+      }
+    },
+  }
+})
 
 // 添加一个方法来刷新状态从 IndexedDB
 export const refreshAuthFromIndexedDB = async () => {
   try {
-    const authData = await indexedDBService.getAuthData()
+    const authData = await authService.getAuthData()
     if (authData) {
       memoryState = {
         user: authData.user,
         accessToken: authData.accessToken,
         refreshToken: authData.refreshToken,
-        isAuthenticated: authData.isAuthenticated,
-        isLoading: authData.isLoading,
+        isAuthenticated: true,
+        isLoading: false,
       }
       useAuthStore.setState(memoryState)
     }

@@ -286,10 +286,16 @@ export class NoteProcessingProcessor {
     while (true) {
       try {
         const results = await this.redisService.xreadgroup(
-          'GROUP', consumerGroup, consumerId,
-          'COUNT', 1,
-          'BLOCK', 1000,
-          'STREAMS', 'task-queue', '>'
+          'GROUP',
+          consumerGroup,
+          consumerId,
+          'COUNT',
+          1,
+          'BLOCK',
+          1000,
+          'STREAMS',
+          'task-queue',
+          '>'
         )
 
         if (results && results.length > 0) {
@@ -314,24 +320,32 @@ export class NoteProcessingProcessor {
     const aiTaskId = `ai-${Date.now()}-${note.id}`
 
     // 创建AI处理任务并添加到Redis Stream
-    await this.redisService.xadd('ai-task-queue', '*',
-      'taskId', aiTaskId,
-      'type', TaskType.AI_CONTENT_PROCESSING,
-      'userId', userId,
-      'data', JSON.stringify({
+    await this.redisService.xadd(
+      'ai-task-queue',
+      '*',
+      'taskId',
+      aiTaskId,
+      'type',
+      TaskType.AI_CONTENT_PROCESSING,
+      'userId',
+      userId,
+      'data',
+      JSON.stringify({
         noteId: note.id,
         content: note.content,
         processingOptions: this.extractProcessingOptions(note),
       }),
-      'priority', TaskPriority.NORMAL.toString(),
-      'createdAt', new Date().toISOString()
+      'priority',
+      TaskPriority.NORMAL.toString(),
+      'createdAt',
+      new Date().toISOString()
     )
 
     return aiTaskId
   }
 
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 }
 ```
@@ -357,10 +371,16 @@ export class AiContentProcessor {
     while (true) {
       try {
         const results = await this.redisService.xreadgroup(
-          'GROUP', consumerGroup, consumerId,
-          'COUNT', 1,
-          'BLOCK', 1000,
-          'STREAMS', 'ai-task-queue', '>'
+          'GROUP',
+          consumerGroup,
+          consumerId,
+          'COUNT',
+          1,
+          'BLOCK',
+          1000,
+          'STREAMS',
+          'ai-task-queue',
+          '>'
         )
 
         if (results && results.length > 0) {
@@ -419,7 +439,9 @@ export class AiContentProcessor {
     }
   }
 
-  private async createAiWorkflow(options: ProcessingOptions): Promise<Workflow> {
+  private async createAiWorkflow(
+    options: ProcessingOptions
+  ): Promise<Workflow> {
     // 使用LangChain.js + LangGraph创建工作流
     const llm = new ChatOpenAI({
       modelName: options.model || 'gpt-4',
@@ -445,7 +467,10 @@ export class AiContentProcessor {
           processedContent = await this.extractInsights(state.content, llm)
           break
         case 'GENERATE_RELATED_CONTENT':
-          processedContent = await this.generateRelatedContent(state.content, llm)
+          processedContent = await this.generateRelatedContent(
+            state.content,
+            llm
+          )
           break
         default:
           processedContent = state.content
@@ -456,7 +481,10 @@ export class AiContentProcessor {
 
     const decisionNode = async (state: WorkflowState) => {
       // 基于分析结果决定下一步操作
-      const action = await this.determineNextAction(state.analysis, state.processedContent)
+      const action = await this.determineNextAction(
+        state.analysis,
+        state.processedContent
+      )
       return { ...state, action }
     }
 
@@ -473,19 +501,28 @@ export class AiContentProcessor {
     return workflow
   }
 
-  private async summarizeAndAnalyze(content: string, llm: ChatOpenAI): Promise<string> {
+  private async summarizeAndAnalyze(
+    content: string,
+    llm: ChatOpenAI
+  ): Promise<string> {
     const prompt = `请对以下内容进行总结和分析: ${content}`
     const result = await llm.invoke(prompt)
     return result.content as string
   }
 
-  private async extractInsights(content: string, llm: ChatOpenAI): Promise<string> {
+  private async extractInsights(
+    content: string,
+    llm: ChatOpenAI
+  ): Promise<string> {
     const prompt = `从以下内容中提取关键洞察和要点: ${content}`
     const result = await llm.invoke(prompt)
     return result.content as string
   }
 
-  private async generateRelatedContent(content: string, llm: ChatOpenAI): Promise<string> {
+  private async generateRelatedContent(
+    content: string,
+    llm: ChatOpenAI
+  ): Promise<string> {
     const prompt = `基于以下内容生成相关的扩展内容: ${content}`
     const result = await llm.invoke(prompt)
     return result.content as string
@@ -860,13 +897,13 @@ export class SyncService {
         await this.prisma.note.upsert({
           where: {
             id: change.noteId,
-            userId: userId
+            userId: userId,
           },
           update: {
             title: change.title,
             content: change.content,
             lastModified: change.lastModified,
-            version: { increment: 1 }
+            version: { increment: 1 },
           },
           create: {
             id: change.noteId,
@@ -874,8 +911,8 @@ export class SyncService {
             content: change.content,
             userId: userId,
             lastModified: change.lastModified,
-            version: 1
-          }
+            version: 1,
+          },
         })
         uploadedCount++
       } catch (error) {

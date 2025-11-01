@@ -28,12 +28,6 @@ export interface JWTConfig {
   refreshExpiresIn: string
 }
 
-export interface WebSocketConfig {
-  host: string
-  port: number
-  maxConnections: number
-}
-
 export interface UploadConfig {
   maxSize: number
   allowedTypes: string[]
@@ -70,7 +64,6 @@ export interface EnvironmentConfig {
   database: DatabaseConfig
   redis: RedisConfig
   jwt: JWTConfig
-  websocket: WebSocketConfig
   upload: UploadConfig
   logger: LoggerConfig
   cors: CorsConfig

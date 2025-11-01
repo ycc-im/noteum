@@ -64,15 +64,6 @@ class EnvironmentVariables {
   @IsOptional()
   JWT_EXPIRES_IN: string = '7d'
 
-  @IsString()
-  @IsOptional()
-  YJS_HOST: string = 'localhost'
-
-  @IsNumber()
-  @IsOptional()
-  @Transform(({ value }) => parseInt(value, 10))
-  YJS_PORT: number = 3001
-
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => parseInt(value, 10))

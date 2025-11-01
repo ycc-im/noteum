@@ -20,9 +20,7 @@ export const FRONTEND_PORT_CONFIG: PortConfiguration =
 export const FRONTEND_ENV_VARS = {
   PORT: 'FRONTEND_PORT',
   API_URL: 'VITE_API_URL',
-  WS_URL: 'VITE_WS_URL',
   APP_NAME: 'VITE_APP_NAME',
-  ENABLE_COLLABORATION: 'VITE_ENABLE_COLLABORATION',
   ENABLE_DEBUG: 'VITE_ENABLE_DEBUG',
   DEFAULT_THEME: 'VITE_DEFAULT_THEME',
 } as const
@@ -46,19 +44,6 @@ export const getApiUrl = (): string => {
 
   const backendPort = process.env.BACKEND_PORT || '9168'
   return `http://localhost:${backendPort}`
-}
-
-/**
- * Get WebSocket URL from environment or construct it
- */
-export const getWsUrl = (): string => {
-  const envUrl = process.env[FRONTEND_ENV_VARS.WS_URL]
-  if (envUrl) {
-    return envUrl
-  }
-
-  const backendPort = process.env.BACKEND_PORT || '9168'
-  return `ws://localhost:${backendPort}`
 }
 
 /**

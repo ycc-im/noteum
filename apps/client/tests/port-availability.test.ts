@@ -21,7 +21,6 @@ describe('Frontend Port Configuration', () => {
       ...originalEnv,
       FRONTEND_PORT: '9158',
       VITE_API_URL: 'http://localhost:9168',
-      VITE_WS_URL: 'ws://localhost:9168',
     }
   })
 
@@ -103,29 +102,21 @@ describe('Frontend Port Configuration', () => {
       expect(process.env.VITE_API_URL).toBe('http://localhost:9168')
     })
 
-    it('should have WebSocket URL configured correctly', () => {
-      expect(process.env.VITE_WS_URL).toBe('ws://localhost:9168')
-    })
-
     it('should have consistent port configuration', () => {
       const frontendPort = getFrontendPort()
       const apiUrl = process.env.VITE_API_URL
-      const wsUrl = process.env.VITE_WS_URL
 
-      // Extract backend port from URLs
+      // Extract backend port from URL
       const apiPortMatch = apiUrl?.match(/:(\d+)/)
-      const wsPortMatch = wsUrl?.match(/:(\d+)/)
 
       expect(apiPortMatch).toBeTruthy()
-      expect(wsPortMatch).toBeTruthy()
       expect(apiPortMatch?.[1]).not.toBe(frontendPort.toString())
-      expect(wsPortMatch?.[1]).not.toBe(frontendPort.toString())
     })
   })
 
   describe('Environment Variables', () => {
     it('should have required frontend environment variables', () => {
-      const requiredVars = ['FRONTEND_PORT', 'VITE_API_URL', 'VITE_WS_URL']
+      const requiredVars = ['FRONTEND_PORT', 'VITE_API_URL']
 
       requiredVars.forEach((varName) => {
         expect(process.env[varName]).toBeDefined()
@@ -134,10 +125,8 @@ describe('Frontend Port Configuration', () => {
 
     it('should have valid URL formats', () => {
       const apiUrl = process.env.VITE_API_URL
-      const wsUrl = process.env.VITE_WS_URL
 
       expect(apiUrl).toMatch(/^https?:\/\//)
-      expect(wsUrl).toMatch(/^wss?:\/\//)
     })
   })
 })

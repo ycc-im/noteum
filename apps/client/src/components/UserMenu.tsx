@@ -6,8 +6,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+} from '@/components/ui/DropdownMenu'
+import { Avatar, AvatarFallback } from '@/components/ui/Avatar'
 import { Link } from '@tanstack/react-router'
 
 export function UserMenu() {

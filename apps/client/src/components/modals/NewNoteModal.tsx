@@ -6,8 +6,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+} from '@/components/ui/Dialog'
+import { Button } from '@/components/ui/Button'
 import { useActiveModal, useShortcutsStore } from '@/stores/shortcuts'
 // import { trpc } from '@/lib/trpc' // 暂时注释，待后续实现
 import { generateUlid } from '@/lib/ulid'

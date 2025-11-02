@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 import { NewNoteModal } from '@/components/modals/NewNoteModal'
 import { useNewNoteModal } from '@/hooks/useNewNoteModal'
 

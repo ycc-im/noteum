@@ -1,4 +1,3 @@
-export { Layout } from './layout'
-export { Header } from './header'
-export { Sidebar } from './sidebar'
-export { MainContent } from './main-content'
+export { Layout } from './Layout'
+export { Header } from './Header'
+export { MainContent } from './MainContent'

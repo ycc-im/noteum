@@ -66,10 +66,136 @@ noteum/
 
 ### 命名规范
 
-- **组件**: PascalCase (如: `NoteEditor`)
-- **文件**: kebab-case (如: `note-editor.tsx`)
-- **变量/函数**: camelCase (如: `getUserNotes`)
-- **常量**: SCREAMING_SNAKE_CASE (如: `API_BASE_URL`)
+#### 基本规则
+
+- **组件**: PascalCase (如: `NoteEditor`, `UserProfile`)
+- **组件文件**: PascalCase (如: `NoteEditor.tsx`, `UserProfile.tsx`)
+- **Hook 文件**: camelCase (如: `useAuthStore.ts`, `useNewNoteModal.ts`)
+- **其他文件**: kebab-case (如: `api.types.ts`, `user-utils.ts`)
+- **变量/函数**: camelCase (如: `getUserNotes`, `handleModalClose`)
+- **常量**: SCREAMING_SNAKE_CASE (如: `API_BASE_URL`, `DEFAULT_PAGE_SIZE`)
+
+#### Hook 命名规范
+
+- **文件名**: `use[HookName].ts` (camelCase，首字母小写)
+- **Hook 名称**: `use[HookName]` (camelCase，首字母小写)
+- **示例**:
+
+  ```typescript
+  // 文件: useNewNoteModal.ts
+  export const useNewNoteModal = () => { ... }
+
+  // 文件: useAuthStore.ts
+  export const useAuthStore = () => { ... }
+  ```
+
+#### Store 命名规范
+
+- **文件名**: `[feature]-store.ts` (kebab-case)
+- **Hook 名称**: `use[Feature]Store` (PascalCase)
+- **接口名称**: `[Feature]State`、`[Feature]Store`
+- **示例**:
+
+  ```typescript
+  // 文件: auth-store.ts
+  export interface AuthState { ... }
+  export const useAuthStore = () => { ... }
+
+  // 文件: notes-store.ts
+  export interface NotesState { ... }
+  export const useNotesStore = () => { ... }
+  ```
+
+#### Component 命名规范
+
+- **文件名**: `[ComponentName].tsx` (PascalCase)
+- **组件名称**: `[ComponentName]` (PascalCase)
+- **导出方式**: 默认导出主要组件
+- **示例**:
+
+  ```typescript
+  // 文件: NoteEditor.tsx
+  export default function NoteEditor() { ... }
+
+  // 文件: UserMenu.tsx
+  export function UserMenu() { ... }
+  ```
+
+#### Interface 和 Type 命名规范
+
+- **文件名**: 与主要功能相关的 kebab-case 名称
+- **接口名称**: PascalCase，以 I、Props、State 等后缀
+- **示例**:
+
+  ```typescript
+  // 文件: user.types.ts
+  export interface User { ... }
+  export interface UserProps { ... }
+  export interface UserState { ... }
+
+  // 文件: api.types.ts
+  export interface ApiResponse<T> { ... }
+  export interface ApiError { ... }
+  ```
+
+#### 枚造函数和类命名
+
+- **构造函数**: PascalCase (如: `NoteService`)
+- **类名**: PascalCase (如: `DatabaseManager`)
+- **示例**:
+
+  ```typescript
+  export class NoteService {
+    constructor() { ... }
+  }
+
+  export class DatabaseManager {
+    constructor() { ... }
+  }
+  ```
+
+#### 事件处理器命名
+
+- **事件处理函数**: `handle[Action]` (如: `handleSubmit`, `handleClick`)
+- **回调函数**: `on[Action]` (如: `onSubmit`, `onSuccess`)
+- **示例**:
+  ```typescript
+  const handleSubmit = (data: FormData) => { ... }
+  const handleClick = () => { ... }
+  const onSubmit = (data: FormData) => { ... }
+  const onSuccess = () => { ... }
+  ```
+
+#### 布量命名规范
+
+- **全局常量**: SCREAMING_SNAKE_CASE (如: `API_BASE_URL`, `MAX_FILE_SIZE`)
+- **局部常量**: SCREAMING_SNAKE_CASE 或 camelCase (建议统一使用 SCREAMING_SNAKE_CASE)
+- **枚举**: PascalCase (如: `UserRole`, `NoteStatus`)
+- **示例**:
+
+  ```typescript
+  export const API_BASE_URL = 'https://api.example.com'
+  export const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
+
+  export enum UserRole {
+    ADMIN = 'admin',
+    USER = 'user',
+    GUEST = 'guest',
+  }
+  ```
+
+#### 特殊情况处理
+
+- **Boolean 变量**: 使用 `is` 或 `has` 前缀 (如: `isLoading`, `hasError`, `isAuthenticated`)
+- **异步函数**: 可使用 `fetch`、`load`、`get` 等前缀 (如: `fetchUserData`, `loadNotes`)
+- **私有成员**: 使用 `_` 前缀 (如: `_internalMethod`, `_cache`)
+
+#### 文件组织规范
+
+- **组件文件**: 包含一个主要组件和相关的类型定义
+- **Hook 文件**: 包含一个主要 Hook 和相关的辅助函数
+- **工具文件**: 包含相关的工具函数和常量
+- **类型文件**: 包含相关的类型定义和接口
 
 ### Git 提交规范
 

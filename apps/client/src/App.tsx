@@ -1,6 +1,6 @@
 import { Outlet } from '@tanstack/react-router'
-import { AppInit } from '@/components/app-init'
-import { TrpcProvider } from '@/providers/trpc-provider'
+import { AppInit } from '@/components/AppInit'
+import { TrpcProvider } from '@/providers/TrpcProvider'
 
 // Import test utilities in development
 if (import.meta.env.DEV) {

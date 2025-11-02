@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
-import { NewNoteModal } from '@/components/modals/new-note-modal'
-import { useNewNoteModal } from '@/hooks/use-new-note-modal'
+import { NewNoteModal } from '@/components/modals/NewNoteModal'
+import { useNewNoteModal } from '@/hooks/useNewNoteModal'
 
 export const Route = createFileRoute('/notes/')({
   component: function Notes() {

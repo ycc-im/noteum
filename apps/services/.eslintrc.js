@@ -53,6 +53,74 @@ module.exports = {
     // 文件组织
     '@typescript-eslint/consistent-type-imports': 'error',
     '@typescript-eslint/consistent-type-exports': 'error',
+
+    // 命名规范
+    '@typescript-eslint/naming-convention': [
+      'error',
+      {
+        selector: 'variable',
+        format: ['camelCase', 'UPPER_CASE'],
+        filter: {
+          regex: '^(is|has|can|should|will|does|have)[A-Z].*',
+          match: false,
+        },
+      },
+      {
+        selector: 'variable',
+        format: ['camelCase'],
+        filter: {
+          regex: '^(is|has|can|should|will|does|have)[A-Z].*',
+          match: true,
+        },
+      },
+      {
+        selector: 'function',
+        format: ['camelCase'],
+      },
+      {
+        selector: 'typeAlias',
+        format: ['PascalCase'],
+      },
+      {
+        selector: 'interface',
+        format: ['PascalCase'],
+      },
+      {
+        selector: 'enum',
+        format: ['PascalCase'],
+      },
+      {
+        selector: 'enumMember',
+        format: ['UPPER_CASE'],
+      },
+      {
+        selector: 'class',
+        format: ['PascalCase'],
+      },
+      {
+        selector: 'parameter',
+        format: ['camelCase'],
+        leadingUnderscore: 'allow',
+      },
+      {
+        selector: 'property',
+        format: ['camelCase'],
+        leadingUnderscore: 'allow',
+      },
+      {
+        selector: 'method',
+        format: ['camelCase'],
+      },
+      {
+        selector: 'variable',
+        modifiers: ['global'],
+        format: ['UPPER_CASE'],
+      },
+      {
+        selector: 'typeLike',
+        format: ['PascalCase'],
+      },
+    ],
   },
   overrides: [
     {

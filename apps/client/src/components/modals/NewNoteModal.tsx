@@ -9,13 +9,18 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { useActiveModal, useShortcutsStore } from '@/stores/shortcuts'
-import { trpc } from '@/lib/trpc'
+// import { trpc } from '@/lib/trpc' // 暂时注释，待后续实现
 import { generateUlid } from '@/lib/ulid'
 
 export interface NewNoteModalProps {
   isOpen?: boolean
   onClose?: () => void
-  onCreateNote?: (data: { title: string; notebookId: string }) => void
+  onCreateNote?: (data: {
+    title: string
+    notebookId: string
+    id: string
+    createdAt: Date
+  }) => void
 }
 
 export const NewNoteModal: React.FC<NewNoteModalProps> = ({

@@ -7,7 +7,7 @@ import {
   useCallback,
 } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { useShortcutManager } from '@/hooks/use-shortcuts'
+import { useShortcutManager } from '@/hooks/useShortcuts'
 import { useShortcutsStore } from '@/stores/shortcuts'
 import type { ShortcutConfig } from '@/types/shortcuts'
 

@@ -1,19 +1,31 @@
 import { LoginRequest, LoginResponse, RefreshTokenRequest } from '@/types/user'
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:9168'
+import { configService } from '@/lib/database/config-service'
 
 class ApiClient {
   private baseURL: string
 
-  constructor(baseURL: string) {
-    this.baseURL = baseURL
+  constructor(baseURL?: string) {
+    this.baseURL = baseURL || 'http://localhost:9168'
+  }
+
+  private async getBaseUrl(): Promise<string> {
+    try {
+      return await configService.getApiBaseUrl()
+    } catch (error) {
+      console.warn(
+        'Failed to get API base URL from config, using default',
+        error
+      )
+      return this.baseURL
+    }
   }
 
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const url = `${this.baseURL}${endpoint}`
+    const baseUrl = await this.getBaseUrl()
+    const url = `${baseUrl}${endpoint}`
 
     const response = await fetch(url, {
       headers: {
@@ -108,9 +120,29 @@ class ApiClient {
 
   // 健康检查
   async healthCheck(): Promise<{ status: string; timestamp: string }> {
-    return this.request('/trpc/health')
+    const response = await this.request<{
+      result: {
+        data: {
+          json: {
+            success: boolean
+            data: { status: string; timestamp: string }
+          }
+        }
+      }
+    }>('/api/v1/trpc/auth.ping', {
+      method: 'POST',
+      body: JSON.stringify({
+        json: {},
+      }),
+    })
+
+    if (!response.result.data.json.success) {
+      throw new Error('Health check failed')
+    }
+
+    return response.result.data.json.data
   }
 }
 
-export const apiClient = new ApiClient(API_BASE_URL)
+export const apiClient = new ApiClient()
 export default apiClient

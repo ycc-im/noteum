@@ -8,6 +8,7 @@ import type {
 export class NoteumDatabase extends Dexie {
   auth!: Table<DatabaseSchema['auth']>
   cache!: Table<DatabaseSchema['cache']>
+  config!: Table<DatabaseSchema['config']>
 
   constructor(_options: DatabaseConnectionOptions = {}) {
     super('noteum_database')
@@ -16,6 +17,13 @@ export class NoteumDatabase extends Dexie {
     this.version(1).stores({
       auth: '++id, accessToken, refreshToken, expiresAt, createdAt, updatedAt',
       cache: '++id, key, expiresAt, createdAt',
+    })
+
+    // Add config table in version 2
+    this.version(2).stores({
+      auth: '++id, accessToken, refreshToken, expiresAt, createdAt, updatedAt',
+      cache: '++id, key, expiresAt, createdAt',
+      config: '++id, key, type, createdAt, updatedAt',
     })
 
     // Handle connection errors

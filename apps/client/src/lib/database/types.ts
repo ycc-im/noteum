@@ -18,9 +18,20 @@ export interface CacheTable {
   createdAt: Date
 }
 
+export interface ConfigTable {
+  id?: number
+  key: string
+  value: any
+  type: 'string' | 'number' | 'boolean' | 'object'
+  description?: string
+  createdAt: Date
+  updatedAt: Date
+}
+
 export interface DatabaseSchema {
   auth: AuthTable
   cache: CacheTable
+  config: ConfigTable
 }
 
 export interface DatabaseConnectionOptions {

@@ -1,5 +1,5 @@
 import { useShortcutsStore } from '@/stores/shortcuts'
-import { useShortcutAction } from '@/components/shortcuts/shortcut-provider'
+import { useShortcutAction } from '@/components/shortcuts/ShortcutProvider'
 
 // Hook 用于控制新建笔记模态框
 export const useNewNoteModal = () => {

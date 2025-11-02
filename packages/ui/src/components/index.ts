@@ -1,5 +1,5 @@
 // UI components exports
-export { Button, buttonVariants } from './ui/button'
+export { Button, buttonVariants } from './ui/Button'
 export {
   Dialog,
   DialogPortal,
@@ -11,6 +11,6 @@ export {
   DialogFooter,
   DialogTitle,
   DialogDescription,
-} from './ui/dialog'
-export { RadioGroup, RadioGroupItem } from './ui/radio-group'
-export { Checkbox } from './ui/checkbox'
+} from './ui/Dialog'
+export { RadioGroup, RadioGroupItem } from './ui/RadioGroup'
+export { Checkbox } from './ui/Checkbox'

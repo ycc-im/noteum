@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
-import { useTheme } from '@/providers/theme-provider'
-import { UserMenu } from '@/components/user-menu'
+import { useTheme } from '@/providers/ThemeProvider'
+import { UserMenu } from '@/components/UserMenu'
 
 export function Header() {
   const { theme, setTheme } = useTheme()

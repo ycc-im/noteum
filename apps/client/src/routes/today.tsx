@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useNewNoteShortcut } from '@/components/shortcuts/shortcut-provider'
-import { useNewNoteModal } from '@/hooks/use-new-note-modal'
-import { NewNoteModal } from '@/components/modals/new-note-modal'
-import { ThemeToggle } from '@/components/theme-toggle'
+import { useNewNoteShortcut } from '@/components/shortcuts/ShortcutProvider'
+import { useNewNoteModal } from '@/hooks/useNewNoteModal'
+import { NewNoteModal } from '@/components/modals/NewNoteModal'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 export const Route = createFileRoute('/today')({
   component: TodayPage,

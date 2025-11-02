@@ -55,16 +55,53 @@ export const SetupPage: React.FC = () => {
         return
       }
 
+      // 在保存前验证API连接
+      setError('正在验证API连接...')
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10秒超时
+
+      let response
+      try {
+        response = await fetch(`${apiBaseUrl.trim()}/api/v1/trpc`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            json: {},
+          }),
+          signal: controller.signal,
+        })
+        clearTimeout(timeoutId)
+      } catch (err) {
+        clearTimeout(timeoutId)
+        if (err instanceof Error && err.name === 'AbortError') {
+          setError('API连接超时，请检查地址是否正确')
+        } else {
+          setError('API连接失败，请检查地址是否正确')
+        }
+        return
+      }
+
+      if (!response.ok) {
+        setError(`API验证失败: 服务器返回 ${response.status}`)
+        return
+      }
+
+      // API验证成功，保存配置
       await configService.setApiBaseUrl(apiBaseUrl.trim())
-      setSuccess('配置保存成功！即将跳转到主页...')
+      setSuccess('配置保存成功！API验证通过，即将跳转到主页...')
 
       // 2秒后跳转到主页
       setTimeout(() => {
-        navigate({ to: '/' })
+        navigate({ to: '/dashboard' })
       }, 2000)
     } catch (err) {
       setError('保存配置失败')
-      console.error('Failed to save config:', err)
+      console.error(
+        'Failed to save config:',
+        err instanceof Error ? err.message : err
+      )
     } finally {
       setIsSaving(false)
     }
@@ -115,7 +152,10 @@ export const SetupPage: React.FC = () => {
       }
     } catch (err) {
       setError('连接测试失败，请检查地址是否正确')
-      console.error('Failed to test connection:', err)
+      console.error(
+        'Failed to test connection:',
+        err instanceof Error ? err.message : err
+      )
     }
   }
 

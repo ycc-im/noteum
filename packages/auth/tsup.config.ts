@@ -12,7 +12,6 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  treeshake: false,
   external: [
     'better-auth',
     '@tanstack/react-query',
@@ -22,4 +21,7 @@ export default defineConfig({
     'react-dom',
     'postgres',
   ],
+  tsupOptions: {
+    noExternal: ['react'],
+  },
 })
